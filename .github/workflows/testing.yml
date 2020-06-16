@@ -1,0 +1,15 @@
+name: Testing
+on: [push]
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    name: Testing out setup
+    steps:
+    - name: Write out inputs
+      uses: CasperWA/push-with-status-checks-action@initial_work
+      with:
+        github_token: '${{ secrets.GITHUB_TOKEN }}'
+        # repository: '${{ github.repository }}'
+        # ref: 'master'
+        # default: '${{ github.workspace }}'
