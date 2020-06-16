@@ -10,6 +10,6 @@ jobs:
       uses: CasperWA/push-with-status-checks-action@initial_work
       with:
         github_token: '${{ secrets.GITHUB_TOKEN }}'
-        # repository: '${{ github.repository }}'
-        # ref: 'master'
-        # default: '${{ github.workspace }}'
+        repository: '${{ github.repository }}'
+        ref: 'master'
+        directory: '${{ github.workspace }}'
