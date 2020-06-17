@@ -18,6 +18,7 @@ def api_request(
     url: str,
     http_request: str = "get",
     expected_status_code: int = 200,
+    check_response: bool = True,
     **kwargs,
 ) -> Union[List[dict], dict, None]:
     """Perform GitHub API v3 request
@@ -54,10 +55,11 @@ def api_request(
         else:
             raise RuntimeError(message)
 
-    try:
-        response = response.json()
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"Failed to jsonify response.\n{exc!r}")
+    if check_response:
+        try:
+            response = response.json()
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"Failed to jsonify response.\n{exc!r}")
 
     return response
 
@@ -79,7 +81,7 @@ def branch_exists(name: str, new_request: bool = False) -> bool:
 def remove_branch(name: str):
     """Remove named branch in repository"""
     delete_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs/heads/{name}"
-    api_request(delete_ref_url, http_request="delete", expected_status_code=204)
+    api_request(delete_ref_url, http_request="delete", expected_status_code=204, check_response=False)
 
 
 def get_branch_statuses(name: str, new_request: bool = False) -> List[str]:
