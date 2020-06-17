@@ -1,31 +1,25 @@
 name: 'Push with Status Checks'
 description: 'Push local workflow commit(s) to protected branches with required status checks.'
-author: 'CasperWA'
+author: 'Casper Welzel Andersen (CasperWA)'
 branding:
-  icon: github
-  color: green
+  icon: shield
+  color: purple
 inputs:
   github_token:
     description: 'Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
     required: true
   repository:
-    description: 'Repository name to push. Default or empty value represents current github repository (${GITHUB_REPOSITORY})'
+    description: 'Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY})'
     default: '${{ github.repository }}'
     required: false
-  ref:
-    description: 'Target ref (branch/tag) for the push.'
+  branch:
+    description: 'Target branch for the push.'
     required: false
     default: 'master'
-  directory:
-    description: 'Working directory for the push.'
+  changes:
+    description: 'Shell script to run in the target repository root prior to the push. NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`'
     required: false
-    default: '${{ github.workspace }}'
-  # force:
-  #   description: 'Determines if force push is used'
-  #   required: false
-  # tags:
-  #   description: 'Determines if --tags is used'
-  #   required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
