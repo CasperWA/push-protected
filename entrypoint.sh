@@ -39,5 +39,5 @@ git push -f origin ${TEMPORARY_BRANCH}
 } || {
     # Remove temporary repository
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" remove_temp_branch
-    exit(1)
+    exit 1
 }
