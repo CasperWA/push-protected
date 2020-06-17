@@ -21,13 +21,13 @@ if [ -n "${INPUT_CHANGES}" ]; then
 fi
 
 # Create new temporary repository
-# TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/$(uuidgen)"
+TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/$(uuidgen)"
 # git checkout -f -b ${TEMPORARY_BRANCH}
 # git push -f origin ${TEMPORARY_BRANCH}
 
 {
     # Create new temporary repository
-    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --commits "$(git rev-list ${GITHUB_SHA}...HEAD)" --temp-branch-name "push-action/${GITHUB_RUN_ID}/$(uuidgen)" create_temp_branch &&
+    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --commits "$(git rev-list ${GITHUB_SHA}...HEAD)" create_temp_branch &&
 
     # Wait for status checks to complete
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --time-interval "${INPUT_INTERVAL}" --time-timeout "${INPUT_TIMEOUT}" wait_for_checks &&
