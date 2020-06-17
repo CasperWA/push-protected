@@ -22,7 +22,7 @@ if [ -n "${INPUT_CHANGES}" ]; then
 fi
 
 # Create new temporary repository
-TEMPORARY_BRANCH="push-action/temporary/${GITHUB_RUN_ID}_${RANDOM}"
+TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/$(uuidgen)"
 git checkout -f -b ${TEMPORARY_BRANCH}
 git push -f origin ${TEMPORARY_BRANCH}
 
