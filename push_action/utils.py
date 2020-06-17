@@ -163,6 +163,8 @@ def get_required_actions(statuses: List[str], new_request: bool = False) -> List
 
             jobs = []
             for run in runs:
+                print(runs)
+                print(run)
                 jobs.append(get_workflow_run_jobs(run["id"]))
 
             IN_MEMORY_CACHE[cache_name] = [_ for _ in jobs if _.get("name", "") in statuses]

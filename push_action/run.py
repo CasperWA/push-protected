@@ -106,8 +106,6 @@ def main():
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
         fail = repr(exc)
-    except Exception as exc:  # pylint: disable=broad-except
-        fail = repr(exc)
     finally:
         del IN_MEMORY_CACHE
 

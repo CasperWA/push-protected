@@ -11,10 +11,13 @@ jobs:
 
     - name: Reset branches
       run: |
-        git checkout -b not_protected
-        git push -f origin not_protected
-        git checkout -b protected
-        git push -f origin protected
+        git fetch origin
+        git checkout not_protected
+        git reset --hard origin/initial_work
+        git push -f
+        git checkout protected
+        git reset --hard origin/initial_work
+        git push -f
 
   not_protected:
     needs: reset_test_branches
