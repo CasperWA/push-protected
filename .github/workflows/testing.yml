@@ -2,14 +2,44 @@ name: Testing
 on: [push]
 
 jobs:
-  testing:
+  reset_test_branches:
     runs-on: ubuntu-latest
-    name: Testing out setup
+    name: Reset test branches
     steps:
-    - name: Write out inputs
+    - name: Checkout action repo
+      uses: actions/checkout@v2
+
+    - name: Reset branches
+      run: |
+        # git checkout master
+        git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git checkout -b not_protected
+        git push -f origin/not_protected
+        git checkout -b protected
+        git push -f origin/protected
+
+  not_protected:
+    needs: reset_test_branches
+    runs-on: ubuntu-latest
+    name: Testing - non-protected
+    steps:
+    - name: Pushing to a non-protected branch
       uses: CasperWA/push-with-status-checks-action@initial_work
       with:
         github_token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
-        ref: 'master'
-        directory: '${{ github.workspace }}'
+        branch: 'not_protected'
+        changes: .github/workflows/ci.sh
+
+  protected:
+    needs: reset_test_branches
+    runs-on: ubuntu-latest
+    name: Testing - protected
+    steps:
+    - name: Pushing to a protected branch
+      uses: CasperWA/push-with-status-checks-action@initial_work
+      with:
+        github_token: '${{ secrets.GITHUB_TOKEN }}'
+        repository: '${{ github.repository }}'
+        branch: 'protected'
+        changes: .github/workflows/ci.sh
