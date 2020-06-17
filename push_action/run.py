@@ -94,6 +94,7 @@ def main():
     global IN_MEMORY_CACHE
     IN_MEMORY_CACHE["args"] = parser.parse_args()
 
+    fail = False
     try:
         inital_checks()
 
