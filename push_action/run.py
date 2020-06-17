@@ -63,7 +63,7 @@ def inital_checks():
 def create_temp_branch(name: str):
     """Create temporary branch"""
     commit_shas = IN_MEMORY_CACHE["args"].commits.split(" ")
-    repo = Repo(os.environ["GITHUB_WORKSPACE"])
+    repo = Repo(os.curdir.join("target_repo"))
 
     create_commit_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/commits"
     for commit_sha in commit_shas:
