@@ -9,7 +9,7 @@ git config --system user.email "actions@github.com"
 git config --system user.name "${GITHUB_WORKFLOW}"
 
 # Retrieve target repository
-git clone https://github.com/${INPUT_REPOSITORY}.git target_repo/
+git clone https://${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
 cd target_repo
 
 if [ "${GITHUB_SHA}" != "$(git rev-parse HEAD)" ]; then
@@ -27,15 +27,14 @@ fi
 # Create new temporary repository
 TEMPORARY_BRANCH="push-action/temporary/${GITHUB_RUN_ID}"
 git checkout -f -b ${TEMPORARY_BRANCH}
-git remote add target https://${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git
-git push -f target ${TEMPORARY_BRANCH}
+git push -f origin ${TEMPORARY_BRANCH}
 
 # Wait for status checks to complete
 python ../app/run.sh --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --run-id "${GITHUB_RUN_ID}" --ref "${INPUT_BRANCH}" wait_for_checks
 
 # Merge into target branch
-git checkout -f -t target/${INPUT_BRANCH} ${INPUT_BRANCH}
-git merge --ff-only target/${TEMPORARY_BRANCH}
+git checkout -f -t origin/${INPUT_BRANCH} ${INPUT_BRANCH}
+git merge --ff-only origin/${TEMPORARY_BRANCH}
 git push
 
 # Remove temporary repository
