@@ -1,6 +1,6 @@
 import argparse
 import sys
-from time import sleep
+from time import sleep, time
 
 from push_action.utils import (
     branch_exists,
@@ -19,7 +19,8 @@ def wait():
     actions_required = get_required_actions(required_statuses)
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
-    while True:
+    start_time = time()
+    while True and ( time() - start_time ) < ( 60 * 15 ):
         sleep(15)
 
         for job in actions_required:
@@ -100,10 +101,12 @@ def main():
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
-            remove_branch(f"{IN_MEMORY_CACHE['args'].temp_branch}")
+            remove_branch(IN_MEMORY_CACHE['args'].temp_branch)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
+        fail = repr(exc)
+    except Exception as exc:  # pylint: disable=broad-except
         fail = repr(exc)
     finally:
         del IN_MEMORY_CACHE
