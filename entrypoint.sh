@@ -27,7 +27,7 @@ git push -f origin ${TEMPORARY_BRANCH}
 
 {
     # Wait for status checks to complete
-    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" wait_for_checks &&
+    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --time-interval "${INPUT_INTERVAL}" --time-timeout "${INPUT_TIMEOUT}" wait_for_checks &&
 
     # Merge into target branch
     git checkout -f ${INPUT_BRANCH} &&

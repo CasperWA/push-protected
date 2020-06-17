@@ -20,20 +20,20 @@ def wait():
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
     start_time = time()
-    while True and ( time() - start_time ) < ( 60 * 15 ):
-        sleep(15)
+    while True and ( time() - start_time ) < ( 60 * IN_MEMORY_CACHE["args"].wait_timeout ):
+        sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
         for job in actions_required:
             if job["status"] != "completed":
                 break
         else:
-            print("All jobs are completed!")
+            # All jobs are completed
             unsuccessful_jobs = [
                 _ for _ in actions_required if _.get("conclusion", "") == "success"
             ]
             break
 
-        print("Some jobs have not yet completed. Will sleep for 15 s and try again.")
+        # Some jobs have not yet completed
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:
@@ -83,6 +83,18 @@ def main():
         type=str,
         help="Temporary branch name for the aciton",
         required=True,
+    )
+    parser.add_argument(
+        "--wait-timeout",
+        type=int,
+        help="Time (in minutes) of how long the wait_for_checks should run before timing out",
+        default=15
+    )
+    parser.add_argument(
+        "--wait-interval",
+        type=str,
+        help="Time interval (in seconds) between each new check in the wait_for_checks run",
+        default=30,
     )
     parser.add_argument(
         "ACTION",

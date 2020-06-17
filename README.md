@@ -12,6 +12,8 @@ In order to most easy perform commits prior to the push updates, you should pass
 | `repository` | Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY}). | `False` | `${{ github.repository }}` |
 | `branch` | Target branch for the push. | `False` | `master` |
 | `changes` | Shell script to run in the target repository root prior to the push. NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`. | `False` | `` |
+| `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `False` | `30` |
+| `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `False` | `15` |
 
 ## License
 

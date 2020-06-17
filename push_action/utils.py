@@ -60,8 +60,8 @@ def api_request(
 
                 raise RuntimeError(
                     "The remaining number of requests to GitHub has reached 0 (out of "
-                    f"{response.headers.get('X-Ratelimit-Limit', 'N/A')}). "
-                    f"You can try again in {(response.headers.get('X-Ratelimit-Reset', 0) - time())} s."
+                    f"{dict(response.headers).get('X-Ratelimit-Limit', 'N/A')}). "
+                    f"You can try again in {dict(response.headers).get('X-Ratelimit-Reset', 0) - time()!s} s."
                 )
             raise RuntimeError(message)
 
