@@ -1,9 +1,6 @@
 #!/bin/sh
 set -e
 
-# Install requirements
-python -m pip install --no-cache -U -e .
-
 # Setup git user
 git config --system user.email "actions@github.com"
 git config --system user.name "${GITHUB_WORKFLOW}"
