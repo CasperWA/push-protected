@@ -1,8 +1,12 @@
 import argparse
+import os
 import sys
 from time import sleep, time
 
+from git import Repo
+
 from push_action.utils import (
+    api_request,
     branch_exists,
     get_branch_statuses,
     get_required_actions,
@@ -56,6 +60,43 @@ def inital_checks():
         )
 
 
+def create_temp_branch(name: str):
+    """Create temporary branch"""
+    commit_shas = IN_MEMORY_CACHE["args"].commits.split(" ")
+    repo = Repo(os.environ["GITHUB_WORKSPACE"])
+
+    create_commit_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/commits"
+    for commit_sha in commit_shas:
+        commit = repo.commit(commit_sha)
+        data = {
+            "message": commit.message,
+            "tree": str(commit.tree),
+            "parents": [str(_) for _ in commit.parents],
+            "author": {
+                "name": commit.author.name,
+                "email": commit.author.email,
+                "date": commit.authored_datetime.strftime("%Y-%M-%dT%H:%M:%SZ")
+            },
+            "committer": {
+                "name": commit.committer.name,
+                "email": commit.committer.email,
+                "date": commit.committed_datetime.strftime("%Y-%M-%dT%H:%M:%SZ")
+            },
+        }
+        api_request(
+            create_commit_url, http_request="post", expected_status_code=201, data=data
+        )
+    
+    create_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs"
+    data = {
+        "ref": f"refs/heads/{name}",
+        "sha": commit_shas[0],
+    }
+    api_request(
+        create_ref_url, http_request="post", expected_status_code=201, data=data
+    )
+
+
 def main():
     """Main function to run this module"""
     # Handle inputs
@@ -81,7 +122,7 @@ def main():
     parser.add_argument(
         "--temp-branch",
         type=str,
-        help="Temporary branch name for the aciton",
+        help="Temporary branch name for the action",
         required=True,
     )
     parser.add_argument(
@@ -97,10 +138,15 @@ def main():
         default=30,
     )
     parser.add_argument(
+        "--commits",
+        type=str,
+        help="List of commit SHAs added locally",
+    )
+    parser.add_argument(
         "ACTION",
         type=str,
         help="The action to do",
-        choices=["wait_for_checks", "remove_temp_branch"],
+        choices=["wait_for_checks", "remove_temp_branch", "create_temp_branch"],
     )
 
     global IN_MEMORY_CACHE
@@ -114,6 +160,8 @@ def main():
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
             remove_branch(IN_MEMORY_CACHE['args'].temp_branch)
+        elif IN_MEMORY_CACHE["args"].ACTION == "create_temp_branch":
+            create_temp_branch(IN_MEMORY_CACHE['args'].temp_branch)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
