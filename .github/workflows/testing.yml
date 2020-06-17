@@ -12,11 +12,11 @@ jobs:
     - name: Reset branches
       run: |
         # git checkout master
-        git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        # git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         git checkout -b not_protected
-        git push -f origin/not_protected
+        git push -f origin not_protected
         git checkout -b protected
-        git push -f origin/protected
+        git push -f origin protected
 
   not_protected:
     needs: reset_test_branches
