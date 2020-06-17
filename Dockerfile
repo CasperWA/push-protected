@@ -1,6 +1,7 @@
 FROM python:3.8
 
-COPY push-action /app
+COPY README.md setup.py ./
+COPY push_action ./app
 
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh ./
 ENTRYPOINT [ "/entrypoint.sh" ]

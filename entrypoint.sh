@@ -2,7 +2,7 @@
 set -e
 
 # Install requirements
-python -m pip install --no-cache -U requests
+python -m pip install --no-cache -U -e .
 
 # Setup git user
 git config --system user.email "actions@github.com"
@@ -30,7 +30,8 @@ git checkout -f -b ${TEMPORARY_BRANCH}
 git push -f origin ${TEMPORARY_BRANCH}
 
 # Wait for status checks to complete
-python ../app/run.sh --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --run-id "${GITHUB_RUN_ID}" --ref "${INPUT_BRANCH}" wait_for_checks
+
+push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --run-id "${GITHUB_RUN_ID}" --ref "${INPUT_BRANCH}" wait_for_checks
 
 # Merge into target branch
 git checkout -f ${INPUT_BRANCH}
@@ -38,4 +39,4 @@ git merge --ff-only origin/${TEMPORARY_BRANCH}
 git push origin ${INPUT_BRANCH}
 
 # Remove temporary repository
-python ../app/run.sh --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --run-id "${GITHUB_RUN_ID}" --ref "${INPUT_BRANCH}" remove_temp_branch
+push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --run-id "${GITHUB_RUN_ID}" --ref "${INPUT_BRANCH}" remove_temp_branch

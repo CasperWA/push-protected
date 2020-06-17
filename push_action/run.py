@@ -2,7 +2,7 @@ import argparse
 import sys
 from time import sleep
 
-from .utils import (
+from push_action.utils import (
     branch_exists,
     get_branch_statuses,
     get_required_actions,
@@ -56,7 +56,8 @@ def inital_checks():
         )
 
 
-if __name__ == "__main__":
+def main():
+    """Main function to run this module"""
     # Handle inputs
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -87,9 +88,10 @@ if __name__ == "__main__":
         "ACTION",
         type=str,
         help="The action to do",
-        required=True,
         choices=["wait_for_checks", "remove_temp_branch"],
     )
+
+    global IN_MEMORY_CACHE
     IN_MEMORY_CACHE["args"] = parser.parse_args()
 
     try:
