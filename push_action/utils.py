@@ -52,6 +52,17 @@ def api_request(
 
             warnings.warn(message)
         else:
+            if (
+                "X-Ratelimit-Remaining" in response.headers
+                and not int(response.headers["X-Ratelimit-Remaining"])
+            ):
+                from time import time
+
+                raise RuntimeError(
+                    "The remaining number of requests to GitHub has reached 0 (out of "
+                    f"{response.headers.get('X-Ratelimit-Limit', 'N/A')}). "
+                    f"You can try again in {(response.headers.get('X-Ratelimit-Reset', 0) - time())} s."
+                )
             raise RuntimeError(message)
 
     if check_response:
