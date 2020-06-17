@@ -32,8 +32,12 @@ git push -f origin ${TEMPORARY_BRANCH}
     # Merge into target branch
     git checkout -f ${INPUT_BRANCH} &&
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
-    git push origin ${INPUT_BRANCH}
+    git push origin ${INPUT_BRANCH} &&
+
+    # Remove temporary repository
+    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" remove_temp_branch
 } || {
     # Remove temporary repository
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" remove_temp_branch
+    exit(1)
 }
