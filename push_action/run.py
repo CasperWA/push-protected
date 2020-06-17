@@ -19,7 +19,6 @@ def wait():
     actions_required = get_required_actions(required_statuses)
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
-    print(actions_required)
     start_time = time()
     while True and ( time() - start_time ) < ( 60 * 15 ):
         sleep(15)
@@ -38,7 +37,7 @@ def wait():
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:
-            actions_required.append([
+            actions_required.extend([
                 _ for _ in get_workflow_run_jobs(run, new_request=True)
                 if _["name"] in required_statuses
             ])
