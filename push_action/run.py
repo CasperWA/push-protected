@@ -9,7 +9,6 @@ from push_action.utils import (
     get_required_checks,
     get_workflow_run_jobs,
     IN_MEMORY_CACHE,
-    PREFIX_BRANCH,
     remove_branch,
 )
 
@@ -73,15 +72,15 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "--run-id",
-        type=int,
-        help="GitHub Actions workflow run ID",
-        required=True,
-    )
-    parser.add_argument(
         "--ref",
         type=str,
         help="Target ref (branch/tag) for the push",
+        required=True,
+    )
+    parser.add_argument(
+        "--temp-branch",
+        type=str,
+        help="Temporary branch name for the aciton",
         required=True,
     )
     parser.add_argument(
@@ -101,7 +100,7 @@ def main():
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
-            remove_branch(f"{PREFIX_BRANCH}{IN_MEMORY_CACHE['args'].run_id}")
+            remove_branch(f"{IN_MEMORY_CACHE['args'].temp_branch}")
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:

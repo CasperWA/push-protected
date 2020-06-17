@@ -8,7 +8,6 @@ except ImportError:
 
 import requests
 
-PREFIX_BRANCH = "push-action/temporary/"
 IN_MEMORY_CACHE = {}
 REQUEST_TIMEOUT = 10  # in seconds
 API_V3_BASE = "https://api.github.com"
@@ -114,7 +113,7 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> List[dict]
         or workflow_id not in IN_MEMORY_CACHE.get(cache_name, {})
         or new_request
     ):
-        branch_name = f"{PREFIX_BRANCH}{IN_MEMORY_CACHE['args'].run_id}"
+        branch_name = f"{IN_MEMORY_CACHE['args'].temp_branch}"
         workflow_runs_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/workflows/{workflow_id}/runs"
         response: dict = api_request(workflow_runs_url, params={"branch": branch_name})
 
