@@ -27,13 +27,13 @@ def wait():
             if job["status"] != "completed":
                 break
         else:
-            # All jobs are completed
+            print("All jobs are completed!")
             unsuccessful_jobs = [
                 _ for _ in actions_required if _.get("conclusion", "") == "success"
             ]
             break
 
-        # Some jobs have not yet completed
+        print("Some jobs have not yet completed. Will sleep for 15 s and try again.")
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:

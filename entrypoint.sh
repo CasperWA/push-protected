@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# Setup git user
-git config --system user.email "actions@github.com"
-git config --system user.name "${GITHUB_WORKFLOW}"
-
 # Retrieve target repository
 git clone https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
 cd target_repo
+
+# Setup git user
+git config user.email "actions@github.com"
+git config user.name "${GITHUB_ACTOR}"
 
 if [ "${GITHUB_SHA}" != "$(git rev-parse HEAD)" ]; then
     git checkout -f "$(python -c "print('/'.join('${GITHUB_REF}'.split('/')[2:]))")"
