@@ -19,6 +19,7 @@ def wait():
     actions_required = get_required_actions(required_statuses)
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
+    print(actions_required)
     start_time = time()
     while True and ( time() - start_time ) < ( 60 * 15 ):
         sleep(15)

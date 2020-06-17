@@ -145,7 +145,7 @@ def get_workflow_run_jobs(run_id: int, new_request: bool = False) -> List[dict]:
     return IN_MEMORY_CACHE[cache_name][run_id]
 
 
-def get_required_actions(statuses: List[str], new_request: bool = False) -> List[str]:
+def get_required_actions(statuses: List[str], new_request: bool = False) -> List[dict]:
     """Get subset of statuses that belong to GitHub Actions jobs"""
     global IN_MEMORY_CACHE
     cache_name = "get_required_actions"
