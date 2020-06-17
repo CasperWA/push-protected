@@ -5,8 +5,8 @@ set -e
 python -m pip install --no-cache -U requests
 
 # Setup git user
-git config --global user.email "actions@github.com"
-git config --global user.name "${GITHUB_WORKFLOW}"
+git config --system user.email "actions@github.com"
+git config --system user.name "${GITHUB_WORKFLOW}"
 
 # Retrieve target repository
 git clone https://github.com/${INPUT_REPOSITORY}.git target_repo/

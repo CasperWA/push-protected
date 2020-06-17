@@ -1,4 +1,4 @@
-name: Testing
+name: CI Tests
 on: [push]
 
 jobs:
