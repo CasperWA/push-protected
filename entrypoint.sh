@@ -29,6 +29,7 @@ git push -f origin ${TEMPORARY_BRANCH}
     # Create new temporary repository
     
 
+
     # Wait for status checks to complete
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --time-interval "${INPUT_INTERVAL}" --time-timeout "${INPUT_TIMEOUT}" wait_for_checks &&
 
