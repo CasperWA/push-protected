@@ -11,7 +11,7 @@ jobs:
 
     - name: Reset branches
       run: |
-        git remote add target https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git remote add target https://CasperWA:${{ secrets.CI_RESET_TEST_BRANCHES }}@github.com/${{ github.repository }}.git
         git fetch target
         git branch not_protected target/not_protected
         git branch protected target/protected
