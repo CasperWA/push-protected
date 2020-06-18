@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - protected
-      - non-protected
+      - non_protected
       - 'push-action/**'
 
 jobs:

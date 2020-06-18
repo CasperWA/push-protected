@@ -31,7 +31,6 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=["gitpython~=3.1", "requests~=2.23"],
-    entry_points={
-        "console_scripts": ["push-action=push_action.run:main"]
-    },
+    extras_require={"dev": ["black~=19.10b0", "pre-commit~=2.5"]},
+    entry_points={"console_scripts": ["push-action=push_action.run:main"]},
 )
