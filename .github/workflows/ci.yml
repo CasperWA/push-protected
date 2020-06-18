@@ -9,7 +9,7 @@ jobs:
     - name: Checkout action repo
       uses: actions/checkout@v2
       with:
-        persist_credentials: false
+        persist-credentials: false
 
     - name: Reset branches
       run: |
