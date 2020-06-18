@@ -1,5 +1,4 @@
 import argparse
-import os
 import sys
 from time import sleep, time
 
@@ -24,7 +23,7 @@ def wait():
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
     start_time = time()
-    while True and ( time() - start_time ) < ( 60 * IN_MEMORY_CACHE["args"].wait_timeout ):
+    while True and (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
         for job in actions_required:
@@ -41,13 +40,18 @@ def wait():
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:
-            actions_required.extend([
-                _ for _ in get_workflow_run_jobs(run, new_request=True)
-                if _["name"] in required_statuses
-            ])
-    
+            actions_required.extend(
+                [
+                    _
+                    for _ in get_workflow_run_jobs(run, new_request=True)
+                    if _["name"] in required_statuses
+                ]
+            )
+
     if unsuccessful_jobs:
-        raise RuntimeError(f"Required checks complete unsuccessfully:\n{unsuccessful_jobs}")
+        raise RuntimeError(
+            f"Required checks complete unsuccessfully:\n{unsuccessful_jobs}"
+        )
 
 
 def inital_checks():
@@ -75,12 +79,12 @@ def create_temp_branch(name: str):
             "author": {
                 "name": commit.author.name,
                 "email": commit.author.email,
-                "date": commit.authored_datetime.strftime("%Y-%M-%dT%H:%M:%SZ")
+                "date": commit.authored_datetime.strftime("%Y-%M-%dT%H:%M:%SZ"),
             },
             "committer": {
                 "name": commit.committer.name,
                 "email": commit.committer.email,
-                "date": commit.committed_datetime.strftime("%Y-%M-%dT%H:%M:%SZ")
+                "date": commit.committed_datetime.strftime("%Y-%M-%dT%H:%M:%SZ"),
             },
         }
         api_request(
@@ -108,16 +112,10 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "--repo",
-        type=str,
-        help="Repository name to push to",
-        required=True,
+        "--repo", type=str, help="Repository name to push to", required=True,
     )
     parser.add_argument(
-        "--ref",
-        type=str,
-        help="Target ref (branch/tag) for the push",
-        required=True,
+        "--ref", type=str, help="Target ref (branch/tag) for the push", required=True,
     )
     parser.add_argument(
         "--temp-branch",
@@ -138,9 +136,7 @@ def main():
         default=30,
     )
     parser.add_argument(
-        "--commits",
-        type=str,
-        help="List of commit SHAs added locally",
+        "--commits", type=str, help="List of commit SHAs added locally",
     )
     parser.add_argument(
         "ACTION",
@@ -159,9 +155,9 @@ def main():
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
-            remove_branch(IN_MEMORY_CACHE['args'].temp_branch)
+            remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
         elif IN_MEMORY_CACHE["args"].ACTION == "create_temp_branch":
-            create_temp_branch(IN_MEMORY_CACHE['args'].temp_branch)
+            create_temp_branch(IN_MEMORY_CACHE["args"].temp_branch)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
@@ -173,6 +169,7 @@ def main():
         sys.exit(fail)
     else:
         sys.exit()
+
 
 """
 1) Get required statuses for branch (GitHub Actions jobs / third party status checks) from:

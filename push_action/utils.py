@@ -1,6 +1,6 @@
-import os
 from typing import Union, List
 from urllib.parse import urljoin
+
 try:
     import simplejson as json
 except ImportError:
@@ -40,7 +40,8 @@ def api_request(
             **kwargs,
         )
     except (
-        requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout
+        requests.exceptions.ConnectionError,
+        requests.exceptions.ConnectTimeout,
     ) as exc:
         raise RuntimeError(f"Couldn't connect to {url!r}.\n{exc!r}")
 
@@ -52,9 +53,8 @@ def api_request(
 
             warnings.warn(message)
         else:
-            if (
-                "X-Ratelimit-Remaining" in response.headers
-                and not int(response.headers["X-Ratelimit-Remaining"])
+            if "X-Ratelimit-Remaining" in response.headers and not int(
+                response.headers["X-Ratelimit-Remaining"]
             ):
                 from time import time
 
@@ -91,7 +91,12 @@ def branch_exists(name: str, new_request: bool = False) -> bool:
 def remove_branch(name: str):
     """Remove named branch in repository"""
     delete_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs/heads/{name}"
-    api_request(delete_ref_url, http_request="delete", expected_status_code=204, check_response=False)
+    api_request(
+        delete_ref_url,
+        http_request="delete",
+        expected_status_code=204,
+        check_response=False,
+    )
 
 
 def get_branch_statuses(name: str, new_request: bool = False) -> List[str]:
@@ -107,7 +112,11 @@ def get_branch_statuses(name: str, new_request: bool = False) -> List[str]:
         response: dict = api_request(branch_statuses_url)
 
         if response["protected"]:
-            IN_MEMORY_CACHE[cache_name] = response["protection"].get("required_status_checks", {}).get("contexts", [])
+            IN_MEMORY_CACHE[cache_name] = (
+                response["protection"]
+                .get("required_status_checks", {})
+                .get("contexts", [])
+            )
         else:
             IN_MEMORY_CACHE[cache_name] = []
 
@@ -125,12 +134,16 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> List[dict]
         or new_request
     ):
         workflow_runs_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/workflows/{workflow_id}/runs"
-        response: dict = api_request(workflow_runs_url)  #, params={"branch": IN_MEMORY_CACHE['args'].temp_branch})
+        response: dict = api_request(
+            workflow_runs_url
+        )  # , params={"branch": IN_MEMORY_CACHE['args'].temp_branch})
 
         if cache_name in IN_MEMORY_CACHE:
             IN_MEMORY_CACHE[cache_name][workflow_id] = response.get("workflow_runs", [])
         else:
-            IN_MEMORY_CACHE[cache_name] = {workflow_id: response.get("workflow_runs", [])}
+            IN_MEMORY_CACHE[cache_name] = {
+                workflow_id: response.get("workflow_runs", [])
+            }
 
     return IN_MEMORY_CACHE[cache_name][workflow_id]
 
@@ -145,7 +158,9 @@ def get_workflow_run_jobs(run_id: int, new_request: bool = False) -> List[dict]:
         or run_id not in IN_MEMORY_CACHE.get(cache_name, {})
         or new_request
     ):
-        workflow_jobs_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/runs/{run_id}/jobs"
+        workflow_jobs_url = (
+            f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/runs/{run_id}/jobs"
+        )
         response: dict = api_request(workflow_jobs_url)
 
         if cache_name in IN_MEMORY_CACHE:
@@ -176,14 +191,16 @@ def get_required_actions(statuses: List[str], new_request: bool = False) -> List
             for run in runs:
                 jobs.extend(get_workflow_run_jobs(run["id"]))
 
-            IN_MEMORY_CACHE[cache_name] = [_ for _ in jobs if _.get("name", "") in statuses]
+            IN_MEMORY_CACHE[cache_name] = [
+                _ for _ in jobs if _.get("name", "") in statuses
+            ]
 
     return IN_MEMORY_CACHE[cache_name]
 
 
 def get_required_checks(statuses: List[str], new_request: bool = False) -> List[str]:
     """Get subset of statuses that belong to third-party status checks
-    
+
     TODO: Currently not implemented
     """
     return []
