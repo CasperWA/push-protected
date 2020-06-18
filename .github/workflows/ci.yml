@@ -36,6 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Testing - non-protected
     steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v2
+
     - name: Pushing to a non-protected branch
       uses: ./
       with:
@@ -49,6 +52,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Testing - protected
     steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v2
+
     - name: Pushing to a protected branch
       uses: ./
       with:
