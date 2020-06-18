@@ -54,7 +54,7 @@ Configuration:
                 [
                     _
                     for _ in get_workflow_run_jobs(run, new_request=True)
-                    if _["name"] in required_statuses
+                    if _["name"] in required_statuses and _["status"] != "completed"
                 ]
             )
         print(
