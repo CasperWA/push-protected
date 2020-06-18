@@ -51,7 +51,7 @@ jobs:
     - name: Pushing to a protected branch
       uses: CasperWA/push-with-status-checks-action@initial_work
       with:
-        github_token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
+        github_token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
         branch: 'protected'
         changes: .github/workflows/ci.sh
