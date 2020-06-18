@@ -5,8 +5,8 @@ branding:
   icon: shield
   color: purple
 inputs:
-  github_token:
-    description: 'Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}'
+  token:
+    description: 'Token for the repo'
     required: true
   repository:
     description: 'Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY})'

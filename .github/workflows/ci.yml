@@ -20,14 +20,16 @@ jobs:
       if: github.ref == 'refs/heads/initial_work'
       run: |
         git fetch origin
+
         git branch not_protected origin/not_protected
         git branch protected origin/protected
+
         git checkout not_protected
         git reset --hard origin/initial_work
         git push -f
+
         git checkout protected
         git reset --hard origin/initial_work
-        echo "If this doesn't work, consider manually resetting the 'protected' branch!"
         git push -f
 
   not_protected:
@@ -38,7 +40,7 @@ jobs:
     - name: Pushing to a non-protected branch
       uses: CasperWA/push-with-status-checks-action@initial_work
       with:
-        github_token: '${{ secrets.GITHUB_TOKEN }}'
+        token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
         branch: 'not_protected'
         changes: .github/workflows/ci.sh
@@ -51,7 +53,7 @@ jobs:
     - name: Pushing to a protected branch
       uses: CasperWA/push-with-status-checks-action@initial_work
       with:
-        github_token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         repository: '${{ github.repository }}'
         branch: 'protected'
         changes: .github/workflows/ci.sh

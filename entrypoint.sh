@@ -2,7 +2,7 @@
 
 # Retrieve target repository
 echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ..."
-git clone https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
+git clone https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
 cd target_repo
 
 # Setup git user
@@ -14,7 +14,7 @@ echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
 # Retrieve shell script to run changes
 if [ -n "${INPUT_CHANGES}" ]; then
-    wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${INPUT_CHANGES}
+    wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${INPUT_CHANGES}
 
     FILENAME=$(python -c "import os; print(os.path.basename('${INPUT_CHANGES}'))")
 
@@ -32,7 +32,7 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 
 {
     # Wait for status checks to complete
-    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
+    push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
 
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
@@ -42,9 +42,9 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
 
     # Remove temporary repository
-    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
+    push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
 } || {
     # Remove temporary repository
-    push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch &&
+    push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch &&
     exit 1
 }
