@@ -17,7 +17,6 @@ jobs:
         token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
 
     - name: Reset branches
-      if: github.ref == 'refs/heads/initial_work'
       run: |
         git fetch origin
 
@@ -25,11 +24,11 @@ jobs:
         git branch protected origin/protected
 
         git checkout not_protected
-        git reset --hard origin/initial_work
+        git reset --hard ${{ github.sha }}
         git push -f
 
         git checkout protected
-        git reset --hard origin/initial_work
+        git reset --hard ${{ github.sha }}
         git push -f
 
   not_protected:
@@ -38,7 +37,7 @@ jobs:
     name: Testing - non-protected
     steps:
     - name: Pushing to a non-protected branch
-      uses: CasperWA/push-protected@initial_work
+      uses: 'CasperWA/push-protected@${{ github.sha }}'
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
@@ -51,7 +50,7 @@ jobs:
     name: Testing - protected
     steps:
     - name: Pushing to a protected branch
-      uses: CasperWA/push-protected@initial_work
+      uses: 'CasperWA/push-protected@${{ github.sha }}'
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         repository: '${{ github.repository }}'
