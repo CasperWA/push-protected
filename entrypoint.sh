@@ -14,10 +14,20 @@ echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
 # Retrieve shell script to run changes
 if [ -n "${INPUT_CHANGES}" ]; then
+    echo "Download 'changes' input file '${INPUT_CHANGES}' ..."
     wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${INPUT_CHANGES}
+    echo "Download 'changes' input file '${INPUT_CHANGES}' ... DONE!"
+
+    if [ -n "${INPUT_EXTRA_DATA}" ]; then
+        EXTRA_DATA=$(echo ${INPUT_EXTRA_DATA} | tr "," "\n")
+        for data in ${EXTRA_DATA}; do
+            echo "Download 'extra_data' file '${data}' ..."
+            wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${data}
+            echo "Download 'extra_data' file '${data}' ... DONE!"
+        done
+    fi
 
     FILENAME=$(python -c "import os; print(os.path.basename('${INPUT_CHANGES}'))")
-
     echo "Running 'changes' input file '${FILENAME}' ..."
     /bin/sh ${FILENAME}
     echo "Running 'changes' input file '${FILENAME}' ... DONE!"
