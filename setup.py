@@ -30,7 +30,7 @@ setup(
         "Intended Audience :: Developers",
     ],
     python_requires=">=3.8",
-    install_requires=["gitpython~=3.1", "requests~=2.23"],
+    install_requires=["requests~=2.24"],
     extras_require={"dev": ["black~=19.10b0", "pre-commit~=2.5"]},
     entry_points={"console_scripts": ["push-action=push_action.run:main"]},
 )

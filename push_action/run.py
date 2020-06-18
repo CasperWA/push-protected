@@ -2,11 +2,7 @@ import argparse
 import sys
 from time import sleep, time
 
-from git import Repo
-
 from push_action.utils import (
-    api_request,
-    branch_exists,
     get_branch_statuses,
     get_required_actions,
     get_required_checks,
@@ -22,8 +18,21 @@ def wait():
     actions_required = get_required_actions(required_statuses)
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
+    print(
+        f"""
+Configuration:
+    interval: {IN_MEMORY_CACHE['args'].wait_interval!s} seconds
+    timeout: {IN_MEMORY_CACHE['args'].wait_timeout!s} minutes
+    required status checks: {required_statuses}
+        of which are:
+            GitHub Action-related: {len(actions_required)}
+            Third-party checks: {len(_)}
+"""
+    )
+
     start_time = time()
     while True and (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
+        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
         for job in actions_required:
@@ -31,6 +40,7 @@ def wait():
                 break
         else:
             # All jobs are completed
+            print("All required GitHub Actions jobs complete!")
             unsuccessful_jobs = [
                 _ for _ in actions_required if _.get("conclusion", "") != "success"
             ]
@@ -47,58 +57,14 @@ def wait():
                     if _["name"] in required_statuses
                 ]
             )
+        print(
+            f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
+        )
 
     if unsuccessful_jobs:
         raise RuntimeError(
             f"Required checks complete unsuccessfully:\n{unsuccessful_jobs}"
         )
-
-
-def inital_checks():
-    """Initial checks for how to run workflow"""
-    if not branch_exists(IN_MEMORY_CACHE["args"].ref):
-        raise RuntimeError(
-            "Target branch could not be found in the repository "
-            f"{IN_MEMORY_CACHE['args'].repo!r}.\n"
-            "NOTE: Handling tags has not yet been implemented."
-        )
-
-
-def create_temp_branch(name: str):
-    """Create temporary branch"""
-    commit_shas = IN_MEMORY_CACHE["args"].commits.split(" ")
-    repo = Repo("/github/workspace/target_repo")
-
-    create_commit_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/commits"
-    for commit_sha in commit_shas:
-        commit = repo.commit(commit_sha)
-        data = {
-            "message": commit.message,
-            "tree": str(commit.tree),
-            "parents": [str(_) for _ in commit.parents],
-            "author": {
-                "name": commit.author.name,
-                "email": commit.author.email,
-                "date": commit.authored_datetime.strftime("%Y-%M-%dT%H:%M:%SZ"),
-            },
-            "committer": {
-                "name": commit.committer.name,
-                "email": commit.committer.email,
-                "date": commit.committed_datetime.strftime("%Y-%M-%dT%H:%M:%SZ"),
-            },
-        }
-        api_request(
-            create_commit_url, http_request="post", expected_status_code=201, data=data
-        )
-
-    create_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs"
-    data = {
-        "ref": f"refs/heads/{name}",
-        "sha": commit_shas[0],
-    }
-    api_request(
-        create_ref_url, http_request="post", expected_status_code=201, data=data
-    )
 
 
 def main():
@@ -136,13 +102,10 @@ def main():
         default=30,
     )
     parser.add_argument(
-        "--commits", type=str, help="List of commit SHAs added locally",
-    )
-    parser.add_argument(
         "ACTION",
         type=str,
         help="The action to do",
-        choices=["wait_for_checks", "remove_temp_branch", "create_temp_branch"],
+        choices=["wait_for_checks", "remove_temp_branch"],
     )
 
     global IN_MEMORY_CACHE
@@ -150,14 +113,16 @@ def main():
 
     fail = False
     try:
-        inital_checks()
-
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
+            print(
+                f"Start waiting for status checks to finish for '{IN_MEMORY_CACHE['args'].temp_branch}'"
+            )
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
+            print(
+                f"Start removing temporary branch '{IN_MEMORY_CACHE['args'].temp_branch}'"
+            )
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
-        elif IN_MEMORY_CACHE["args"].ACTION == "create_temp_branch":
-            create_temp_branch(IN_MEMORY_CACHE["args"].temp_branch)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:

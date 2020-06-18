@@ -74,20 +74,6 @@ def api_request(
     return response
 
 
-def branch_exists(name: str, new_request: bool = False) -> bool:
-    """Check whether a named branch exists in repository"""
-    global IN_MEMORY_CACHE
-    cache_name = "branch_exists"
-
-    if cache_name not in IN_MEMORY_CACHE or new_request:
-        list_branches_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches"
-        response: List[dict] = api_request(list_branches_url)
-
-        IN_MEMORY_CACHE[cache_name] = [_["name"] for _ in response]
-
-    return name in IN_MEMORY_CACHE[cache_name]
-
-
 def remove_branch(name: str):
     """Remove named branch in repository"""
     delete_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs/heads/{name}"

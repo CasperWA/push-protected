@@ -1,41 +1,45 @@
 #!/bin/sh
 
 # Retrieve target repository
-git clone https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
+echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ..."
+git clone https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/ >> /dev/null
 cd target_repo
 
 # Setup git user
 git config user.email "actions@github.com"
 git config user.name "${GITHUB_ACTOR}"
 
-if [ "${GITHUB_SHA}" != "$(git rev-parse HEAD)" ]; then
-    git checkout -f "$(python -c "print('/'.join('${GITHUB_REF}'.split('/')[2:]))")"
-fi
+git checkout -f ${INPUT_BRANCH} >> /dev/null
+echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
 # Retrieve shell script to run changes
 if [ -n "${INPUT_CHANGES}" ]; then
-    wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${INPUT_CHANGES}
+    wget --tries=5 https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/${INPUT_CHANGES} >> /dev/null
 
     FILENAME=$(python -c "import os; print(os.path.basename('${INPUT_CHANGES}'))")
+
+    echo "Running 'changes' input file '${FILENAME}' ..."
     /bin/sh ${FILENAME}
+    echo "Running 'changes' input file '${FILENAME}' ... DONE!"
 fi
 
 # Create new temporary repository
 TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/$(uuidgen)"
-git checkout -f -b ${TEMPORARY_BRANCH}
-git push -f origin ${TEMPORARY_BRANCH}
+echo "Creating temporary repository '${TEMPORARY_BRANCH}' ..."
+git checkout -f -b ${TEMPORARY_BRANCH} >> /dev/null
+git push -f origin ${TEMPORARY_BRANCH} >> /dev/null
+echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 
 {
-    # Create new temporary repository
-    # push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --temp-branch "${TEMPORARY_BRANCH}" --ref "${INPUT_BRANCH}" --commits "$(git rev-list ${GITHUB_SHA}...HEAD)" create_temp_branch &&
-
     # Wait for status checks to complete
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
 
     # Merge into target branch
-    git checkout ${INPUT_BRANCH} &&
-    git merge --ff-only origin/${TEMPORARY_BRANCH} &&
-    git push &&
+    echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
+    git checkout ${INPUT_BRANCH} >> /dev/null &&
+    git merge --ff-only origin/${TEMPORARY_BRANCH} >> /dev/null &&
+    git push >> /dev/null &&
+    echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
 
     # Remove temporary repository
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
