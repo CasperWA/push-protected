@@ -31,7 +31,7 @@ Configuration:
     )
 
     start_time = time()
-    while True and (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
+    while (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
         for job in actions_required:
             if job["status"] != "completed":
                 break
@@ -44,6 +44,9 @@ Configuration:
             break
 
         # Some jobs have not yet completed
+        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
+        sleep(IN_MEMORY_CACHE["args"].wait_interval)
+
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:
@@ -58,12 +61,9 @@ Configuration:
             f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
         )
 
-        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
-        sleep(IN_MEMORY_CACHE["args"].wait_interval)
-
     if unsuccessful_jobs:
         raise RuntimeError(
-            f"Required checks complete unsuccessfully:\n{unsuccessful_jobs}"
+            f"Required checks completed unsuccessfully:\n{unsuccessful_jobs}"
         )
 
 
