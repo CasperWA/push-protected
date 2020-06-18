@@ -1,9 +1,9 @@
 name: CI Tests
 on:
+  pull_request:
   push:
     branches:
       - master
-      - initial_work
 
 jobs:
 

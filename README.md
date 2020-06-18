@@ -6,6 +6,24 @@ In order to perform commits prior to the push updates, you should pass a sh scri
 The name should be a complete relative path from the root of the repository (on GitHub) to the file.
 See below for an example.
 
+## Update your workflow
+
+To successfully have the required status checks run on the temporary branch, you need to add it to the workflow(s) that is/are responsible for the required status checks.
+
+In order to not have to continuously update the yml file(s), the temporary branches all have the same prefix: `push-action/`.
+The complete name is `push-action/<RUN_ID>/<UUID>`, where `<RUN_ID>` is the unique GitHub Actions run ID for the current workflow run, and the `<UUID>` is generated using `uuidgen` from the `uuid-runtime` library.
+
+Getting back to adding the temporary branch(es) to your workflow's yml file, it can be done like so:
+
+```yml
+on:
+  push:
+    branches:
+      - 'push-action/**'
+```
+
+An example can also be seen in this workflow's own [test workflow](.github/workflows/test_status_checks.yml).
+
 ## Notes on `token`
 
 If you are using this action to push to a GitHub [protected branch](https://help.github.com/en/github/administering-a-repository/about-protected-branches), you _need_ to pass a [personal access token (PAT)](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line), preferrably as a [secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), to the `token` input.
