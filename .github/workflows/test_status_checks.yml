@@ -1,0 +1,23 @@
+name: Mock Status Checks
+on:
+  push:
+    branches:
+      - protected
+      - non_protected
+      - 'push-action/**'
+
+jobs:
+
+  mock_status_check:
+    runs-on: ubuntu-latest
+    name: Mock Status Check
+    steps:
+    - name: Important status check
+      run: echo "Very important status check - SUCCESS!"
+
+  another_mock_status_check:
+    runs-on: ubuntu-latest
+    name: Another Mock Status Check
+    steps:
+    - name: Important status check
+      run: echo "Very important status check - SUCCESS!"

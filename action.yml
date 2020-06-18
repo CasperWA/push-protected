@@ -1,0 +1,33 @@
+name: 'Push to Status Check-Protected Branches'
+description: 'Push local workflow commit(s) to protected branches with required status checks.'
+author: 'Casper Welzel Andersen'
+branding:
+  icon: shield
+  color: purple
+inputs:
+  token:
+    description: 'Token for the repo'
+    required: true
+  repository:
+    description: 'Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY})'
+    default: '${{ github.repository }}'
+    required: false
+  branch:
+    description: 'Target branch for the push'
+    required: false
+    default: 'master'
+  changes:
+    description: 'Shell script to run in the target repository root prior to the push. NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`'
+    required: false
+    default: ''
+  interval:
+    description: 'Time interval (in seconds) between each new check, when waiting for status checks to complete'
+    required: false
+    default: 30
+  timeout:
+    description: 'Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete'
+    required: false
+    default: 15
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
