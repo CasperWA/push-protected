@@ -33,7 +33,7 @@ def wait():
         else:
             # All jobs are completed
             unsuccessful_jobs = [
-                _ for _ in actions_required if _.get("conclusion", "") == "success"
+                _ for _ in actions_required if _.get("conclusion", "") != "success"
             ]
             break
 
