@@ -37,7 +37,7 @@ jobs:
     name: Testing - non-protected
     steps:
     - name: Pushing to a non-protected branch
-      uses: 'CasperWA/push-protected@${{ github.sha }}'
+      uses: CasperWA/push-protected@${{ github.sha }}
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
@@ -50,7 +50,7 @@ jobs:
     name: Testing - protected
     steps:
     - name: Pushing to a protected branch
-      uses: 'CasperWA/push-protected@${{ github.sha }}'
+      uses: CasperWA/push-protected@${{ github.sha }}
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         repository: '${{ github.repository }}'
