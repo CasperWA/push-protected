@@ -9,14 +9,14 @@ jobs:
     - name: Checkout action repo
       uses: actions/checkout@v2
       with:
-        persist-credentials: false
+        token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
 
     - name: Reset branches
+      if: github.ref == 'refs/heads/initial_work'
       run: |
-        git remote add target https://CasperWA:${{ secrets.CI_RESET_TEST_BRANCHES }}@github.com/${{ github.repository }}.git
-        git fetch target
-        git branch not_protected target/not_protected
-        git branch protected target/protected
+        git fetch origin
+        git branch not_protected origin/not_protected
+        git branch protected origin/protected
         git checkout not_protected
         git reset --hard origin/initial_work
         git push -f
