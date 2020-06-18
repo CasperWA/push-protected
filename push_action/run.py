@@ -31,10 +31,7 @@ Configuration:
     )
 
     start_time = time()
-    while True and (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
-        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
-        sleep(IN_MEMORY_CACHE["args"].wait_interval)
-
+    while (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
         for job in actions_required:
             if job["status"] != "completed":
                 break
@@ -47,6 +44,9 @@ Configuration:
             break
 
         # Some jobs have not yet completed
+        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
+        sleep(IN_MEMORY_CACHE["args"].wait_interval)
+
         run_ids = {_["run_id"] for _ in actions_required}
         actions_required = []
         for run in run_ids:
@@ -57,13 +57,14 @@ Configuration:
                     if _["name"] in required_statuses and _["status"] != "completed"
                 ]
             )
-        print(
-            f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
-        )
+        if actions_required:
+            print(
+                f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
+            )
 
     if unsuccessful_jobs:
         raise RuntimeError(
-            f"Required checks complete unsuccessfully:\n{unsuccessful_jobs}"
+            f"Required checks completed unsuccessfully:\n{unsuccessful_jobs}"
         )
 
 
@@ -114,14 +115,8 @@ def main():
     fail = False
     try:
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
-            print(
-                f"Start waiting for status checks to finish for '{IN_MEMORY_CACHE['args'].temp_branch}'"
-            )
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
-            print(
-                f"Start removing temporary branch '{IN_MEMORY_CACHE['args'].temp_branch}'"
-            )
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
