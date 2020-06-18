@@ -86,7 +86,7 @@ def create_temp_branch(name: str):
         api_request(
             create_commit_url, http_request="post", expected_status_code=201, data=data
         )
-    
+
     create_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs"
     data = {
         "ref": f"refs/heads/{name}",
