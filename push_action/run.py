@@ -57,9 +57,10 @@ Configuration:
                     if _["name"] in required_statuses and _["status"] != "completed"
                 ]
             )
-        print(
-            f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
-        )
+        if actions_required:
+            print(
+                f"{len(actions_required)} required GitHub Actions jobs have not yet completed!"
+            )
 
     if unsuccessful_jobs:
         raise RuntimeError(
@@ -114,20 +115,9 @@ def main():
     fail = False
     try:
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
-            msg = (
-                f"Waiting for status checks to finish for '{IN_MEMORY_CACHE['args'].temp_branch}' "
-                "..."
-            )
-            print(msg)
             wait()
-            print(f"{msg} DONE!")
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
-            msg = (
-                f"Removing temporary branch '{IN_MEMORY_CACHE['args'].temp_branch}' ..."
-            )
-            print(msg)
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
-            print(f"{msg} DONE!")
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:

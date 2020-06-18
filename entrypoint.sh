@@ -32,7 +32,9 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 
 {
     # Wait for status checks to complete
+    echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ..." &&
     push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
+    echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ... DONE!" &&
 
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
@@ -42,9 +44,13 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
 
     # Remove temporary repository
-    push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
+    echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..." &&
+    push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch &&
+    echo "Removing temporary branch '${TEMPORARY_BRANCH}' ... DONE!"
 } || {
     # Remove temporary repository
+    echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..." &&
     push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch &&
+    echo "Removing temporary branch '${TEMPORARY_BRANCH}' ... DONE!" &&
     exit 1
 }
