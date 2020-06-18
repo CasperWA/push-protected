@@ -2,7 +2,7 @@ FROM python:3.8
 
 COPY README.md setup.py ./
 COPY push_action ./push_action
-RUN pip install -e .
+RUN pip install -e -U .
 
 RUN apt-get update && apt-get install uuid-runtime
 

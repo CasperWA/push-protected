@@ -129,7 +129,7 @@ def main():
         "--wait-timeout",
         type=int,
         help="Time (in minutes) of how long the wait_for_checks should run before timing out",
-        default=15
+        default=15,
     )
     parser.add_argument(
         "--wait-interval",
