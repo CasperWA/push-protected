@@ -133,7 +133,7 @@ def main():
     )
     parser.add_argument(
         "--wait-interval",
-        type=str,
+        type=int,
         help="Time interval (in seconds) between each new check in the wait_for_checks run",
         default=30,
     )
