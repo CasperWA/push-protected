@@ -9,7 +9,7 @@ inputs:
     description: 'Token for the repo'
     required: true
   repository:
-    description: 'Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY})'
+    description: 'Repository name to push to. Default or empty value represents current github repository'
     default: '${{ github.repository }}'
     required: false
   branch:

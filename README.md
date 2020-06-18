@@ -53,11 +53,11 @@ It is recommended to not add unneccessary scopes to a PAT that are not needed fo
 ## Inputs
 
 | Name | Description | Required | Default |
-|:---:|:---|:---|:---:|
-| **`token`** | Token for the repo. Used for authentication and starting 'push' hooks. See above for notes on this input. | `True` | |
-| `repository` | Repository name to push to. Default or empty value represents current github repository (${GITHUB_REPOSITORY}). | `False` | `${{ github.repository }}` |
+|:---:|:---|:---:|:---:|
+| **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | `True` | |
+| `repository` | Repository name to push to.<br>Default or empty value represents current github repository. | `False` | `${{ github.repository }}` |
 | `branch` | Target branch for the push. | `False` | `master` |
-| `changes` | Shell script to run in the target repository root prior to the push. NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`. | `False` | `` |
+| `changes` | Shell script to run in the target repository root prior to the push.<br>NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`. | `False` | `` |
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `False` | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `False` | `15` |
 
