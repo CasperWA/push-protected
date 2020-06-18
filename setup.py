@@ -15,7 +15,7 @@ with open(TOP_DIR.joinpath("push_action/__init__.py"), "r") as handle:
 setup(
     name="push-action",
     version=version[0],
-    url="https://github.com/CasperWA/push-with-status-checks-action",
+    url="https://github.com/CasperWA/push-protected",
     license="MIT",
     author="Casper Welzel Andersen",
     author_email="casper+github@welzel.nu",

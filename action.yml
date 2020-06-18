@@ -1,6 +1,6 @@
-name: 'Push with Status Checks'
+name: 'Push to Status Check-Protected Branches'
 description: 'Push local workflow commit(s) to protected branches with required status checks.'
-author: 'Casper Welzel Andersen (CasperWA)'
+author: 'Casper Welzel Andersen'
 branding:
   icon: shield
   color: purple

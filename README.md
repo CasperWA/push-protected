@@ -1,4 +1,4 @@
-# Push with Status Checks GitHub Action
+# Push to Status Check-Protected Branches - GitHub Action
 
 Push commit(s) to a branch protected by required status checks by creating a temporary branch, where status checks are run, before fast-forward merging it into the protected branch, finally removing the temporary branch.
 
@@ -31,7 +31,7 @@ This can be done as such:
 
 ```yml
 name: Pushing to a protected branch
-uses: CasperWA/push-with-status-checks-action@v1
+uses: CasperWA/push-protected@v1
 with:
   token: '${{ secrets.PUSH_TO_PROTECTED_BRANCH }}'
   branch: 'protected'
