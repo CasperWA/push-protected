@@ -33,9 +33,9 @@ git push -f origin ${TEMPORARY_BRANCH}
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
 
     # Merge into target branch
-    git checkout -f ${INPUT_BRANCH} &&
+    git checkout ${INPUT_BRANCH} &&
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
-    git push origin ${INPUT_BRANCH} &&
+    git push &&
 
     # Remove temporary repository
     push-action --token "${INPUT_GITHUB_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch

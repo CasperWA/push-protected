@@ -1,7 +1,12 @@
 name: CI Tests
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - initial_work
 
 jobs:
+
   reset_test_branches:
     runs-on: ubuntu-latest
     name: Reset test branches
