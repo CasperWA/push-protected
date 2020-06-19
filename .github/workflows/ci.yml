@@ -44,8 +44,9 @@ jobs:
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
         repository: '${{ github.repository }}'
-        branch: 'not_protected'
+        branch: not_protected
         changes: .github/workflows/ci.sh
+        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
 
   protected:
     needs: reset_test_branches
@@ -60,5 +61,6 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         repository: '${{ github.repository }}'
-        branch: 'protected'
+        branch: protected
         changes: .github/workflows/ci.sh
+        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
