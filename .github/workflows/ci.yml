@@ -39,9 +39,6 @@ jobs:
     - name: Use local action (checkout)
       uses: actions/checkout@v2
 
-    - name: Create a file directly from the workflow
-      run: echo "Created in the workflow\n" > Workflow_file.txt
-
     - name: Pushing to a non-protected branch
       uses: ./
       with:
@@ -49,7 +46,7 @@ jobs:
         repository: '${{ github.repository }}'
         branch: not_protected
         changes: .github/workflows/ci.sh
-        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md,Workflow_file.txt
+        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
 
   protected:
     needs: reset_test_branches
@@ -59,9 +56,6 @@ jobs:
     - name: Use local action (checkout)
       uses: actions/checkout@v2
 
-    - name: Create a file directly from the workflow
-      run: echo "Created in the workflow\n" > Workflow_file.txt
-
     - name: Pushing to a protected branch
       uses: ./
       with:
@@ -69,4 +63,4 @@ jobs:
         repository: '${{ github.repository }}'
         branch: protected
         changes: .github/workflows/ci.sh
-        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md,Workflow_file.txt
+        extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
