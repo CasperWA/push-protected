@@ -7,7 +7,7 @@ mv -f extra_data_more.md .github/
 
 echo "Test installing Ruby"
 apt-get update
-apt-get install ruby-full build-essential zlib1g-dev
+apt-get -y install ruby-full build-essential zlib1g-dev
 export GEM_HOME="$HOME/gems"
 export PATH="$GEM_HOME/bin:$PATH"
 

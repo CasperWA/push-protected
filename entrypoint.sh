@@ -29,7 +29,7 @@ if [ -n "${INPUT_CHANGES}" ]; then
 
     FILENAME=$(python -c "import os; print(os.path.basename('${INPUT_CHANGES}'))")
     echo "Running 'changes' input file '${FILENAME}' ..."
-    /bin/sh ${FILENAME}
+    /bin/sh ${FILENAME} || exit 1
     echo "Running 'changes' input file '${FILENAME}' ... DONE!"
 fi
 
