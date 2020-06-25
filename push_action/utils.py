@@ -121,8 +121,8 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> List[dict]
     ):
         workflow_runs_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/workflows/{workflow_id}/runs"
         response: dict = api_request(
-            workflow_runs_url
-        )  # , params={"branch": IN_MEMORY_CACHE['args'].temp_branch})
+            workflow_runs_url, params={"branch": IN_MEMORY_CACHE["args"].temp_branch}
+        )
 
         if cache_name in IN_MEMORY_CACHE:
             IN_MEMORY_CACHE[cache_name][workflow_id] = response.get("workflow_runs", [])
