@@ -18,7 +18,6 @@ def wait():
     actions_required = get_required_actions(required_statuses)
     _ = get_required_checks(required_statuses)  # TODO: Currently not implemented
 
-    print(actions_required)
     print(
         f"""
 Configuration:

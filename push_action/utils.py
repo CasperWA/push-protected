@@ -172,12 +172,10 @@ def get_required_actions(statuses: List[str], new_request: bool = False) -> List
             runs = []
             for workflow in response["workflows"]:
                 runs.extend(get_workflow_runs(workflow["id"]))
-                print(f"runs: {runs}")
 
             jobs = []
             for run in runs:
                 jobs.extend(get_workflow_run_jobs(run["id"]))
-                print(f"jobs: {jobs}")
 
             IN_MEMORY_CACHE[cache_name] = [
                 _
