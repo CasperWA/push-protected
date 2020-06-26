@@ -36,7 +36,7 @@ inputs:
     description: 'Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up'
     required: false
     default: 5
-  unprotect reviews:
+  unprotect_reviews:
     description: 'Momentarily remove pull request review protection from target branch'
     required: false
     default: false
