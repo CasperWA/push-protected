@@ -53,7 +53,7 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
         echo "Remove '${INPUT_BRANCH}' pull request review protection ..." &&
         push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews &&
         echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!" &&
-    fi
+    fi &&
 
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
@@ -67,7 +67,7 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
         echo "Re-add '${INPUT_BRANCH}' pull request review protection ..." &&
         push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews &&
         echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!" &&
-    fi
+    fi &&
 
     # Remove temporary repository
     echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..." &&
