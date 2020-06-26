@@ -44,7 +44,7 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
     # Wait for status checks to complete
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ..." &&
     # Sleep for 5 seconds to let the workflows start
-    sleep 5 &&
+    sleep ${INPUT_SLEEP} &&
     push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ... DONE!" &&
 
