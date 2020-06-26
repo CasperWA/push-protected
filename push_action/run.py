@@ -1,8 +1,10 @@
 import argparse
+import json
 import sys
 from time import sleep, time
 
 from push_action.utils import (
+    api_request,
     get_branch_statuses,
     get_required_actions,
     get_required_checks,
@@ -68,6 +70,55 @@ Configuration:
         )
 
 
+def unprotect_reviews():
+    """Remove pull request review protection for target branch"""
+    # Save current protection settings
+    url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
+    response: dict = api_request(url)
+
+    data = {
+        "dismissal_restrictions": {
+            "users": [
+                _.get("login")
+                for _ in response.get("dismissal_restrictions", {}).get("users", [])
+            ],
+            "teams": [
+                _.get("slug")
+                for _ in response.get("dismissal_restrictions", {}).get("teams", [])
+            ],
+        },
+        "dismiss_stale_reviews": response.get("dismiss_stale_reviews", False),
+        "require_code_owner_reviews": response.get("require_code_owner_reviews", False),
+        "required_approving_review_count": response.get(
+            "required_approving_review_count", 1
+        ),
+    }
+    with open("tmp_protection_rules.json", "w") as handle:
+        json.dump(data, handle)
+
+    # Remove protection
+    api_request(
+        url, http_request="delete", expected_status_code=204, check_response=False
+    )
+
+
+def protect_reviews():
+    """Re-add pull request review protection for target branch"""
+    # Retrieve data
+    with open("tmp_protection_rules.json", "r") as handle:
+        data = json.load(handle)
+
+    # Add protection
+    url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
+    api_request(
+        url,
+        http_request="patch",
+        expected_status_code=200,
+        check_response=False,
+        json=data,
+    )
+
+
 def main():
     """Main function to run this module"""
     # Handle inputs
@@ -106,7 +157,12 @@ def main():
         "ACTION",
         type=str,
         help="The action to do",
-        choices=["wait_for_checks", "remove_temp_branch"],
+        choices=[
+            "wait_for_checks",
+            "remove_temp_branch",
+            "unprotect_reviews",
+            "protect_reviews",
+        ],
     )
 
     global IN_MEMORY_CACHE
@@ -118,6 +174,10 @@ def main():
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
+        elif IN_MEMORY_CACHE["args"].ACTION == "unprotect_reviews":
+            unprotect_reviews()
+        elif IN_MEMORY_CACHE["args"].ACTION == "protect_reviews":
+            protect_reviews()
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:

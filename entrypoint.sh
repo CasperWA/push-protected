@@ -40,13 +40,32 @@ git checkout -f -b ${TEMPORARY_BRANCH}
 git push -f origin ${TEMPORARY_BRANCH}
 echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 
+# Unprotect/protect functions
+unprotect () {
+    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
+        echo "Remove '${INPUT_BRANCH}' pull request review protection ..."
+        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews
+        echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
+    fi
+}
+protect () {
+    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
+        echo "Re-add '${INPUT_BRANCH}' pull request review protection ..."
+        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews
+        echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
+    fi
+}
+
 {
     # Wait for status checks to complete
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ..." &&
     # Sleep for 5 seconds to let the workflows start
-    sleep 5 &&
+    sleep ${INPUT_SLEEP} &&
     push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ... DONE!" &&
+
+    # Unprotect target branch for pull request reviews (if desired)
+    unprotect &&
 
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
@@ -54,6 +73,9 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
     git push &&
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
+
+    # Re-protect target branch for pull request reviews (if desired)
+    protect &&
 
     # Remove temporary repository
     echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..." &&

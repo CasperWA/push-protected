@@ -54,6 +54,8 @@ jobs:
         branch: not_protected
         changes: .github/workflows/ci.sh
         extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
+        sleep: 4
+        unprotect_reviews: true
 
   protected:
     needs: reset_test_branches
@@ -71,3 +73,5 @@ jobs:
         branch: protected
         changes: .github/workflows/ci.sh
         extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
+        sleep: 4
+        unprotect_reviews: true
