@@ -48,12 +48,26 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
     push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks &&
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ... DONE!" &&
 
+    # Unprotect target branch for pull request reviews (if desired)
+    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
+        echo "Remove '${INPUT_BRANCH}' pull request review protection ..." &&
+        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews &&
+        echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!" &&
+    fi
+
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
     git checkout ${INPUT_BRANCH} &&
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
     git push &&
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
+
+    # Re-protect target branch for pull request reviews (if desired)
+    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
+        echo "Re-add '${INPUT_BRANCH}' pull request review protection ..." &&
+        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews &&
+        echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!" &&
+    fi
 
     # Remove temporary repository
     echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..." &&

@@ -55,6 +55,7 @@ jobs:
         changes: .github/workflows/ci.sh
         extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
         sleep: 4
+        unprotect reviews: true
 
   protected:
     needs: reset_test_branches
@@ -73,3 +74,4 @@ jobs:
         changes: .github/workflows/ci.sh
         extra_data: .github/extra_data.log,.github/workflows/extra_data_more.md
         sleep: 4
+        unprotect reviews: true

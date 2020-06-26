@@ -62,6 +62,7 @@ It is recommended to not add unneccessary scopes to a PAT that are not needed fo
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `False` | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `False` | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `False` | `5` |
+| `unprotect reviews` | Momentarily remove pull request review protection from target branch. | `False` | `False` |
 
 ## License
 
