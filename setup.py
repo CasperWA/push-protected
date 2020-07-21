@@ -24,13 +24,13 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Intended Audience :: Developers",
     ],
     python_requires=">=3.8",
     install_requires=["requests~=2.24"],
-    extras_require={"dev": ["black~=19.10b0", "pre-commit~=2.5"]},
+    extras_require={"dev": ["black~=19.10b0", "pre-commit~=2.6"]},
     entry_points={"console_scripts": ["push-action=push_action.run:main"]},
 )
