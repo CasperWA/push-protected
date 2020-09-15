@@ -42,18 +42,32 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 
 # Unprotect/protect functions
 unprotect () {
-    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
-        echo "Remove '${INPUT_BRANCH}' pull request review protection ..."
-        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews
-        echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
-    fi
+    case ${INPUT_UNPROTECT_REVIEWS} in
+        y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+            echo "Remove '${INPUT_BRANCH}' pull request review protection ..."
+            push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews
+            echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
+            ;;
+        n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+            ;;
+        *)
+            echo "Non-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
+            ;;
+    esac
 }
 protect () {
-    if [ -n "${INPUT_UNPROTECT_REVIEWS}" ]; then
-        echo "Re-add '${INPUT_BRANCH}' pull request review protection ..."
-        push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews
-        echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
-    fi
+    case ${INPUT_UNPROTECT_REVIEWS} in
+        y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+            echo "Re-add '${INPUT_BRANCH}' pull request review protection ..."
+            push-action --token "${INPUT_TOKEN}" --repo "${INPUT_REPOSITORY}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews
+            echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
+            ;;
+        n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+            ;;
+        *)
+            echo "Non-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
+            ;;
+    esac
 }
 
 {
