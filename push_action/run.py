@@ -130,10 +130,16 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "--repo", type=str, help="Repository name to push to", required=True,
+        "--repo",
+        type=str,
+        help="Repository name to push to",
+        required=True,
     )
     parser.add_argument(
-        "--ref", type=str, help="Target ref (branch/tag) for the push", required=True,
+        "--ref",
+        type=str,
+        help="Target ref (branch/tag) for the push",
+        required=True,
     )
     parser.add_argument(
         "--temp-branch",
