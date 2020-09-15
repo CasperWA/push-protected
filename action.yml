@@ -10,8 +10,8 @@ inputs:
     required: true
   repository:
     description: 'Repository name to push to. Default or empty value represents current github repository'
-    default: '${{ github.repository }}'
     required: false
+    default: '${{ github.repository }}'
   branch:
     description: 'Target branch for the push'
     required: false
