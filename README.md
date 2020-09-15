@@ -13,12 +13,24 @@ See below for an example.
 
 ## Update your workflow
 
-To successfully have the required status checks run on the temporary branch, you need to add it to the workflow(s) that is/are responsible for the required status checks.
+To successfully have the required status checks run on the temporary branch, you _may_ need to add it to the workflow(s) that is/are responsible for the required status checks.
+
+If you are using `on: [push]` and not
+
+```yml
+on:
+  push:
+    branches:
+```
+
+or similar, i.e., if you are running the workflow(s) for _all_ kinds of push actions, **there is no need to update your workflow(s)**.
+
+_However_, if you are filtering on which branch/tag names trigger your workflow(s), then keep reading.
 
 In order to not have to continuously update the yml file(s), the temporary branches all have the same prefix: `push-action/`.
 The complete name is `push-action/<RUN_ID>/<UUID>`, where `<RUN_ID>` is the unique GitHub Actions run ID for the current workflow run, and the `<UUID>` is generated using `uuidgen` from the `uuid-runtime` library.
 
-Getting back to adding the temporary branch(es) to your workflow's yml file, it can be done like so:
+Getting back to adding the temporary branch(es) to your workflow(s)'s yml file(s), it can be done like so:
 
 ```yml
 on:
