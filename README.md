@@ -4,10 +4,6 @@ _**Push to "status check"-protected branches.**_
 
 Push commit(s) to a branch protected by required [status checks](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-status-checks) by creating a temporary branch, where status checks are run, before fast-forward merging it into the protected branch, finally removing the temporary branch.
 
-In order to perform commits prior to the push updates, you should pass a bash/sh script to `changes`.
-The name should be a complete relative path from the root of the repository to the file.
-See below for an example.
-
 > **Note**: Currently this action _only_ supports status checks that are GitHub Action status checks, i.e., no third-party status checks are currently supported (like, e.g., protecting a branch with Travis CI checks).
 > This is expected, however, to be added in the future.
 
@@ -52,10 +48,10 @@ uses: CasperWA/push-protected@v1
 with:
   token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
   branch: protected
-  changes: .github/workflows/update_changelog.sh
 ```
 
 **Note**: If you are _not_ pushing to a protected branch, you can instead use the [`GITHUB_TOKEN`](https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token) secret, which is auto-generated when you use GitHub Actions.
+I.e., `token: ${{ secrets.GITHUB_TOKEN }}`.
 
 The reason why you can not use the `GITHUB_TOKEN` secret when pushing to a branch that is protected by required status checks, is that using this as authentication does not trigger any webhook events, such as 'push', 'pull_request', etc.
 This event trigger is a **MUST** for starting the required status checks on the temporary branch, which are necessary to run in order to be able to push the changes into the desired branch.
@@ -67,6 +63,22 @@ The PAT should have a scope appropriate to your repository:
 
 It is recommended to not add unneccessary scopes to a PAT that are not needed for its intended purpose.
 
+## Usage
+
+This action is inspired by [`ad-m/github-push-action`](https://github.com/marketplace/actions/github-push) and to ease its use, it implements some of the same functionality.
+The inputs `repository`, `branch`, and `token` are similar, where the `token` input has been renamed from `github_token`.
+The `ad-m/github-push-action` input `directory` (and temporarily `force` and `tags`) are the only unsupported inputs.
+
+To use this action, the workflow is also similar to `ad-m/github-push-action`.
+
+First, you **MUST** use the [`actions/checkout`](https://github.com/marketplace/actions/checkout) action to checkout your local repository if you wish to make changes to it before pushing these changes to `branch`.
+
+Second, you then make your changes.
+Either as an explicit step of the workflow or you can run a separate script that incorporates all your changes.
+If you wish to add tags or similar this can also be done now.
+
+Finally, you run this action, specifying the inputs to your needs (see overview of all inputs below), and the action will take care to create a temporary branch with your changes, where the status checks will run, before merging it into your target branch (`branch` input), effectively "pushing" your local changes to the protected branch.
+
 ## Inputs
 
 All input names in **bold** are _required_.
@@ -76,8 +88,6 @@ All input names in **bold** are _required_.
 | **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
 | `repository` | Repository name to push to.<br>Default or empty value represents current github repository. | `${{ github.repository }}` |
 | `branch` | Target branch for the push. | `master` |
-| `changes` | Shell script to run in the target repository root prior to the push.<br>NOTE: Unrelated to prior workflow jobs and steps. MUST be a file in the repository that spawns the workflow. MUST be a relative path from the repository root, e.g., `.github/workflows/changes.sh`. | |
-| `extra_data` | Comma-separated (,) list of files needed by the shell scipt in `changes`.<br>MUST be a relative path from the repository root, e.g., `.github/workflows/data.md,CHANGLOG.md`.<br>Note, when running the script from `changes`, all these files are in _the same directory_. | |
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |

@@ -1,9 +1,13 @@
-#!/bin/sh
-set -e
+#!/usr/bin/env bash
+set -ex
+
+git config user.email "casper+github@welzel.nu"
+git config user.name "CasperWA"
 
 git checkout -b ci_tests
 echo "This is a test. ${RANDOM} ${RANDOM}" >> "ci_test_file.txt"
-mv -f extra_data_more.md .github/
+mv -f extra_data_more.md ../
+mv -f ci_test_file.txt ../../
 
-git add ci_test_file.txt extra_data.log .github/extra_data_more.md
+git add ../../ci_test_file.txt ../extra_data.log extra_data_more.md
 git commit -m "CI tests"

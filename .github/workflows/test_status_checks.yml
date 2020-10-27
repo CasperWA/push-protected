@@ -1,4 +1,5 @@
 name: Mock Status Checks
+
 on:
   push:
     branches:
