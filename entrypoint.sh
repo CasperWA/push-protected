@@ -6,7 +6,7 @@ unprotect () {
     case ${INPUT_UNPROTECT_REVIEWS} in
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
             if [ -n "${PROTECTED_BRANCH}" ]; then
-                echo "Remove '${INPUT_BRANCH}' pull request review protection ..."
+                echo -e "\nRemove '${INPUT_BRANCH}' pull request review protection ..."
                 push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews
                 echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
@@ -14,7 +14,7 @@ unprotect () {
         n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
             ;;
         *)
-            echo "Non-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
+            echo -e "\nNon-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
             ;;
     esac
 }
@@ -30,13 +30,13 @@ protect () {
         n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
             ;;
         *)
-            echo "Non-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
+            echo -e "\nNon-valid input for 'unprotect_review': ${INPUT_UNPROTECT_REVIEWS}. Will use default (false)."
             ;;
     esac
 }
 wait_for_checks() {
     if [ -n "${PROTECTED_BRANCH}" ]; then
-        echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ..."
+        echo -e "\nWaiting for status checks to finish for '${TEMPORARY_BRANCH}' ..."
         # Sleep for 5 seconds to let the workflows start
         sleep ${INPUT_SLEEP}
         push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks
@@ -45,14 +45,14 @@ wait_for_checks() {
 }
 remove_remote_temp_branch() {
     if [ -n "${PROTECTED_BRANCH}" ]; then
-        echo "Removing temporary branch '${TEMPORARY_BRANCH}' ..."
+        echo -e "\nRemoving temporary branch '${TEMPORARY_BRANCH}' ..."
         push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
         echo "Removing temporary branch '${TEMPORARY_BRANCH}' ... DONE!"
     fi
 }
 
 # Retrieve target repository
-echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
+echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
 git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local--unset-all "http.https://github.com/.extraheader" || :'
 git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/$GITHUB_REPOSITORY.git
@@ -65,7 +65,7 @@ PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" 
 
 # Create new temporary repository
 TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/${RANDOM}-${RANDOM}-${RANDOM}"
-echo "Creating temporary repository '${TEMPORARY_BRANCH}' ..."
+echo -e "\nCreating temporary repository '${TEMPORARY_BRANCH}' ..."
 git checkout -f -b ${TEMPORARY_BRANCH}
 if [ -n "${PROTECTED_BRANCH}" ]; then
     git push -f origin ${TEMPORARY_BRANCH}
@@ -75,26 +75,26 @@ echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
 # --force
 case ${INPUT_FORCE} in
     y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
-        echo "Will force push!"
+        echo -e "\nWill force push!"
         FORCE_PUSH="--force "
         ;;
     n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
         ;;
     *)
-        echo "Non-valid input for 'force': ${INPUT_FORCE}. Will use default (false)."
+        echo -e "\nNon-valid input for 'force': ${INPUT_FORCE}. Will use default (false)."
         ;;
 esac
 
 # --tags
 case ${INPUT_TAGS} in
     y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
-        echo "Will push tags!"
+        echo -e "\nWill push tags!"
         PUSH_TAGS="--tags"
         ;;
     n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
         ;;
     *)
-        echo "Non-valid input for 'tags': ${INPUT_TAGS}. Will use default (false)."
+        echo -e "\nNon-valid input for 'tags': ${INPUT_TAGS}. Will use default (false)."
         ;;
 esac
 
@@ -106,7 +106,7 @@ esac
     unprotect &&
 
     # Merge into target branch
-    echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
+    echo -e "\nMerging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
     git checkout ${INPUT_BRANCH} &&
     git reset --hard origin/${INPUT_BRANCH} &&
     git merge --ff-only ${TEMPORARY_BRANCH} &&
