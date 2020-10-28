@@ -24,7 +24,7 @@ or similar, i.e., if you are running the workflow(s) for _all_ kinds of push act
 _However_, if you are filtering on which branch/tag names trigger your workflow(s), then keep reading.
 
 In order to not have to continuously update the yml file(s), the temporary branches all have the same prefix: `push-action/`.
-The complete name is `push-action/<RUN_ID>/<UUID>`, where `<RUN_ID>` is the unique GitHub Actions run ID for the current workflow run, and the `<UUID>` is generated using `uuidgen` from the `uuid-runtime` library.
+The complete name is `push-action/<RUN_ID>/<RANDOM>-<RANDOM>-<RANDOM>`, where `<RUN_ID>` is the unique GitHub Actions run ID for the current workflow run, and the `<RANDOM>` is generated using the built-in Bash function, i.e., the `$RANDOM` variable.
 
 Getting back to adding the temporary branch(es) to your workflow(s)'s yml file(s), it can be done like so:
 

@@ -64,7 +64,7 @@ echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "null" -- protected_branch)
 
 # Create new temporary repository
-TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/$(uuidgen)"
+TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/${RANDOM}-${RANDOM}-${RANDOM}"
 echo "Creating temporary repository '${TEMPORARY_BRANCH}' ..."
 git checkout -f -b ${TEMPORARY_BRANCH}
 if [ -n "${PROTECTED_BRANCH}" ]; then
