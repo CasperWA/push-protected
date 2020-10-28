@@ -35,7 +35,10 @@ def api_request(
     try:
         response = requests_action(
             url,
-            headers={"Authorization": f"token {IN_MEMORY_CACHE['args'].token}"},
+            headers={
+                "Authorization": f"token {IN_MEMORY_CACHE['args'].token}",
+                "Accept": "application/vnd.github.v3+json",
+            },
             timeout=REQUEST_TIMEOUT,
             **kwargs,
         )
