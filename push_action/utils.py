@@ -50,7 +50,11 @@ def api_request(
         raise RuntimeError(f"Couldn't connect to {url!r}.\n{exc!r}")
 
     if response.status_code != expected_status_code:
-        message = f"Response did not return the expected status code from request {url!r}.\nStatus code: {response.status_code} (expected: {expected_status_code})."
+        try:
+            response_json = response.json()
+        except json.JSONDecodeError:
+            response_json = "<FAILED TO JSONIFY RESPONSE>"
+        message = f"Response did not return the expected status code from request {url!r}.\nStatus code: {response.status_code} (expected: {expected_status_code}).\nResponse:\n{response_json}"
 
         if response.status_code in range(200, 300):
             import warnings
