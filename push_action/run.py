@@ -78,7 +78,16 @@ def unprotect_reviews() -> None:
     response: dict = api_request(url)
 
     data = {
-        "dismissal_restrictions": {
+        "dismiss_stale_reviews": response.get("dismiss_stale_reviews", False),
+        "require_code_owner_reviews": response.get("require_code_owner_reviews", False),
+        "required_approving_review_count": response.get(
+            "required_approving_review_count", 1
+        ),
+    }
+
+    if "organization" in api_request(f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}"):
+        # This key is only allowed for organization repositories
+        data["dismissal_restrictions"] = {
             "users": [
                 _.get("login")
                 for _ in response.get("dismissal_restrictions", {}).get("users", [])
@@ -87,13 +96,8 @@ def unprotect_reviews() -> None:
                 _.get("slug")
                 for _ in response.get("dismissal_restrictions", {}).get("teams", [])
             ],
-        },
-        "dismiss_stale_reviews": response.get("dismiss_stale_reviews", False),
-        "require_code_owner_reviews": response.get("require_code_owner_reviews", False),
-        "required_approving_review_count": response.get(
-            "required_approving_review_count", 1
-        ),
-    }
+        }
+
     with open("tmp_protection_rules.json", "w") as handle:
         json.dump(data, handle)
 
@@ -118,6 +122,27 @@ def protect_reviews() -> None:
         check_response=False,
         json=data,
     )
+
+
+def protected_branch(branch: str) -> str:
+    """Determine whether or not `branch` is a protected branch.
+
+    Return branch if it is protected, otherwise return an empty string.
+    """
+    url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{branch}/protection"
+    try:
+        response: dict = api_request(url)
+    except RuntimeError:
+        # Expected not to be protected
+        return ""
+    else:
+        keyword_of_choice = "required_status_checks"
+        if keyword_of_choice not in response:
+            raise RuntimeError(
+                f"Couldn't find the expected keyword ({keyword_of_choice}) in the response:\n"
+                f"{response}"
+            )
+        return branch
 
 
 def main() -> None:
@@ -163,6 +188,7 @@ def main() -> None:
             "remove_temp_branch",
             "unprotect_reviews",
             "protect_reviews",
+            "protected_branch",
         ],
     )
 
@@ -179,10 +205,12 @@ def main() -> None:
             unprotect_reviews()
         elif IN_MEMORY_CACHE["args"].ACTION == "protect_reviews":
             protect_reviews()
+        elif IN_MEMORY_CACHE["args"].ACTION == "protected_branch":
+            print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="")
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
-        fail = repr(exc)
+        fail = f"{exc.__class__.__name__}: {exc}"
     finally:
         del IN_MEMORY_CACHE
 
