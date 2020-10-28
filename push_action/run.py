@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 from time import sleep, time
 
@@ -73,7 +74,7 @@ Configuration:
 def unprotect_reviews() -> None:
     """Remove pull request review protection for target branch"""
     # Save current protection settings
-    url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
+    url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
     response: dict = api_request(url)
 
     data = {
@@ -109,7 +110,7 @@ def protect_reviews() -> None:
         data = json.load(handle)
 
     # Add protection
-    url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
+    url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
     api_request(
         url,
         http_request="patch",
@@ -127,12 +128,6 @@ def main() -> None:
         "--token",
         type=str,
         help="GitHub Token from ${{ secrets.GITHUB_TOKEN }}",
-        required=True,
-    )
-    parser.add_argument(
-        "--repo",
-        type=str,
-        help="Repository name to push to",
         required=True,
     )
     parser.add_argument(

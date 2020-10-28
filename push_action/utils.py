@@ -1,3 +1,4 @@
+import os
 from typing import Union, List
 from urllib.parse import urljoin
 
@@ -79,7 +80,9 @@ def api_request(
 
 def remove_branch(name: str) -> None:
     """Remove named branch in repository"""
-    delete_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs/heads/{name}"
+    delete_ref_url = (
+        f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/git/refs/heads/{name}"
+    )
     api_request(
         delete_ref_url,
         http_request="delete",
@@ -97,7 +100,9 @@ def get_branch_statuses(name: str, new_request: bool = False) -> List[str]:
     cache_name = "get_branch_statuses"
 
     if cache_name not in IN_MEMORY_CACHE or new_request:
-        branch_statuses_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{name}"
+        branch_statuses_url = (
+            f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{name}"
+        )
         response: dict = api_request(branch_statuses_url)
 
         if response["protected"]:
@@ -122,7 +127,7 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> List[dict]
         or workflow_id not in IN_MEMORY_CACHE.get(cache_name, {})
         or new_request
     ):
-        workflow_runs_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/workflows/{workflow_id}/runs"
+        workflow_runs_url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/actions/workflows/{workflow_id}/runs"
         response: dict = api_request(
             workflow_runs_url, params={"branch": IN_MEMORY_CACHE["args"].temp_branch}
         )
@@ -148,7 +153,7 @@ def get_workflow_run_jobs(run_id: int, new_request: bool = False) -> List[dict]:
         or new_request
     ):
         workflow_jobs_url = (
-            f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/runs/{run_id}/jobs"
+            f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/actions/runs/{run_id}/jobs"
         )
         response: dict = api_request(workflow_jobs_url)
 
@@ -169,7 +174,9 @@ def get_required_actions(statuses: List[str], new_request: bool = False) -> List
         if not statuses:
             IN_MEMORY_CACHE[cache_name] = []
         else:
-            workflows_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/actions/workflows"
+            workflows_url = (
+                f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/actions/workflows"
+            )
             response: dict = api_request(workflows_url)
 
             runs = []

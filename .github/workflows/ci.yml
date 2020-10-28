@@ -60,7 +60,6 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
-        repository: '${{ github.repository }}'
         branch: not_protected
         sleep: 4
         unprotect_reviews: false
@@ -81,7 +80,6 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        repository: '${{ github.repository }}'
         branch: protected
         sleep: 4
         unprotect_reviews: true

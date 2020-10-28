@@ -66,8 +66,9 @@ It is recommended to not add unneccessary scopes to a PAT that are not needed fo
 ## Usage
 
 This action is inspired by [`ad-m/github-push-action`](https://github.com/marketplace/actions/github-push) and to ease its use, it implements some of the same functionality.
-The inputs `repository`, `branch`, `force`, `tags`, and `token` are similar, where the `token` input has been renamed from `github_token`.
-The `ad-m/github-push-action` input `directory` is the only unsupported input.
+The inputs `branch`, `force`, `tags`, and `token` are similar, where the `token` input has been renamed from `github_token`.
+The `ad-m/github-push-action` input `directory` and `repository` are the only unsupported inputs.
+The `repository` input is not supported, since this action expects you to deal with the current repository for which the action is running.
 
 To use this action, the workflow is also similar to `ad-m/github-push-action`.
 
@@ -86,7 +87,6 @@ All input names in **bold** are _required_.
 | Name | Description | Default |
 |:---:|:---|:---:|
 | **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
-| `repository` | Repository name to push to.<br>Default or empty value represents current github repository. | `${{ github.repository }}` |
 | `branch` | Target branch for the push. | `master` |
 | `force` | Determines if `--force` is used. | `False` |
 | `tags` | Determines if `--tags` is used. | `False` |
