@@ -48,6 +48,7 @@ jobs:
     needs: reset_test_branches
     runs-on: ubuntu-latest
     name: Testing - non-protected
+
     steps:
     - name: Use local action (checkout)
       uses: actions/checkout@v2
@@ -71,6 +72,84 @@ jobs:
     steps:
     - name: Use local action (checkout)
       uses: actions/checkout@v2
+
+    - name: Perform changes
+      run: ./ci.sh
+      working-directory: .github/workflows
+
+    - name: Pushing to a protected branch
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        sleep: 4
+        unprotect_reviews: true
+
+  reset_test_branches_v1:
+    needs: [not_protected, protected]
+    runs-on: ubuntu-latest
+    name: Reset test branches
+    steps:
+    - name: Checkout action repo
+      uses: actions/checkout@v2
+      with:
+        token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Reset branches
+      run: |
+        python -m pip install -U pip
+        pip install requests
+
+        python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
+
+        git fetch origin
+
+        git branch not_protected origin/not_protected
+        git branch protected origin/protected
+
+        git checkout not_protected
+        git reset --hard ${{ github.sha }}
+        git push -f
+
+        git checkout protected
+        git reset --hard ${{ github.sha }}
+        git push -f
+
+        python -c "import requests; requests.post('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
+
+  not_protected_v1:
+    needs: reset_test_branches_v1
+    runs-on: ubuntu-latest
+    name: Testing - non-protected
+
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v1
+
+    - name: Perform changes
+      run: ./ci.sh
+      working-directory: .github/workflows
+
+    - name: Pushing to a non-protected branch
+      uses: ./
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+        branch: not_protected
+        sleep: 4
+        unprotect_reviews: false
+
+  protected_v1:
+    needs: reset_test_branches_v1
+    runs-on: ubuntu-latest
+    name: Testing - protected
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v1
 
     - name: Perform changes
       run: ./ci.sh

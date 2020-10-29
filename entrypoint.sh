@@ -3,10 +3,10 @@ set -e
 
 # Retrieve target repository
 echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
-git clone https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git target_repo/
-cd target_repo
-
-git checkout -f ${INPUT_BRANCH}
+git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
+git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local--unset-all "http.https://github.com/.extraheader" || :'
+git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/$GITHUB_REPOSITORY.git
+git fetch --unshallow -tpP origin || :
 echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
 # Create new temporary repository
@@ -46,6 +46,7 @@ protect () {
     esac
 }
 
+# --force
 case ${INPUT_FORCE} in
     y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
         echo "Will force push!"
@@ -59,6 +60,7 @@ case ${INPUT_FORCE} in
         ;;
 esac
 
+# --tags
 case ${INPUT_TAGS} in
     y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
         echo "Will push tags!"
@@ -86,6 +88,7 @@ esac
     # Merge into target branch
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
     git checkout ${INPUT_BRANCH} &&
+    git reset --hard origin/${INPUT_BRANCH} &&
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
     git push ${FORCE_PUSH}${PUSH_TAGS} &&
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
