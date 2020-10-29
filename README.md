@@ -80,6 +80,51 @@ If you wish to add tags or similar this can also be done now.
 
 Finally, you run this action, specifying the inputs to your needs (see overview of all inputs below), and the action will take care to create a temporary branch with your changes, where the status checks will run, before merging it into your target branch (`branch` input), effectively "pushing" your local changes to the protected branch.
 
+Below is an example of a workflow for releasing a Python package to PyPI.
+It will run when a GitHub release is published.
+It will then run the Bash script .ci/update_version.sh with .ci/ as the working directory.
+This action will make sure the changes introduced by the Bash script are pushed to the `main` branch before building the source distribution and releasing to PyPI.
+
+Note, any `git commit` and tag updating needs to happen in the Bash script or in an extra step in between running the Bash script and this action.
+
+```yml
+name: Release to PyPI
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Push to protected branch
+    steps:
+    - name: Checkout local repository
+      uses: actions/checkout@v2
+
+    - name: Update version
+      run: ./update_version.sh
+      working-directory: .ci/
+
+    - name: Push to protected branch
+      uses: CasperWA/push-protected@v1
+      with:
+        token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
+        branch: main
+        sleep: 4
+        unprotect_reviews: true
+
+    - name: Build source distribution
+      run: python ./setup.py sdist
+
+    - name: Publish on PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.RELEASE_ON_PYPI }}
+```
+
 ## Inputs
 
 All input names in **bold** are _required_.
