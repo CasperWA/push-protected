@@ -50,6 +50,13 @@ remove_remote_temp_branch() {
         echo "Removing temporary branch '${TEMPORARY_BRANCH}' ... DONE!"
     fi
 }
+push_tags() {
+    if [ -n "${PUSH_TAGS}" ]; then
+        echo -e "\nPushing tags ..."
+        git push ${FORCE_PUSH}--tags
+        echo "Pushing tags ... DONE!"
+    fi
+}
 
 # Retrieve target repository
 echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
@@ -110,7 +117,8 @@ esac
     git checkout ${INPUT_BRANCH} &&
     git reset --hard origin/${INPUT_BRANCH} &&
     git merge --ff-only ${TEMPORARY_BRANCH} &&
-    git push ${FORCE_PUSH}${PUSH_TAGS} &&
+    git push ${FORCE_PUSH} &&
+    push_tags &&
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
 
     # Re-protect target branch for pull request reviews (if desired)
