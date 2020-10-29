@@ -6,10 +6,6 @@ echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ..."
 git clone https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${INPUT_REPOSITORY}.git target_repo/
 cd target_repo
 
-# Setup git user
-git config user.email "actions@github.com"
-git config user.name "${GITHUB_ACTOR}"
-
 git checkout -f ${INPUT_BRANCH}
 echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
