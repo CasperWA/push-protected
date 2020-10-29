@@ -22,7 +22,7 @@ protect () {
     case ${INPUT_UNPROTECT_REVIEWS} in
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
             if [ -n "${PROTECTED_BRANCH}" ]; then
-                echo "Re-add '${INPUT_BRANCH}' pull request review protection ..."
+                echo -e "\nRe-add '${INPUT_BRANCH}' pull request review protection ..."
                 push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews
                 echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
