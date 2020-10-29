@@ -44,7 +44,7 @@ This can be done as such:
 
 ```yml
 name: Pushing to the protected branch 'protected'
-uses: CasperWA/push-protected@v1
+uses: CasperWA/push-protected@v2
 with:
   token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
   branch: protected
@@ -108,7 +108,7 @@ jobs:
       working-directory: .ci/
 
     - name: Push to protected branch
-      uses: CasperWA/push-protected@v1
+      uses: CasperWA/push-protected@v2
       with:
         token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
         branch: main
