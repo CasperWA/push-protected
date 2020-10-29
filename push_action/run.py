@@ -4,13 +4,13 @@ import os
 import sys
 from time import sleep, time
 
+from push_action.cache import IN_MEMORY_CACHE
 from push_action.utils import (
     api_request,
     get_branch_statuses,
     get_required_actions,
     get_required_checks,
     get_workflow_run_jobs,
-    IN_MEMORY_CACHE,
     remove_branch,
 )
 
@@ -192,7 +192,6 @@ def main() -> None:
         ],
     )
 
-    global IN_MEMORY_CACHE
     IN_MEMORY_CACHE["args"] = parser.parse_args()
 
     fail = False
@@ -211,8 +210,6 @@ def main() -> None:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
         fail = f"{exc.__class__.__name__}: {exc}"
-    finally:
-        del IN_MEMORY_CACHE
 
     if fail:
         sys.exit(fail)
