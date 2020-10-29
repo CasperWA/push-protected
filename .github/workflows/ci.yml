@@ -15,7 +15,8 @@ jobs:
     - name: Checkout action repo
       uses: actions/checkout@v2
       with:
-        token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        fetch-depth: 0
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
@@ -93,7 +94,8 @@ jobs:
     - name: Checkout action repo
       uses: actions/checkout@v2
       with:
-        token: '${{ secrets.CI_RESET_TEST_BRANCHES }}'
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        fetch-depth: 0
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
