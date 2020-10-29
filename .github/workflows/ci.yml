@@ -89,7 +89,7 @@ jobs:
   reset_test_branches_v1:
     needs: [not_protected, protected]
     runs-on: ubuntu-latest
-    name: Reset test branches
+    name: Reset test branches - v1
     steps:
     - name: Checkout action repo
       uses: actions/checkout@v2
@@ -127,7 +127,7 @@ jobs:
   not_protected_v1:
     needs: reset_test_branches_v1
     runs-on: ubuntu-latest
-    name: Testing - non-protected
+    name: Testing - non-protected - v1
 
     steps:
     - name: Use local action (checkout)
@@ -148,7 +148,7 @@ jobs:
   protected_v1:
     needs: reset_test_branches_v1
     runs-on: ubuntu-latest
-    name: Testing - protected
+    name: Testing - protected - v1
     steps:
     - name: Use local action (checkout)
       uses: actions/checkout@v1
