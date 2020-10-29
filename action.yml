@@ -6,16 +6,24 @@ branding:
   color: purple
 inputs:
   token:
-    description: 'Token for the repo'
+    description: 'Token for the repo.'
     required: true
   repository:
-    description: 'Repository name to push to. Default or empty value represents current github repository'
+    description: 'Repository name to push to. A default or empty value represents the current github repository.'
     required: false
     default: '${{ github.repository }}'
   branch:
-    description: 'Target branch for the push'
+    description: 'Target branch for the push.'
     required: false
     default: 'master'
+  force:
+    description: 'Determines if --force is used.'
+    required: false
+    default: false
+  tags:
+    description: 'Determines if --tags is used.'
+    required: false
+    default: false
   interval:
     description: 'Time interval (in seconds) between each new check, when waiting for status checks to complete'
     required: false

@@ -66,8 +66,8 @@ It is recommended to not add unneccessary scopes to a PAT that are not needed fo
 ## Usage
 
 This action is inspired by [`ad-m/github-push-action`](https://github.com/marketplace/actions/github-push) and to ease its use, it implements some of the same functionality.
-The inputs `repository`, `branch`, and `token` are similar, where the `token` input has been renamed from `github_token`.
-The `ad-m/github-push-action` input `directory` (and temporarily `force` and `tags`) are the only unsupported inputs.
+The inputs `repository`, `branch`, `force`, `tags`, and `token` are similar, where the `token` input has been renamed from `github_token`.
+The `ad-m/github-push-action` input `directory` is the only unsupported input.
 
 To use this action, the workflow is also similar to `ad-m/github-push-action`.
 
@@ -88,6 +88,8 @@ All input names in **bold** are _required_.
 | **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
 | `repository` | Repository name to push to.<br>Default or empty value represents current github repository. | `${{ github.repository }}` |
 | `branch` | Target branch for the push. | `master` |
+| `force` | Determines if `--force` is used. | `False` |
+| `tags` | Determines if `--tags` is used. | `False` |
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |

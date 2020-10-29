@@ -49,6 +49,32 @@ protect () {
     esac
 }
 
+case ${INPUT_FORCE} in
+    y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+        echo "Will force push!"
+        FORCE_PUSH="--force "
+        ;;
+    n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+        echo "Will NOT force push!"
+        ;;
+    *)
+        echo "Non-valid input for 'force': ${INPUT_FORCE}. Will use default (false)."
+        ;;
+esac
+
+case ${INPUT_TAGS} in
+    y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+        echo "Will push tags!"
+        PUSH_TAGS="--tags"
+        ;;
+    n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+        echo "Will NOT push tags!"
+        ;;
+    *)
+        echo "Non-valid input for 'tags': ${INPUT_TAGS}. Will use default (false)."
+        ;;
+esac
+
 {
     # Wait for status checks to complete
     echo "Waiting for status checks to finish for '${TEMPORARY_BRANCH}' ..." &&
@@ -64,7 +90,7 @@ protect () {
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
     git checkout ${INPUT_BRANCH} &&
     git merge --ff-only origin/${TEMPORARY_BRANCH} &&
-    git push &&
+    git push ${FORCE_PUSH}${PUSH_TAGS} &&
     echo "Merging (fast-forward) '${TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
 
     # Re-protect target branch for pull request reviews (if desired)
