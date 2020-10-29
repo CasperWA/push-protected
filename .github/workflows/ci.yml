@@ -63,7 +63,7 @@ jobs:
         repository: '${{ github.repository }}'
         branch: not_protected
         sleep: 4
-        unprotect_reviews: true
+        unprotect_reviews: false
 
   protected:
     needs: reset_test_branches

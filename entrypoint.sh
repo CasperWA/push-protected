@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Retrieve target repository
 echo "Getting latest commit of ${INPUT_REPOSITORY}@${INPUT_BRANCH} ..."

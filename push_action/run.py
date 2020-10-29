@@ -14,7 +14,7 @@ from push_action.utils import (
 )
 
 
-def wait():
+def wait() -> None:
     """Wait until status checks have finished"""
     required_statuses = get_branch_statuses(IN_MEMORY_CACHE["args"].ref)
     actions_required = get_required_actions(required_statuses)
@@ -70,7 +70,7 @@ Configuration:
         )
 
 
-def unprotect_reviews():
+def unprotect_reviews() -> None:
     """Remove pull request review protection for target branch"""
     # Save current protection settings
     url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/branches/{IN_MEMORY_CACHE['args'].ref}/protection/required_pull_request_reviews"
@@ -102,7 +102,7 @@ def unprotect_reviews():
     )
 
 
-def protect_reviews():
+def protect_reviews() -> None:
     """Re-add pull request review protection for target branch"""
     # Retrieve data
     with open("tmp_protection_rules.json", "r") as handle:
@@ -119,7 +119,7 @@ def protect_reviews():
     )
 
 
-def main():
+def main() -> None:
     """Main function to run this module"""
     # Handle inputs
     parser = argparse.ArgumentParser()

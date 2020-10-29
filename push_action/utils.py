@@ -74,7 +74,7 @@ def api_request(
     return response
 
 
-def remove_branch(name: str):
+def remove_branch(name: str) -> None:
     """Remove named branch in repository"""
     delete_ref_url = f"/repos/{IN_MEMORY_CACHE['args'].repo}/git/refs/heads/{name}"
     api_request(
