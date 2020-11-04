@@ -61,7 +61,7 @@ push_tags() {
 # Retrieve target repository
 echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
-git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local--unset-all "http.https://github.com/.extraheader" || :'
+git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :'
 git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/$GITHUB_REPOSITORY.git
 git fetch --unshallow -tpP origin || :
 echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
