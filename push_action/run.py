@@ -34,6 +34,7 @@ Configuration:
     )
 
     start_time = time()
+    unsuccessful_jobs = []
     while (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
         for job in actions_required:
             if job["status"] != "completed":

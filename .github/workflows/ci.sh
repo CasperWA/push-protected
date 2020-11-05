@@ -2,7 +2,7 @@
 set -ex
 
 git config user.email "casper+github@welzel.nu"
-git config user.name "CasperWA"
+git config user.name "Casper Welzel Andersen"
 
 echo "This is a test. ${RANDOM} ${RANDOM}" >> "ci_test_file.txt"
 mv -f extra_data_more.md ../
