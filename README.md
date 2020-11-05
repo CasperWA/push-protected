@@ -112,7 +112,6 @@ jobs:
       with:
         token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
         branch: main
-        sleep: 4
         unprotect_reviews: true
 
     - name: Build source distribution

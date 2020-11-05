@@ -63,7 +63,6 @@ jobs:
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
-        sleep: 4
         unprotect_reviews: false
 
   protected:
@@ -83,7 +82,6 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
-        sleep: 4
         unprotect_reviews: true
 
     - name: Pushing to a protected branch without any changes
@@ -91,7 +89,6 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
-        sleep: 4
 
   reset_test_branches_v1:
     needs: [not_protected, protected]
@@ -149,7 +146,6 @@ jobs:
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
-        sleep: 4
         unprotect_reviews: false
 
   protected_v1:
@@ -169,7 +165,6 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
-        sleep: 4
         unprotect_reviews: true
 
     - name: Pushing to a protected branch without any changes
