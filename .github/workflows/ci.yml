@@ -86,6 +86,13 @@ jobs:
         sleep: 4
         unprotect_reviews: true
 
+    - name: Pushing to a protected branch without any changes
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        sleep: 4
+
   reset_test_branches_v1:
     needs: [not_protected, protected]
     runs-on: ubuntu-latest
@@ -164,3 +171,9 @@ jobs:
         branch: protected
         sleep: 4
         unprotect_reviews: true
+
+    - name: Pushing to a protected branch without any changes
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected

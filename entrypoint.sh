@@ -5,7 +5,7 @@ set -e
 unprotect () {
     case ${INPUT_UNPROTECT_REVIEWS} in
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
-            if [ -n "${PROTECTED_BRANCH}" ]; then
+            if [ -n "${CHANGED_BRANCH}" ] && [ -n "${PROTECTED_BRANCH}" ]; then
                 echo -e "\nRemove '${INPUT_BRANCH}' pull request review protection ..."
                 push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- unprotect_reviews
                 echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
@@ -21,7 +21,7 @@ unprotect () {
 protect () {
     case ${INPUT_UNPROTECT_REVIEWS} in
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
-            if [ -n "${PROTECTED_BRANCH}" ]; then
+            if [ -n "${CHANGED_BRANCH}" ] && [ -n "${PROTECTED_BRANCH}" ]; then
                 echo -e "\nRe-add '${INPUT_BRANCH}' pull request review protection ..."
                 push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- protect_reviews
                 echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
@@ -35,7 +35,7 @@ protect () {
     esac
 }
 wait_for_checks() {
-    if [ -n "${PROTECTED_BRANCH}" ]; then
+    if [ -n "${CHANGED_BRANCH}" ] && [ -n "${PROTECTED_BRANCH}" ]; then
         echo -e "\nWaiting for status checks to finish for '${TEMPORARY_BRANCH}' ..."
         # Sleep for 5 seconds to let the workflows start
         sleep ${INPUT_SLEEP}
@@ -44,7 +44,7 @@ wait_for_checks() {
     fi
 }
 remove_remote_temp_branch() {
-    if [ -n "${PROTECTED_BRANCH}" ]; then
+    if [ -n "${CHANGED_BRANCH}" ] && [ -n "${PROTECTED_BRANCH}" ]; then
         echo -e "\nRemoving temporary branch '${TEMPORARY_BRANCH}' ..."
         push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${TEMPORARY_BRANCH}" -- remove_temp_branch
         echo "Removing temporary branch '${TEMPORARY_BRANCH}' ... DONE!"
@@ -66,6 +66,11 @@ git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/$GIT
 git fetch --unshallow -tpP origin || :
 echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
+# Check whether there are newer commits on current branch compared to target branch
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/${INPUT_BRANCH})" ]; then
+    CHANGED_BRANCH=yes
+fi
+
 # Check whether target branch is protected
 # This will only be non-empty if the branch IS protected
 PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "null" -- protected_branch)
@@ -74,7 +79,7 @@ PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" 
 TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/${RANDOM}-${RANDOM}-${RANDOM}"
 echo -e "\nCreating temporary repository '${TEMPORARY_BRANCH}' ..."
 git checkout -f -b ${TEMPORARY_BRANCH}
-if [ -n "${PROTECTED_BRANCH}" ]; then
+if [ -n "${CHANGED_BRANCH}" ] && [ -n "${PROTECTED_BRANCH}" ]; then
     git push -f origin ${TEMPORARY_BRANCH}
 fi
 echo "Creating temporary repository '${TEMPORARY_BRANCH}' ... DONE!"
