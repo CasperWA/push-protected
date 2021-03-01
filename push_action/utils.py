@@ -133,15 +133,20 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> List[dict]
     ):
         workflow_runs_url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/actions/workflows/{workflow_id}/runs"
         response: dict = api_request(
-            workflow_runs_url, params={"branch": IN_MEMORY_CACHE["args"].temp_branch}
+            workflow_runs_url,
+            # params={"branch": IN_MEMORY_CACHE["args"].temp_branch},
+            # It seems this is currently not working as intended.
         )
+        workflow_runs = [
+            _
+            for _ in response.get("workflow_runs", [])
+            if _.get("head_branch", "") == IN_MEMORY_CACHE["args"].temp_branch
+        ]
 
         if cache_name in IN_MEMORY_CACHE:
-            IN_MEMORY_CACHE[cache_name][workflow_id] = response.get("workflow_runs", [])
+            IN_MEMORY_CACHE[cache_name][workflow_id] = workflow_runs
         else:
-            IN_MEMORY_CACHE[cache_name] = {
-                workflow_id: response.get("workflow_runs", [])
-            }
+            IN_MEMORY_CACHE[cache_name] = {workflow_id: workflow_runs}
 
     return IN_MEMORY_CACHE[cache_name][workflow_id]
 
