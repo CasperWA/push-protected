@@ -132,17 +132,11 @@ def protected_branch(branch: str) -> str:
     """
     url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{branch}/protection"
     try:
-        response: dict = api_request(url)
+        api_request(url)
     except RuntimeError:
         # Expected not to be protected
         return ""
     else:
-        keyword_of_choice = "required_status_checks"
-        if keyword_of_choice not in response:
-            raise RuntimeError(
-                f"Couldn't find the expected keyword ({keyword_of_choice}) in the response:\n"
-                f"{response}"
-            )
         return branch
 
 
