@@ -85,7 +85,7 @@ jobs:
 
     - name: Check tags (local+remote)
       run: |
-        git fetch origin -tP
+        git fetch origin -tpP
         git ls-remote --tags origin | grep "${TEST_TAG}"
         git tag -l | grep "${TEST_TAG}"
 
