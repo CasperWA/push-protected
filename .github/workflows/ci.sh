@@ -3,7 +3,11 @@ set -ex
 
 TAG_NAME=$1
 if [ -z "${TAG_NAME}" ]; then
-    TAG_NAME=ci_test
+    if [ -z "${TEST_TAG}" ]; then
+        TAG_NAME=ci_test
+    else
+        TAG_NAME=${TEST_TAG}
+    fi
 fi
 
 git config user.email "casper+github@welzel.nu"

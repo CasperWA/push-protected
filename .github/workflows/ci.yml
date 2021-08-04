@@ -6,6 +6,9 @@ on:
     branches:
       - master
 
+env:
+  TEST_TAG: ci_test
+
 jobs:
 
   reset_test_branches:
@@ -31,6 +34,7 @@ jobs:
         python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
 
         git fetch origin
+        git push -d origin ${TEST_TAG} || :
 
         git branch not_protected origin/not_protected
         git branch protected origin/protected
@@ -49,9 +53,6 @@ jobs:
     needs: reset_test_branches
     runs-on: ubuntu-latest
     name: Testing - non-protected
-
-    env:
-      TEST_TAG: ci_test
 
     steps:
     - name: Use local action (checkout)
