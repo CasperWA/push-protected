@@ -81,7 +81,6 @@ jobs:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
         unprotect_reviews: false
-        force: true
         tags: true
 
     - name: Check tags (local+remote)
@@ -139,6 +138,7 @@ jobs:
         python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
 
         git fetch origin
+        git push -d origin ${TEST_TAG} || :
 
         git branch not_protected origin/not_protected
         git branch protected origin/protected
@@ -163,7 +163,7 @@ jobs:
       uses: actions/checkout@v2.3.4
 
     - name: Perform changes
-      run: ./ci.sh
+      run: ./ci.sh ${TEST_TAG}
       working-directory: .github/workflows
 
     - name: Pushing to a non-protected branch
@@ -172,6 +172,26 @@ jobs:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
         unprotect_reviews: false
+
+    - name: Check tags (local)
+      run: |
+        git fetch origin -t
+        git ls-remote --tags origin | grep "${TEST_TAG}" && exit 1 || echo "Tag ${TEST_TAG} doesn't exist on remote as expected."
+        git tag -l | grep "${TEST_TAG}"
+
+    - name: Pushing to a non-protected branch (including tags)
+      uses: ./
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+        branch: not_protected
+        unprotect_reviews: false
+        tags: true
+
+    - name: Check tags (local+remote)
+      run: |
+        git fetch origin -tpP
+        git ls-remote --tags origin | grep "${TEST_TAG}"
+        git tag -l | grep "${TEST_TAG}"
 
   protected_v1:
     needs: reset_test_branches_v1
