@@ -50,12 +50,15 @@ jobs:
     runs-on: ubuntu-latest
     name: Testing - non-protected
 
+    env:
+      TEST_TAG: ci_test
+
     steps:
     - name: Use local action (checkout)
       uses: actions/checkout@v2.3.4
 
     - name: Perform changes
-      run: ./ci.sh
+      run: ./ci.sh ${TEST_TAG}
       working-directory: .github/workflows
 
     - name: Pushing to a non-protected branch
@@ -64,6 +67,27 @@ jobs:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
         unprotect_reviews: false
+
+    - name: Check tags (local)
+      run: |
+        git fetch origin -t
+        git ls-remote --tags origin | grep "${TEST_TAG}" && exit 1 || echo "Tag ${TEST_TAG} doesn't exist on remote as expected."
+        git tag -l | grep "${TEST_TAG}"
+
+    - name: Pushing to a non-protected branch (including tags)
+      uses: ./
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+        branch: not_protected
+        unprotect_reviews: false
+        force: true
+        tags: true
+
+    - name: Check tags (local+remote)
+      run: |
+        git fetch origin -tP
+        git ls-remote --tags origin | grep "${TEST_TAG}"
+        git tag -l | grep "${TEST_TAG}"
 
   protected:
     needs: reset_test_branches
