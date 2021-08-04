@@ -71,6 +71,7 @@ jobs:
 
     - name: Check tags (local)
       run: |
+        rm -rf .git/refs/push-action*
         git remote prune origin
         sudo git gc --prune=now
         git fetch origin -ftp
@@ -87,6 +88,7 @@ jobs:
 
     - name: Check tags (local+remote)
       run: |
+        rm -rf .git/refs/push-action*
         git remote prune origin
         sudo git gc --prune=now
         git fetch origin -ftpP
@@ -179,6 +181,7 @@ jobs:
 
     - name: Check tags (local)
       run: |
+        rm -rf .git/refs/push-action*
         git remote prune origin
         sudo git gc --prune=now
         git fetch origin -ftp
@@ -195,6 +198,7 @@ jobs:
 
     - name: Check tags (local+remote)
       run: |
+        rm -rf .git/refs/push-action*
         git remote prune origin
         sudo git gc --prune=now
         git fetch origin -ftpP
