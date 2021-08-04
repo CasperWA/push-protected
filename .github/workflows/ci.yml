@@ -72,7 +72,7 @@ jobs:
     - name: Check tags (local)
       run: |
         git remote prune origin
-        git gc --prune=now
+        sudo git gc --prune=now
         git fetch origin -ftp
         git ls-remote --tags origin | grep "${TEST_TAG}" && exit 1 || echo "Tag ${TEST_TAG} doesn't exist on remote as expected."
         git tag -l | grep "${TEST_TAG}"
@@ -88,7 +88,7 @@ jobs:
     - name: Check tags (local+remote)
       run: |
         git remote prune origin
-        git gc --prune=now
+        sudo git gc --prune=now
         git fetch origin -ftpP
         git ls-remote --tags origin | grep "${TEST_TAG}"
         git tag -l | grep "${TEST_TAG}"
@@ -180,7 +180,7 @@ jobs:
     - name: Check tags (local)
       run: |
         git remote prune origin
-        git gc --prune=now
+        sudo git gc --prune=now
         git fetch origin -ftp
         git ls-remote --tags origin | grep "${TEST_TAG}" && exit 1 || echo "Tag ${TEST_TAG} doesn't exist on remote as expected."
         git tag -l | grep "${TEST_TAG}"
@@ -196,7 +196,7 @@ jobs:
     - name: Check tags (local+remote)
       run: |
         git remote prune origin
-        git gc --prune=now
+        sudo git gc --prune=now
         git fetch origin -ftpP
         git ls-remote --tags origin | grep "${TEST_TAG}"
         git tag -l | grep "${TEST_TAG}"
