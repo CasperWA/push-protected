@@ -15,27 +15,27 @@ inputs:
   force:
     description: 'Determines if --force is used.'
     required: false
-    default: false
+    default: 'false'
   tags:
     description: 'Determines if --tags is used.'
     required: false
-    default: false
+    default: 'false'
   interval:
     description: 'Time interval (in seconds) between each new check, when waiting for status checks to complete'
     required: false
-    default: 30
+    default: '30'
   timeout:
     description: 'Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete'
     required: false
-    default: 15
+    default: '15'
   sleep:
-    description: 'Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up'
+    description: "Time (in seconds) the action should wait until it will start 'waiting' and check the list of running actions/checks. This should be an appropriate number to let the checks start up"
     required: false
-    default: 5
+    default: '5'
   unprotect_reviews:
     description: 'Momentarily remove pull request review protection from target branch'
     required: false
-    default: false
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'
