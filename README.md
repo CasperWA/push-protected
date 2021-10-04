@@ -1,5 +1,7 @@
 # Push Protected - GitHub Action
 
+<!-- markdownlint-disable MD033 -->
+
 _**Push to "status check"-protected branches.**_
 
 Push commit(s) to a branch protected by required [status checks](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-status-checks) by creating a temporary branch, where status checks are run, before fast-forward merging it into the protected branch, finally removing the temporary branch.
