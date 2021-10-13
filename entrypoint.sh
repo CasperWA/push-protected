@@ -53,9 +53,14 @@ remove_remote_temp_branch() {
 push_tags() {
     if [ -n "${PUSH_PROTECTED_PUSH_TAGS}" ]; then
         echo -e "\nPushing tags ..."
-        git push ${PUSH_PROTECTED_FORCE_PUSH}--tags
+        git push --tags ${PUSH_PROTECTED_FORCE_PUSH}
         echo "Pushing tags ... DONE!"
     fi
+}
+push_to_target() {
+    git checkout -f ${INPUT_BRANCH}
+    git reset --hard ${PUSH_PROTECTED_TEMPORARY_BRANCH}
+    git push ${PUSH_PROTECTED_FORCE_PUSH}
 }
 
 # Retrieve target repository
@@ -75,20 +80,20 @@ fi
 # This will only be non-empty if the branch IS protected
 PUSH_PROTECTED_PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "null" -- protected_branch)
 
-# Create new temporary repository
+# Create new temporary branch
 PUSH_PROTECTED_TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/${RANDOM}-${RANDOM}-${RANDOM}"
-echo -e "\nCreating temporary repository '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
+echo -e "\nCreating temporary branch '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
 git checkout -f -b ${PUSH_PROTECTED_TEMPORARY_BRANCH}  # throws away any local un-committed changes
 if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
     git push -f origin ${PUSH_PROTECTED_TEMPORARY_BRANCH}
 fi
-echo "Creating temporary repository '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ... DONE!"
+echo "Creating temporary branch '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ... DONE!"
 
 # --force
 case ${INPUT_FORCE} in
     y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
         echo -e "\nWill force push!"
-        PUSH_PROTECTED_FORCE_PUSH="--force "
+        PUSH_PROTECTED_FORCE_PUSH="--force"
         ;;
     n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
         ;;
@@ -117,23 +122,19 @@ esac
     # Unprotect target branch for pull request reviews (if desired)
     unprotect &&
 
-    # Merge into target branch
+    # Push to target branch
     echo -e "\nPushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ..." &&
-    git checkout ${INPUT_BRANCH} &&
-    git reset --hard ${PUSH_PROTECTED_TEMPORARY_BRANCH} &&
-    # git reset --hard origin/${INPUT_BRANCH} &&
-    # git merge --ff-only ${PUSH_PROTECTED_TEMPORARY_BRANCH} &&
-    git push ${PUSH_PROTECTED_FORCE_PUSH} &&
+    push_to_target &&
     push_tags &&
     echo "Pushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ... DONE!" &&
 
     # Re-protect target branch for pull request reviews (if desired)
     protect &&
 
-    # Remove temporary repository
+    # Remove temporary branch
     remove_remote_temp_branch
 } || {
-    # Remove temporary repository
+    # Remove temporary branch
     remove_remote_temp_branch &&
     exit 1
 }
