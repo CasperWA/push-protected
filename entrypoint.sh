@@ -62,7 +62,7 @@ push_tags() {
 echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
 git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :'
-git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/$GITHUB_REPOSITORY.git
+git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 git fetch --unshallow -tp origin || :
 echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
 
@@ -78,7 +78,7 @@ PUSH_PROTECTED_PROTECTED_BRANCH=$(push-action --token "${INPUT_TOKEN}" --ref "${
 # Create new temporary repository
 PUSH_PROTECTED_TEMPORARY_BRANCH="push-action/${GITHUB_RUN_ID}/${RANDOM}-${RANDOM}-${RANDOM}"
 echo -e "\nCreating temporary repository '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
-git checkout -f -b ${PUSH_PROTECTED_TEMPORARY_BRANCH}
+git checkout -f -b ${PUSH_PROTECTED_TEMPORARY_BRANCH}  # throws away any local un-committed changes
 if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
     git push -f origin ${PUSH_PROTECTED_TEMPORARY_BRANCH}
 fi
@@ -118,13 +118,14 @@ esac
     unprotect &&
 
     # Merge into target branch
-    echo -e "\nMerging (fast-forward) '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ..." &&
+    echo -e "\nPushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ..." &&
     git checkout ${INPUT_BRANCH} &&
-    git reset --hard origin/${INPUT_BRANCH} &&
-    git merge --ff-only ${PUSH_PROTECTED_TEMPORARY_BRANCH} &&
+    git reset --hard ${PUSH_PROTECTED_TEMPORARY_BRANCH} &&
+    # git reset --hard origin/${INPUT_BRANCH} &&
+    # git merge --ff-only ${PUSH_PROTECTED_TEMPORARY_BRANCH} &&
     git push ${PUSH_PROTECTED_FORCE_PUSH} &&
     push_tags &&
-    echo "Merging (fast-forward) '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> '${INPUT_BRANCH}' ... DONE!" &&
+    echo "Pushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ... DONE!" &&
 
     # Re-protect target branch for pull request reviews (if desired)
     protect &&
