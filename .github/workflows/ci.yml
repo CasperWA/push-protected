@@ -96,7 +96,7 @@ jobs:
         git tag -l | grep "${TEST_TAG}"
 
   protected:
-    needs: reset_test_branches
+    needs: [reset_test_branches, not_protected]
     runs-on: ubuntu-latest
     name: Testing - protected
     steps:
@@ -206,7 +206,7 @@ jobs:
         git tag -l | grep "${TEST_TAG}"
 
   protected_v1:
-    needs: reset_test_branches_v1
+    needs: [reset_test_branches_v1, not_protected_v1]
     runs-on: ubuntu-latest
     name: Testing - protected - v1
     steps:
