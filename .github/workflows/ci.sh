@@ -2,16 +2,9 @@
 set -ex
 
 TAG_NAME=$1
-if [ -z "${TAG_NAME}" ]; then
-    if [ -z "${TEST_TAG}" ]; then
-        TAG_NAME=ci_test
-    else
-        TAG_NAME=${TEST_TAG}
-    fi
-fi
 
-git config user.email "casper+github@welzel.nu"
-git config user.name "Casper Welzel Andersen"
+git config --global user.email "casper+github@welzel.nu"
+git config --global user.name "Casper Welzel Andersen"
 
 echo "This is a test. ${RANDOM} ${RANDOM}" >> "ci_test_file.txt"
 mv -f extra_data_more.md ../
@@ -20,4 +13,6 @@ mv -f ci_test_file.txt ../../
 git add ../../ci_test_file.txt ../extra_data.log extra_data_more.md
 git commit -m "CI tests"
 
-git tag ci_test -a -m "This is a test tag"
+if [ -n "${TAG_NAME}" ]; then
+    git tag ${TAG_NAME} -a -m "This is a test tag"
+fi

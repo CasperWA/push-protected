@@ -16,13 +16,13 @@ jobs:
     name: Reset test branches
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
 
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -96,12 +96,12 @@ jobs:
         git tag -l | grep "${TEST_TAG}"
 
   protected:
-    needs: reset_test_branches
+    needs: [reset_test_branches, not_protected]
     runs-on: ubuntu-latest
     name: Testing - protected
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
 
     - name: Perform changes
       run: ./ci.sh
@@ -119,20 +119,63 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
+        unprotect_reviews: true
+
+  force-pushing:
+    needs: [protected]
+    runs-on: ubuntu-latest
+    name: Testing - protected (--force)
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v2
+
+    - name: Perform non-fast-forwardable changes
+      run: |
+        git config --global user.email "casper+github@welzel.nu"
+        git config --global user.name "Casper Welzel Andersen"
+
+        git fetch origin
+        git reset --hard ${{ github.sha }}
+        touch test.txt
+        git add test.txt
+        git commit -m "Diverged from remote branch"
+
+    - name: Push not using `--force` (should fail)
+      id: push_no_force
+      continue-on-error: true
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        unprotect_reviews: true
+
+    - name: This runs ONLY if the previous step doesn't fail
+      if: steps.push_no_force.outcome != 'failure' || steps.push_no_force.conclusion != 'success'
+      run: |
+        echo "Outcome: ${{ steps.push_no_force.outcome }} (not 'failure'), Conclusion: ${{ steps.push_no_force.conclusion }} (not 'success')"
+        exit 1
+
+    - name: Push using `--force` (should succeed)
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        unprotect_reviews: true
+        force: yes
 
   reset_test_branches_v1:
-    needs: [not_protected, protected]
+    needs: [not_protected, protected, force-pushing]
     runs-on: ubuntu-latest
     name: Reset test branches - v1
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
 
@@ -166,7 +209,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v1
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -206,12 +249,12 @@ jobs:
         git tag -l | grep "${TEST_TAG}"
 
   protected_v1:
-    needs: reset_test_branches_v1
+    needs: [reset_test_branches_v1, not_protected_v1]
     runs-on: ubuntu-latest
     name: Testing - protected - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v1
 
     - name: Perform changes
       run: ./ci.sh
@@ -229,3 +272,45 @@ jobs:
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
+
+  force-pushing_v1:
+    needs: [protected_v1]
+    runs-on: ubuntu-latest
+    name: Testing - protected (--force) - v1
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v1
+
+    - name: Perform non-fast-forwardable changes
+      run: |
+        git config --global user.email "casper+github@welzel.nu"
+        git config --global user.name "Casper Welzel Andersen"
+
+        git fetch origin
+        git reset --hard ${{ github.sha }}
+        touch test.txt
+        git add test.txt
+        git commit -m "Diverged from remote branch"
+
+    - name: Push not using `--force` (should fail)
+      id: push_no_force
+      continue-on-error: true
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        unprotect_reviews: true
+
+    - name: This runs ONLY if the previous step doesn't fail
+      if: steps.push_no_force.outcome != 'failure' || steps.push_no_force.conclusion != 'success'
+      run: |
+        echo "Outcome: ${{ steps.push_no_force.outcome }} (not 'failure'), Conclusion: ${{ steps.push_no_force.conclusion }} (not 'success')"
+        exit 1
+
+    - name: Push using `--force` (should succeed)
+      uses: ./
+      with:
+        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+        branch: protected
+        unprotect_reviews: true
+        force: yes
