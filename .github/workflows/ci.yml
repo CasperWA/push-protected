@@ -16,13 +16,13 @@ jobs:
     name: Reset test branches
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
 
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -101,7 +101,7 @@ jobs:
     name: Testing - protected
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
 
     - name: Perform changes
       run: ./ci.sh
@@ -126,13 +126,13 @@ jobs:
     name: Reset test branches - v1
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
 
@@ -166,7 +166,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v1
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -211,7 +211,7 @@ jobs:
     name: Testing - protected - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v1
 
     - name: Perform changes
       run: ./ci.sh
