@@ -147,4 +147,4 @@ All input names in **bold** are _required_.
 
 ## License
 
-[MIT License](LICENSE)
+All files in this repository is licensed under the [MIT License](LICENSE) and copyright &copy; Casper Welzel Andersen.
