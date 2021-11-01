@@ -65,6 +65,10 @@ The PAT should have a scope appropriate to your repository:
 
 It is recommended to not add unneccessary scopes to a PAT that are not needed for its intended purpose.
 
+Note, the scopes mentioned above are only guidelines.
+You may need to specify more or other scopes for your specific use case, depending on your role within a specific organization and/or repository.
+For more information about scopes, see the [GitHub documentation](https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes).
+
 ## Usage
 
 This action is inspired by [`ad-m/github-push-action`](https://github.com/marketplace/actions/github-push) and to ease its use, it implements some of the same functionality.
@@ -139,7 +143,7 @@ All input names in **bold** are _required_.
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
-| `unprotect_reviews` | Momentarily remove pull request review protection from target branch. | `False` |
+| `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
 
 ## License
 
