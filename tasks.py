@@ -27,18 +27,23 @@ def update_file(filename: str, sub_line: Tuple[str, str], strip: str = None):
 @task(help={"version": "push_action package version to set"})
 def update_version(_, version=""):
     """Update push_action package version"""
-    if version:
-        if version.startswith("v"):
-            version = version[1:]
-        if re.match(r"[0-9]+(\.[0-9]+){2}.*", version) is None:
-            sys.exit(
-                f"Error: Passed `version` ([v]{version}) does to match SemVer versioning."
-            )
-    else:
-        sys.exit("No `version` provided.")
+    match = re.fullmatch(
+        (
+            r"v?(?P<version>[0-9]+(\.[0-9]+){2}"  # Major.Minor.Patch
+            r"(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?"  # pre-release
+            r"(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)"  # build metadata
+        ),
+        version,
+    )
+    if not match:
+        sys.exit(
+            "Error: Please specify version as "
+            "'[v]Major.Minor.Patch(-Pre-Release+Build Metadata)'"
+        )
+    version: str = match.group("version")
 
     update_file(
-        TOP_DIR.joinpath("push_action/__init__.py"),
+        TOP_DIR / "push_action" / "__init__.py",
         (r"__version__ = .+", f'__version__ = "{version}"'),
     )
 
