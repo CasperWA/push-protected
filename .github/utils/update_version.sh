@@ -2,14 +2,16 @@
 set -e
 
 echo -e "\n### Setting commit user ###"
-git config --local user.email "casper+github@welzel.nu"
-git config --local user.name "CasperWA"
+git config --local user.email "${GIT_USER_EMAIL}"
+git config --local user.name "${GIT_USER_NAME}"
 
 echo -e "\n### Update version in README ###"
 invoke update-version --version="${GITHUB_REF#refs/tags/}"
 
 echo -e "\n### Commit update ###"
-git commit -am "Release ${GITHUB_REF#refs/tags/}"
+git add push_action/__init__.py
+git add CHANGELOG.md
+git commit -m "Release ${GITHUB_REF#refs/tags/}"
 
 echo -e "\n### Create new full version (v<MAJOR>.<MINOR>.<PATCH>) tag ###"
 TAG_MSG=.github/utils/release_tag_msg.txt
