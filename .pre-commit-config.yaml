@@ -15,6 +15,8 @@ repos:
       args: [--markdown-linebreak-ext=md]
     - id: check-yaml
       name: Check YAML
+    - id: check-toml
+      name: Check TOML
     - id: end-of-file-fixer
     - id: requirements-txt-fixer
       name: Fix requirements*.txt
