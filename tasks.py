@@ -1,27 +1,27 @@
 from pathlib import Path
 import re
 import sys
-from typing import Tuple
+from typing import TYPE_CHECKING
 
 try:
     from invoke import task
 except ImportError:
     sys.exit("'invoke' MUST be installed to run these tasks.")
 
+if TYPE_CHECKING:
+    from typing import Tuple
+
 
 TOP_DIR = Path(__file__).parent.resolve()
 
 
-def update_file(filename: str, sub_line: Tuple[str, str], strip: str = None):
+def update_file(filename: Path, sub_line: "Tuple[str, str]", strip: str = None) -> None:
     """Utility function for tasks to read, update, and write files"""
-    with open(filename, "r") as handle:
-        lines = [
-            re.sub(sub_line[0], sub_line[1], line.rstrip(strip)) for line in handle
-        ]
-
-    with open(filename, "w") as handle:
-        handle.write("\n".join(lines))
-        handle.write("\n")
+    lines = [
+        re.sub(sub_line[0], sub_line[1], line.rstrip(strip))
+        for line in filename.read_text().splitlines()
+    ]
+    filename.write_text("\n".join(lines) + "\n")
 
 
 @task(help={"version": "push_action package version to set"})
