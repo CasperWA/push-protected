@@ -2,8 +2,8 @@
 set -e
 
 echo -e "\n### Setting commit user ###"
-git config --local user.email "${GIT_USER_EMAIL}"
-git config --local user.name "${GIT_USER_NAME}"
+git config --global user.email "${GIT_USER_EMAIL}"
+git config --global user.name "${GIT_USER_NAME}"
 
 echo -e "\n### Update version in README ###"
 invoke update-version --version="${GITHUB_REF#refs/tags/}"
