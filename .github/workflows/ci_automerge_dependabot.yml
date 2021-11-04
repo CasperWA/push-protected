@@ -1,0 +1,26 @@
+name: CI - Activate auto-merging for Dependabot PRs
+
+on:
+  pull_request_target:
+    branches: [ci/dependabot-updates]
+
+jobs:
+
+  update-dependabot-branch:
+    name: Update permanent dependabot branch
+    if: github.repository_owner == 'CasperWA' && startsWith(github.event.pull_request.head.ref, 'dependabot/') && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Activate auto-merge
+      run: |
+        PR_ID="$(gh api graphql -F owner='{owner}' -F name='{repo}' -f query='query($owner: String!, $name: String!) {repository(owner: $owner, name: $name) {pullRequest(number: ${{ github.event.pull_request.number }}) {id}}}' --jq '.data.repository.pullRequest.id')"
+        gh api graphql -f pr_id="$PR_ID" -f query='mutation($pr_id: String!) {enablePullRequestAutoMerge(input:{mergeMethod:SQUASH,pullRequestId:$pr_id }) {pullRequest {number}}}'
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_RESET_TEST_BRANCHES }}

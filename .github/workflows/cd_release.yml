@@ -1,0 +1,72 @@
+name: CD - Release (updating vMAJOR tag)
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  PUBLISH_UPDATE_BRANCH: master
+  GIT_USER_NAME: CasperWA
+  GIT_USER_EMAIL: "casper+github@welzel.nu"
+
+jobs:
+  update-repo-and-release:
+    name: Update CHANGELOG and tags
+    runs-on: ubuntu-latest
+    if: github.repository == 'CasperWA/push-protected' && startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install -U pip
+        pip install -U setuptools wheel
+        pip install -U -e .[dev]
+
+    - name: Update changelog
+      uses: CharMixer/auto-changelog-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
+
+    - name: Update version and tags
+      run: .github/utils/update_version.sh
+
+    # This will not work as intended, since 'push-action/**' has not been added to `ci_tests.yml`.
+    # But it will be fine due to the powerful PAT.
+    - name: Push updates to '${{ env.PUBLISH_UPDATE_BRANCH }}'
+      uses: ./
+      with:
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
+        force: true
+        tags: true
+
+    - name: Get tagged versions
+      run: echo "PREVIOUS_VERSION=$(git tag -l --sort -version:refname | sed -n 2p)" >> $GITHUB_ENV
+
+    - name: Create release-specific changelog
+      uses: CharMixer/auto-changelog-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
+        since_tag: "${{ env.PREVIOUS_VERSION }}"
+        output: "release_changelog.md"
+
+    - name: Append changelog to release body
+      run: |
+        gh api /repos/${{ github.repository }}/releases/${{ github.event.release.id }} --jq '.body' > release_body.md
+        cat release_changelog.md >> release_body.md
+        gh api /repos/${{ github.repository }}/releases/${{ github.event.release.id }} -X PATCH -F body='@release_body.md'
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_RESET_TEST_BRANCHES }}

@@ -4,9 +4,18 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+    day: monday
+    time: "05:00"
   target-branch: master
+  labels:
+    - dependencies
+    - python
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: daily
+    time: "05:00"
   target-branch: master
+  labels:
+    - dependencies
+    - github_actions

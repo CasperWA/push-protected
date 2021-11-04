@@ -1,0 +1,5 @@
+### Update dependencies
+
+Automatically created PR from [`ci/dependabot-updates`](https://github.com/CasperWA/push-protected/tree/ci/dependabot-updates).
+
+For more information see the ["Dependabot updates" workflow](https://github.com/CasperWA/push-protected/blob/master/.github/workflows/ci_dependabot.yml).

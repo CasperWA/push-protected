@@ -1,0 +1,97 @@
+name: CI - Single Dependabot PR
+
+on:
+  schedule:
+    # At 8:30 every Wednesday (6:30 UTC)
+    # Dependabot runs once a week (every Monday) (pip)
+    # and every day (GH Actions) at 7:00 (5:00 UTC)
+    - cron: "30 6 * * 3"
+
+jobs:
+  create-collected-pr:
+    name: Single dependabot PR
+    if: github.repository_owner == 'CasperWA'
+    runs-on: ubuntu-latest
+    env:
+      DEPENDABOT_BRANCH: ci/dependabot-updates
+      GIT_USER_NAME: CasperWA
+      GIT_USER_EMAIL: "casper+github@welzel.nu"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: master
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install `pre-commit`
+      run: |
+        python -m pip install -U pip
+        pip install -U setuptools wheel
+
+        while IFS="" read -r line || [ -n "${line}" ]; do
+          if [[ "${line}" =~ ^pre-commit.*$ ]]; then
+            pre_commit="${line}"
+          fi
+        done < requirements_dev.txt
+
+        pip install ${pre_commit}
+
+    - name: Set up git user info
+      run: |
+        git config --global user.name "${{ env.GIT_USER_NAME }}"
+        git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+
+    - name: Reset to '${{ env.DEPENDABOT_BRANCH }}'
+      run: |
+        git fetch origin ${{ env.DEPENDABOT_BRANCH }}:${{ env.DEPENDABOT_BRANCH }}
+        git reset --hard ${{ env.DEPENDABOT_BRANCH }}
+
+    - name: Auto-update `pre-commit` hooks
+      run: |
+        pre-commit autoupdate
+
+        if [ -n "$(git status --porcelain .pre-commit-config.yaml)" ]; then
+          # Set environment variable notifying next steps that the hooks changed
+          echo "Pre-commit hooks have been updated !"
+          echo "UPDATED_PRE_COMMIT_HOOKS=true" >> $GITHUB_ENV
+        else
+          echo "No pre-commit hooks have been updated."
+          echo "UPDATED_PRE_COMMIT_HOOKS=false" >> $GITHUB_ENV
+        fi
+
+    - name: Possibly run `pre-commit` with updated hooks
+      if: env.UPDATED_PRE_COMMIT_HOOKS == 'true'
+      continue-on-error: true  # Still create the PR if this step fails
+      run: pre-commit run --all-files
+
+    - name: Possibly commit changes and updates
+      if: env.UPDATED_PRE_COMMIT_HOOKS == 'true'
+      run: git commit -am "Update \`pre-commit\` hooks"
+
+    - name: Fetch PR body
+      id: pr_body
+      uses: chuhlomin/render-template@v1.2
+      with:
+        template: .github/utils/single_dependency_pr_body.txt
+
+    - name: Create PR
+      id: cpr
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        commit-message: New @dependabot-fueled updates
+        committer: "${{ env.GIT_USER_NAME }} <${{ env.GIT_USER_EMAIL }}>"
+        author: "${{ env.GIT_USER_NAME }} <${{ env.GIT_USER_EMAIL }}>"
+        branch: ci/update-dependencies
+        delete-branch: true
+        title: Update dependencies
+        body: ${{ steps.pr_body.outputs.result }}
+        labels: dependencies,github_actions,python
+
+    - name: Information
+      run: 'echo "${{ steps.cpr.outputs.pull-request-operation }} PR #${{ steps.cpr.outputs.pull-request-number }}: ${{ steps.cpr.outputs.pull-request-url }}"'
