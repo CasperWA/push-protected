@@ -364,7 +364,7 @@ jobs:
         pip install safety
 
     - name: Run pylint
-      run: pylint --rcfile=pyproject.toml *.py
+      run: pylint --rcfile=pyproject.toml *.py push_action
 
     - name: Run safety
       run: pip freeze | safety check --stdin
