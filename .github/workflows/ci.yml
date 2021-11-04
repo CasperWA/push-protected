@@ -60,7 +60,7 @@ jobs:
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
-      working-directory: .github/workflows
+      working-directory: .github/utils
 
     - name: Pushing to a non-protected branch
       uses: ./
@@ -105,7 +105,7 @@ jobs:
 
     - name: Perform changes
       run: ./ci.sh
-      working-directory: .github/workflows
+      working-directory: .github/utils
 
     - name: Pushing to a protected branch
       uses: ./
@@ -213,7 +213,7 @@ jobs:
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
-      working-directory: .github/workflows
+      working-directory: .github/utils
 
     - name: Pushing to a non-protected branch
       uses: ./
@@ -258,7 +258,7 @@ jobs:
 
     - name: Perform changes
       run: ./ci.sh
-      working-directory: .github/workflows
+      working-directory: .github/utils
 
     - name: Pushing to a protected branch
       uses: ./

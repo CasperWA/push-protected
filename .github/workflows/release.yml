@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements_dev.txt
 
     - name: Update version and tags
-      run: .github/static/update_version.sh
+      run: .github/utils/update_version.sh
 
     # This will not work as intended, since 'push-action/**' has not been added to `ci.yml`.
     # But it will be fine due to the powerful PAT.
