@@ -67,7 +67,7 @@ jobs:
     - name: Possibly run `pre-commit` with updated hooks
       if: env.UPDATED_PRE_COMMIT_HOOKS == 'true'
       continue-on-error: true  # Still create the PR if this step fails
-      run: pre-commit run --all-files
+      run: SKIP=pylint pre-commit run --all-files
 
     - name: Possibly commit changes and updates
       if: env.UPDATED_PRE_COMMIT_HOOKS == 'true'
