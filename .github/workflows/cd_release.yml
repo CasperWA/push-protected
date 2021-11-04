@@ -12,7 +12,7 @@ env:
 
 jobs:
   update-repo-and-release:
-    name: Update CHANGELOG and documentation
+    name: Update CHANGELOG and tags
     runs-on: ubuntu-latest
     if: github.repository == 'CasperWA/push-protected' && startsWith(github.ref, 'refs/tags/v')
 
