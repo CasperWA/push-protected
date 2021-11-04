@@ -1,3 +1,12 @@
+"""Setup file for installing the `push-action` package.
+
+Install the action by running:
+
+```console
+/path/to/push-protected$ pip install .
+```
+
+"""
 from pathlib import Path
 import re
 from setuptools import setup, find_packages
@@ -5,22 +14,13 @@ from setuptools import setup, find_packages
 
 TOP_DIR = Path(__file__).parent.resolve()
 
-with open(TOP_DIR.joinpath("push_action/__init__.py"), "r") as handle:
+with open(TOP_DIR / "push_action" / "__init__.py", "r", encoding="utf8") as handle:
     for line in handle.readlines():
         version = re.findall(r'__version__ = "(.*)"', line)
         if version:
             break
     else:
         raise RuntimeError("Could not determine version from push_action/__init__.py")
-
-with open(TOP_DIR.joinpath("README.md")) as handle:
-    README = handle.read()
-
-with open(TOP_DIR.joinpath("requirements.txt")) as handle:
-    REQUIREMENTS = handle.read()
-
-with open(TOP_DIR.joinpath("requirements_dev.txt")) as handle:
-    REQUIREMENTS_DEV = handle.read()
 
 
 setup(
@@ -30,8 +30,11 @@ setup(
     license="MIT",
     author="Casper Welzel Andersen",
     author_email="casper+github@welzel.nu",
-    description="Push local workflow commit(s) to protected branches with required status checks.",
-    long_description=README,
+    description=(
+        "Push local workflow commit(s) to protected branches with required status "
+        "checks."
+    ),
+    long_description=(TOP_DIR / "README.md").read_text(),
     long_description_content_type="text/markdown",
     packages=find_packages(),
     classifiers=[
@@ -42,7 +45,7 @@ setup(
         "Intended Audience :: Developers",
     ],
     python_requires=">=3.8",
-    install_requires=REQUIREMENTS,
-    extras_require={"dev": REQUIREMENTS_DEV},
+    install_requires=(TOP_DIR / "requirements.txt").read_text(),
+    extras_require={"dev": (TOP_DIR / "requirements_dev.txt").read_text()},
     entry_points={"console_scripts": ["push-action=push_action.run:main"]},
 )

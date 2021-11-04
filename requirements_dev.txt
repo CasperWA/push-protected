@@ -1,2 +1,3 @@
 invoke~=1.6
 pre-commit~=2.15
+pylint~=2.11

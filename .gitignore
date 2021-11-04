@@ -1,2 +1,5 @@
 *.egg*
 *.pyc
+
+# pre-commit
+.mypy*
