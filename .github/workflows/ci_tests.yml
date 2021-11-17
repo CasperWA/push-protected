@@ -40,11 +40,11 @@ jobs:
         git branch protected origin/protected
 
         git checkout not_protected
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         git push -f
 
         git checkout protected
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         git push -f
 
         python -c "import requests; requests.post('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
@@ -129,7 +129,7 @@ jobs:
         git config --global user.name "Casper Welzel Andersen"
 
         git fetch origin
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         touch test.txt
         git add test.txt
         git commit -m "Diverged from remote branch"
@@ -187,11 +187,11 @@ jobs:
         git branch protected origin/protected
 
         git checkout not_protected
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         git push -f
 
         git checkout protected
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         git push -f
 
         python -c "import requests; requests.post('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
@@ -275,7 +275,7 @@ jobs:
         git config --global user.name "Casper Welzel Andersen"
 
         git fetch origin
-        git reset --hard ${{ github.sha }}
+        git reset --hard ${GITHUB_SHA}
         touch test.txt
         git add test.txt
         git commit -m "Diverged from remote branch"
