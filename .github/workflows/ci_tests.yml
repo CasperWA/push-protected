@@ -163,7 +163,7 @@ jobs:
     name: Reset test branches - v1
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
@@ -179,6 +179,8 @@ jobs:
         pip install requests
 
         python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
+
+        git remote set-url origin https://CasperWA:${{ secrets.CI_RESET_TEST_BRANCHES }}@github.com/${{ github.repository }}
 
         git fetch origin
         git push -d origin ${TEST_TAG} || :
