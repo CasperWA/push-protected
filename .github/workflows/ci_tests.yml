@@ -163,7 +163,7 @@ jobs:
     name: Reset test branches - v1
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
