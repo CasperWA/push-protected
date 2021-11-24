@@ -180,6 +180,8 @@ jobs:
 
         python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
 
+        git remote set-url origin https://CasperWA:${{ secrets.CI_RESET_TEST_BRANCHES }}@github.com/${{ github.repository }}
+
         git fetch origin
         git push -d origin ${TEST_TAG} || :
 
