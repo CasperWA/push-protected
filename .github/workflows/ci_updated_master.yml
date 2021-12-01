@@ -22,6 +22,7 @@ jobs:
       with:
         ref: ${{ env.DEPENDABOT_BRANCH }}
         fetch-depth: 0
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
 
     - name: Set up git config
       run: |
@@ -48,4 +49,4 @@ jobs:
 
         git push -f
       env:
-        GITHUB_TOKEN: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
