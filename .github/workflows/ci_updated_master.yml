@@ -45,14 +45,7 @@ jobs:
           git merge -m "Keep '${{ env.DEPENDABOT_BRANCH }}' up-to-date with '${{ env.DEFAULT_REPO_BRANCH }}'" origin/${{ env.DEFAULT_REPO_BRANCH }}
           echo "FORCE_PUSH=no" >> $GITHUB_ENV
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # This will not work as intended, since 'push-action/**' has not been added to `ci_tests.yml`.
-    # But it will be fine due to the powerful PAT.
-    - name: Push to '${{ env.DEPENDABOT_BRANCH }}'
-      uses: ./
-      with:
-        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
-        branch: ${{ env.DEPENDABOT_BRANCH }}
-        force: ${{ env.FORCE_PUSH }}
+        git push -f
+      env:
+        GITHUB_TOKEN: ${{ secrets.CI_RESET_TEST_BRANCHES }}
