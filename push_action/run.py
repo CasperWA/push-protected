@@ -57,7 +57,8 @@ Configuration:
         of which are:
             GitHub Action-related: {len(actions_required)}
             Third-party checks: {len(_)}
-"""
+""",
+        flush=True,
     )
 
     start_time = time()
@@ -68,14 +69,16 @@ Configuration:
                 break
         else:
             # All jobs are completed
-            print("All required GitHub Actions jobs complete!")
+            print("All required GitHub Actions jobs complete!", flush=True)
             unsuccessful_jobs = [
                 _ for _ in actions_required if _.get("conclusion", "") != "success"
             ]
             break
 
         # Some jobs have not yet completed
-        print(f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...")
+        print(
+            f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...", flush=True
+        )
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
         run_ids = {_["run_id"] for _ in actions_required}
@@ -91,7 +94,8 @@ Configuration:
         if actions_required:
             print(
                 f"{len(actions_required)} required GitHub Actions jobs have not yet "
-                "completed!"
+                "completed!",
+                flush=True,
             )
 
     if unsuccessful_jobs:
@@ -253,7 +257,7 @@ def main() -> None:
         elif IN_MEMORY_CACHE["args"].ACTION == "protect_reviews":
             protect_reviews()
         elif IN_MEMORY_CACHE["args"].ACTION == "protected_branch":
-            print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="")
+            print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="", flush=True)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except RuntimeError as exc:
