@@ -3,7 +3,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/ambv/black
-    rev: 21.11b1
+    rev: 21.12b0
     hooks:
     - id: black
       name: Blacken
