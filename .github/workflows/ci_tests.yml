@@ -79,7 +79,7 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
-        branch: not_protected
+        ref: refs/heads/not_protected
         unprotect_reviews: false
         tags: true
 
@@ -112,7 +112,7 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        branch: protected
+        ref: refs/heads/protected
         unprotect_reviews: true
 
   force-pushing:
@@ -157,8 +157,32 @@ jobs:
         unprotect_reviews: true
         force: yes
 
+  branch_and_ref:
+    needs: [force-pushing]
+    runs-on: ubuntu-latest
+    name: Test setting `branch` and `ref` fails
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v2
+
+    - name: Push setting both `branch` and `ref` (should fail)
+      id: push_branch_ref
+      continue-on-error: true
+      uses: ./
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+        branch: not_protected
+        ref: refs/heads/not_protected
+        unprotect_reviews: false
+
+    - name: This runs ONLY if the previous step doesn't fail
+      if: steps.push_branch_ref.outcome != 'failure' || steps.push_branch_ref.conclusion != 'success'
+      run: |
+        echo "Outcome: ${{ steps.push_branch_ref.outcome }} (not 'failure'), Conclusion: ${{ steps.push_branch_ref.conclusion }} (not 'success')"
+        exit 1
+
   reset_test_branches_v1:
-    needs: [not_protected, protected, force-pushing]
+    needs: [not_protected, protected, force-pushing, branch_and_ref]
     runs-on: ubuntu-latest
     name: Reset test branches - v1
     steps:
@@ -228,7 +252,7 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
-        branch: not_protected
+        ref: refs/heads/not_protected
         unprotect_reviews: false
         tags: true
 
@@ -261,7 +285,8 @@ jobs:
       uses: ./
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        branch: protected
+        ref: refs/heads/protected
+        unprotect_review: true
 
   force-pushing_v1:
     needs: [protected_v1]
@@ -304,6 +329,30 @@ jobs:
         branch: protected
         unprotect_reviews: true
         force: yes
+
+  branch_and_ref_v1:
+    needs: [force-pushing_v1]
+    runs-on: ubuntu-latest
+    name: Test setting `branch` and `ref` fails - v1
+    steps:
+    - name: Use local action (checkout)
+      uses: actions/checkout@v1
+
+    - name: Push setting both `branch` and `ref` (should fail)
+      id: push_branch_ref
+      continue-on-error: true
+      uses: ./
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+        branch: not_protected
+        ref: refs/heads/not_protected
+        unprotect_reviews: false
+
+    - name: This runs ONLY if the previous step doesn't fail
+      if: steps.push_branch_ref.outcome != 'failure' || steps.push_branch_ref.conclusion != 'success'
+      run: |
+        echo "Outcome: ${{ steps.push_branch_ref.outcome }} (not 'failure'), Conclusion: ${{ steps.push_branch_ref.conclusion }} (not 'success')"
+        exit 1
 
   pre-commit:
     runs-on: ubuntu-latest

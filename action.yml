@@ -9,9 +9,13 @@ inputs:
     description: 'Token for the repo.'
     required: true
   branch:
-    description: 'Target branch for the push.'
+    description: 'Target branch for the push. Mutually exclusive with "ref". Example: "main".'
     required: false
-    default: 'master'
+    default: ''
+  ref:
+    description: 'Target ref for the push. Mutually exclusive with "branch". Example: "refs/heads/main".'
+    required: false
+    default: ''
   force:
     description: 'Determines if --force is used.'
     required: false

@@ -204,7 +204,7 @@ def main() -> None:
     parser.add_argument(
         "--ref",
         type=str,
-        help="Target ref (branch/tag) for the push",
+        help="Target ref branch for the push",
         required=True,
     )
     parser.add_argument(
