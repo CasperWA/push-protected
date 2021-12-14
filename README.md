@@ -137,7 +137,7 @@ All input names in **bold** are _required_.
 | Name | Description | Default |
 |:---:|:---|:---:|
 | **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
-| `branch` | Target branch for the push. Mutually exclusive with "ref".<br>Example: `"main"`. | `master` |
+| `branch` | Target branch for the push. Mutually exclusive with "ref".<br>Example: `"main"`. | `main` |
 | `ref` | Target ref for the push. Mutually exclusive with "branch".<br>Example: `"refs/heads/main"`. | |
 | `force` | Determines if `--force` is used. | `False` |
 | `tags` | Determines if `--tags` is used. | `False` |

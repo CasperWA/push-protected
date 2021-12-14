@@ -74,8 +74,8 @@ if [ -n "${INPUT_REF}" ]; then
         unset INPUT_REF
     fi
 elif [ -z "${INPUT_BRANCH}" ]; then
-    # Neither `ref` or `branch` are defined - use default: `branch: "master"`.
-    INPUT_BRANCH=master
+    # Neither `ref` or `branch` are defined - use default: `branch: "main"`.
+    INPUT_BRANCH=main
 fi
 
 # Retrieve target repository
