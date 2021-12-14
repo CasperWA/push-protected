@@ -63,6 +63,21 @@ push_to_target() {
     git push ${PUSH_PROTECTED_FORCE_PUSH}
 }
 
+# Determine branch
+if [ -n "${INPUT_REF}" ]; then
+    if [ -n "${INPUT_BRANCH}" ]; then
+        echo -e "\nInputs 'branch' and 'ref' are mutually exclusive; please only define one."
+        exit 1
+    else
+        # Only `ref` is defined - use it to define `INPUT_BRANCH`, which is used throughout the workflow.
+        INPUT_BRANCH=${INPUT_REF#refs/heads/}
+        unset INPUT_REF
+    fi
+elif [ -z "${INPUT_BRANCH}" ]; then
+    # Neither `ref` or `branch` are defined - use default: `branch: "master"`.
+    INPUT_BRANCH=master
+fi
+
 # Retrieve target repository
 echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
