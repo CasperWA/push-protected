@@ -1,12 +1,25 @@
 # Changelog
 
-## [ci_test](https://github.com/CasperWA/push-protected/tree/ci_test) (2021-12-08)
+## [v2.7.0](https://github.com/CasperWA/push-protected/tree/v2.7.0) (2021-12-14)
 
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.6.0...ci_test)
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.6.0...v2.7.0)
+
+**Implemented enhancements:**
+
+- Consider adding `ref` [\#61](https://github.com/CasperWA/push-protected/issues/61)
+
+**Fixed bugs:**
+
+- Finding the "previous version" for adding changelog info to release not working [\#77](https://github.com/CasperWA/push-protected/issues/77)
+
+**Merged pull requests:**
+
+- Add `ref` argument [\#79](https://github.com/CasperWA/push-protected/pull/79) ([CasperWA](https://github.com/CasperWA))
+- Exclude `ci_test` and vMAJOR tags for changelog gen [\#78](https://github.com/CasperWA/push-protected/pull/78) ([CasperWA](https://github.com/CasperWA))
 
 ## [v2.6.0](https://github.com/CasperWA/push-protected/tree/v2.6.0) (2021-12-08)
 
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2...v2.6.0)
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.5.0...v2.6.0)
 
 **Implemented enhancements:**
 
@@ -37,10 +50,6 @@
 - Solve issue with checkout v1 action [\#64](https://github.com/CasperWA/push-protected/pull/64) ([CasperWA](https://github.com/CasperWA))
 - Update dependencies [\#62](https://github.com/CasperWA/push-protected/pull/62) ([CasperWA](https://github.com/CasperWA))
 - Extend scope and rights mentions in README [\#56](https://github.com/CasperWA/push-protected/pull/56) ([CasperWA](https://github.com/CasperWA))
-
-## [v2](https://github.com/CasperWA/push-protected/tree/v2) (2021-10-13)
-
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.5.0...v2)
 
 ## [v2.5.0](https://github.com/CasperWA/push-protected/tree/v2.5.0) (2021-10-13)
 
@@ -142,7 +151,7 @@
 
 ## [v2.0.0](https://github.com/CasperWA/push-protected/tree/v2.0.0) (2020-10-29)
 
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v1...v2.0.0)
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v1.0.1...v2.0.0)
 
 **Implemented enhancements:**
 
@@ -152,10 +161,6 @@
 
 - Update to v2 [\#17](https://github.com/CasperWA/push-protected/pull/17) ([CasperWA](https://github.com/CasperWA))
 - Utilize local changes instead of downloading external script [\#16](https://github.com/CasperWA/push-protected/pull/16) ([CasperWA](https://github.com/CasperWA))
-
-## [v1](https://github.com/CasperWA/push-protected/tree/v1) (2020-09-15)
-
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v1.0.1...v1)
 
 ## [v1.0.1](https://github.com/CasperWA/push-protected/tree/v1.0.1) (2020-09-15)
 
