@@ -39,12 +39,10 @@ jobs:
           # The dependency branch should be reset to `${{ env.DEFAULT_REPO_BRANCH }}`
           echo "The dependencies have just been updated! Reset to ${{ env.DEFAULT_REPO_BRANCH }}."
           git reset --hard origin/${{ env.DEFAULT_REPO_BRANCH }}
-          echo "FORCE_PUSH=yes" >> $GITHUB_ENV
         else
           # Normal procedure: Merge `${{ env.DEFAULT_REPO_BRANCH }}` into `${{ env.DEPENDABOT_BRANCH }}`
           echo "Merge new updates to ${{ env.DEFAULT_REPO_BRANCH }} into ${DEPENDABOT_BRANCH}"
           git merge -m "Keep '${{ env.DEPENDABOT_BRANCH }}' up-to-date with '${{ env.DEFAULT_REPO_BRANCH }}'" origin/${{ env.DEFAULT_REPO_BRANCH }}
-          echo "FORCE_PUSH=no" >> $GITHUB_ENV
         fi
 
         git push -f
@@ -59,7 +57,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.DEPENDABOT_BRANCH }}
         fetch-depth: 0
 
     - name: Set up git config
