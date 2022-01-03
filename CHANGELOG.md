@@ -1,6 +1,28 @@
 # Changelog
 
-## [v2.7.0](https://github.com/CasperWA/push-protected/tree/v2.7.0) (2021-12-14)
+## [v2.8.0](https://github.com/CasperWA/push-protected/tree/v2.8.0) (2022-01-03)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.7.0...v2.8.0)
+
+**Implemented enhancements:**
+
+- Update this repository's default branch to `main` [\#84](https://github.com/CasperWA/push-protected/issues/84)
+- Change default branch name to match GitHub [\#80](https://github.com/CasperWA/push-protected/issues/80)
+
+**Fixed bugs:**
+
+- Force pushing tags when updating `master` [\#88](https://github.com/CasperWA/push-protected/issues/88)
+- Problem with CI [\#86](https://github.com/CasperWA/push-protected/issues/86)
+
+**Merged pull requests:**
+
+- Force update `master` tag [\#89](https://github.com/CasperWA/push-protected/pull/89) ([CasperWA](https://github.com/CasperWA))
+- Fix CI runs for `main` updates [\#87](https://github.com/CasperWA/push-protected/pull/87) ([CasperWA](https://github.com/CasperWA))
+- Finish update to `main` with `master` tag [\#85](https://github.com/CasperWA/push-protected/pull/85) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#82](https://github.com/CasperWA/push-protected/pull/82) ([CasperWA](https://github.com/CasperWA))
+- Use `main` as default `branch` value instead of `master` [\#81](https://github.com/CasperWA/push-protected/pull/81) ([CasperWA](https://github.com/CasperWA))
+
+## [v2.7.0](https://github.com/CasperWA/push-protected/tree/v2.7.0) (2021-12-15)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.6.0...v2.7.0)
 
