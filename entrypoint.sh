@@ -88,10 +88,10 @@ echo "Fetching the latest information from ${GITHUB_REPOSITORY} ... DONE!"
 
 # Check target branch exists
 echo -e "\nCheck target branch ${INPUT_BRANCH} exists ..."
-if [ -z "$(git branch -a | grep -E ^.*remotes/origin/${INPUT_BRANCH}$ )"]; then
+if [ -z "$(git branch -a | grep -E ^.*remotes/origin/${INPUT_BRANCH}$ )" ]; then
     # Branch does not exist on remote
     # If branch was set to the default (`main`) try the current standard `git` default branch name: `master`
-    if [ "${INPUT_BRANCH}" = "main" ] && [ -n "$(git branch -a | grep -E ^.*remotes/origin/master$ )"]; then
+    if [ "${INPUT_BRANCH}" = "main" ] && [ -n "$(git branch -a | grep -E ^.*remotes/origin/master$ )" ]; then
         # `master` exists - use it as the fallback default instead of the non-existing `main`
         INPUT_BRANCH=master
         echo "Changed target branch from 'main' to '${INPUT_BRANCH}'."
