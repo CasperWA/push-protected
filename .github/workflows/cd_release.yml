@@ -38,7 +38,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
-        exclude_tags_regex: "^(ci_test|v[0-9]+)$"
+        exclude_tags_regex: "^(ci_test|master|v[0-9]+)$"
 
     - name: Update version and tags
       run: .github/utils/update_version.sh
@@ -63,7 +63,7 @@ jobs:
         release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
         since_tag: "${{ env.PREVIOUS_VERSION }}"
         output: "release_changelog.md"
-        exclude_tags_regex: "^(ci_test|v[0-9]+)$"
+        exclude_tags_regex: "^(ci_test|master|v[0-9]+)$"
 
     - name: Append changelog to release body
       run: |
