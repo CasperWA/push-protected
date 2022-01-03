@@ -74,17 +74,33 @@ if [ -n "${INPUT_REF}" ]; then
         unset INPUT_REF
     fi
 elif [ -z "${INPUT_BRANCH}" ]; then
-    # Neither `ref` or `branch` are defined - use default: `branch: "master"`.
-    INPUT_BRANCH=master
+    # Neither `ref` or `branch` are defined - use default: `branch: "main"`.
+    INPUT_BRANCH=main
 fi
 
 # Retrieve target repository
-echo -e "\nGetting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ..."
+echo -e "\nFetching the latest information from '${GITHUB_REPOSITORY}' ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
 git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :'
 git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 git fetch --unshallow -tp origin || :
-echo "Getting latest commit of ${GITHUB_REPOSITORY}@${INPUT_BRANCH} ... DONE!"
+echo "Fetching the latest information from '${GITHUB_REPOSITORY}' ... DONE!"
+
+# Check target branch exists
+echo -e "\nCheck target branch '${INPUT_BRANCH}' exists ..."
+if [ -z "$(git branch -a | grep -E ^.*remotes/origin/${INPUT_BRANCH}$ )" ]; then
+    # Branch does not exist on remote
+    # If branch was set to the default (`main`) try the current standard `git` default branch name: `master`
+    if [ "${INPUT_BRANCH}" = "main" ] && [ -n "$(git branch -a | grep -E ^.*remotes/origin/master$ )" ]; then
+        # `master` exists - use it as the fallback default instead of the non-existing `main`
+        INPUT_BRANCH=master
+        echo "Changed target branch from 'main' to '${INPUT_BRANCH}'."
+    else
+        echo -e "Branch '${INPUT_BRANCH}' cannot be found in the '${GITHUB_REPOSITORY}' repository !\nExiting."
+        exit 1
+    fi
+fi
+echo "Check target branch '${INPUT_BRANCH}' exists ... DONE!"
 
 # Check whether there are newer commits on current branch compared to target branch
 if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/${INPUT_BRANCH})" ]; then
