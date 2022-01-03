@@ -79,15 +79,15 @@ elif [ -z "${INPUT_BRANCH}" ]; then
 fi
 
 # Retrieve target repository
-echo -e "\nFetching the latest information from ${GITHUB_REPOSITORY} ..."
+echo -e "\nFetching the latest information from '${GITHUB_REPOSITORY}' ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
 git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :'
 git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 git fetch --unshallow -tp origin || :
-echo "Fetching the latest information from ${GITHUB_REPOSITORY} ... DONE!"
+echo "Fetching the latest information from '${GITHUB_REPOSITORY}' ... DONE!"
 
 # Check target branch exists
-echo -e "\nCheck target branch ${INPUT_BRANCH} exists ..."
+echo -e "\nCheck target branch '${INPUT_BRANCH}' exists ..."
 if [ -z "$(git branch -a | grep -E ^.*remotes/origin/${INPUT_BRANCH}$ )" ]; then
     # Branch does not exist on remote
     # If branch was set to the default (`main`) try the current standard `git` default branch name: `master`
@@ -96,11 +96,11 @@ if [ -z "$(git branch -a | grep -E ^.*remotes/origin/${INPUT_BRANCH}$ )" ]; then
         INPUT_BRANCH=master
         echo "Changed target branch from 'main' to '${INPUT_BRANCH}'."
     else
-        echo "ERROR: Branch '${INPUT_BRANCH}' cannot be found in the ${GITHUB_REPOSITORY} repository !"
+        echo -e "Branch '${INPUT_BRANCH}' cannot be found in the '${GITHUB_REPOSITORY}' repository !\nExiting."
         exit 1
     fi
 fi
-echo "Check target branch ${INPUT_BRANCH} exists ... DONE!"
+echo "Check target branch '${INPUT_BRANCH}' exists ... DONE!"
 
 # Check whether there are newer commits on current branch compared to target branch
 if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/${INPUT_BRANCH})" ]; then
