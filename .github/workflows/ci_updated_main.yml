@@ -4,17 +4,17 @@ on:
   push:
     branches: [main]
 
+env:
+  DEPENDABOT_BRANCH: ci/dependabot-updates
+  GIT_USER_NAME: CasperWA
+  GIT_USER_EMAIL: "casper+github@welzel.nu"
+  DEFAULT_REPO_BRANCH: main
+
 jobs:
   update-dependabot-branch:
     name: Update permanent dependabot branch
     if: github.repository_owner == 'CasperWA'
     runs-on: ubuntu-latest
-
-    env:
-      DEPENDABOT_BRANCH: ci/dependabot-updates
-      GIT_USER_NAME: CasperWA
-      GIT_USER_EMAIL: "casper+github@welzel.nu"
-      DEFAULT_REPO_BRANCH: main
 
     steps:
     - name: Checkout repository
@@ -50,3 +50,32 @@ jobs:
         git push -f
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-master-tag:
+    name: Update the `master` tag
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.DEPENDABOT_BRANCH }}
+        fetch-depth: 0
+
+    - name: Set up git config
+      run: |
+        git config --global user.name "${{ env.GIT_USER_NAME }}"
+        git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+
+    - name: Update tag
+      run: |
+        git tag -l master --format "%(contents:subject)%0a%0a%(contents:body)" > MASTER_TAG_MSG.txt
+        git tag -af -F "MASTER_TAG_MSG.txt" master
+        rm -f MASTER_TAG_MSG.txt
+
+    - name: Push updated tag
+      uses: ./
+      with:
+        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
+        branch: ${{ env.DEFAULT_REPO_BRANCH }}
+        tags: true
