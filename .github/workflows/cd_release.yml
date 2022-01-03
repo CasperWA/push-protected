@@ -6,7 +6,7 @@ on:
       - published
 
 env:
-  PUBLISH_UPDATE_BRANCH: master
+  PUBLISH_UPDATE_BRANCH: main
   GIT_USER_NAME: CasperWA
   GIT_USER_EMAIL: "casper+github@welzel.nu"
 
