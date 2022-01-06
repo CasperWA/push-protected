@@ -75,7 +75,7 @@ jobs:
 
     - name: Fetch PR body
       id: pr_body
-      uses: chuhlomin/render-template@v1.3
+      uses: chuhlomin/render-template@v1.4
       with:
         template: .github/utils/single_dependency_pr_body.txt
 
