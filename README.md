@@ -39,7 +39,7 @@ on:
 
 An example can also be seen in this action's own [test workflow](.github/workflows/test_status_checks.yml).
 
-## Notes on `token`
+## Notes on `token` and user permissions
 
 If you are using this action to push to a GitHub [protected branch](https://help.github.com/en/github/administering-a-repository/about-protected-branches), you _need_ to pass a [personal access token (PAT)](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line), preferrably as a [secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), to the `token` input.
 This can be done as such:
@@ -68,6 +68,14 @@ It is recommended to not add unneccessary scopes to a PAT that are not needed fo
 Note, the scopes mentioned above are only guidelines.
 You may need to specify more or other scopes for your specific use case, depending on your role within a specific organization and/or repository.
 For more information about scopes, see the [GitHub documentation](https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes).
+
+### PAT user permissions
+
+The user that the PAT represents **MUST** have "admin" permission to the repository in order to handle protected branches: determine which checks are running/finished and to toggle the "require review"-protection.
+
+If the PAT represents the repository owner, there are no issues, however, if the PAT represents a collaborator, the collaborator **MUST** be given the "Admin" role.
+This can be done under the "Settings" tab in the repository and then going to "Collaborators & teams".
+To understand what the "Admin" role allows the user to do, you can see the "Repository roles" page, which is also found under the "Settings" tab in the repository.
 
 ## Usage
 
@@ -145,6 +153,7 @@ All input names in **bold** are _required_.
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
 | `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
+| `debug` | Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action. | `False` |
 
 ## License
 

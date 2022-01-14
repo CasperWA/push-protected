@@ -28,16 +28,21 @@ import json
 import os
 import sys
 from time import sleep, time
+from typing import TYPE_CHECKING
 
 from push_action.cache import IN_MEMORY_CACHE
 from push_action.utils import (
     api_request,
+    check_user_role,
     get_branch_statuses,
     get_required_actions,
     get_required_checks,
     get_workflow_run_jobs,
     remove_branch,
 )
+
+if TYPE_CHECKING:
+    from typing import Any, Dict
 
 
 def wait() -> None:
@@ -179,16 +184,21 @@ def protect_reviews() -> None:
 def protected_branch(branch: str) -> str:
     """Determine whether or not `branch` is a protected branch.
 
-    Return branch if it is protected, otherwise return an empty string.
+    Return a non-empty string if it is protected, otherwise return an empty string.
     """
-    url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{branch}/protection"
-    try:
-        api_request(url)
-    except RuntimeError:
-        # Expected not to be protected
-        return ""
-    else:
-        return branch
+    url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{branch}"
+    response: "Dict[str, Any]" = api_request(url)  # type: ignore[assignment]
+    if response.get("protected", False):
+        if check_user_role("admin"):
+            return "protected"
+
+        raise RuntimeError(
+            "Not enough rights to continue pushing to a protected branch - should "
+            "have 'admin' permissions (Admin role)."
+        )
+
+    # Not protected, return an empty string
+    return ""
 
 
 def main() -> None:
@@ -260,7 +270,7 @@ def main() -> None:
             print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="", flush=True)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
-    except RuntimeError as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         fail = f"{exc.__class__.__name__}: {exc}"
 
     if fail:
