@@ -40,6 +40,10 @@ inputs:
     description: 'Momentarily remove pull request review protection from target branch'
     required: false
     default: 'false'
+  debug:
+    description: 'Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action.'
+    required: false
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'

@@ -145,6 +145,7 @@ All input names in **bold** are _required_.
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
 | `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
+| `debug` | Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action. | `False` |
 
 ## License
 

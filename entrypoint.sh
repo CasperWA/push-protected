@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+case ${INPUT_DEBUG} in
+    y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+        set -x
+        ;;
+    n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+        ;;
+    *)
+        ;;
+esac
+
 set -e
 
 # Utility functions
