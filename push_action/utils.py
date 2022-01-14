@@ -2,6 +2,7 @@
 
 Utility functions for use in the `push_action.run` module.
 """
+from enum import Enum
 import os
 from time import time
 from typing import TYPE_CHECKING
@@ -18,11 +19,31 @@ import requests
 from push_action.cache import IN_MEMORY_CACHE
 
 if TYPE_CHECKING:
-    from typing import Callable, List, Union
+    from typing import Callable, List, Optional, Union
 
 
 REQUEST_TIMEOUT = 10  # in seconds
 API_V3_BASE = "https://api.github.com"
+
+
+class RepoRole(Enum):
+    """Possible repository roles/permissions.
+
+    Sorted order of permissions, lowest to highest:
+
+        1. READ
+        2. TRIAGE
+        3. WRITE
+        4. MAINTAIN
+        5. ADMIN
+
+    """
+
+    READ = "pull"
+    TRIAGE = "triage"
+    WRITE = "push"
+    MAINTAIN = "maintain"
+    ADMIN = "admin"
 
 
 def api_request(
@@ -249,3 +270,25 @@ def get_required_checks(
     TODO: Currently not implemented
     """
     return []
+
+
+def check_user_role(
+    role: "Optional[Union[RepoRole, str]]" = None, new_request: bool = False
+) -> bool:
+    """Check the user's role."""
+    role = RepoRole.ADMIN if role is None else RepoRole(role)
+
+    cache_name = f"check_user_role_{role.value}"
+
+    if cache_name not in IN_MEMORY_CACHE or new_request:
+        url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}"
+        response = api_request(url=url)
+
+        if not isinstance(response, dict):
+            raise TypeError(
+                f"Expected response to be a dict, instead it was of type {type(response)}"
+            )
+
+        IN_MEMORY_CACHE[cache_name] = response["permissions"].get(role.value, False)
+
+    return IN_MEMORY_CACHE[cache_name]
