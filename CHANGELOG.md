@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased](https://github.com/CasperWA/push-protected/tree/HEAD)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.9.0...HEAD)
+
+**Closed issues:**
+
+- Not clear which scope should I use to enable `unprotect_reviews` option [\#60](https://github.com/CasperWA/push-protected/issues/60)
+
+## [v2.9.0](https://github.com/CasperWA/push-protected/tree/v2.9.0) (2022-01-14)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.8.0...v2.9.0)
+
+**Implemented enhancements:**
+
+- Warn or error upon using token without proper rights [\#94](https://github.com/CasperWA/push-protected/issues/94)
+- Add `debug` option [\#93](https://github.com/CasperWA/push-protected/issues/93)
+
+**Merged pull requests:**
+
+- Check permission [\#95](https://github.com/CasperWA/push-protected/pull/95) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#92](https://github.com/CasperWA/push-protected/pull/92) ([CasperWA](https://github.com/CasperWA))
+
 ## [v2.8.0](https://github.com/CasperWA/push-protected/tree/v2.8.0) (2022-01-03)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.7.0...v2.8.0)
