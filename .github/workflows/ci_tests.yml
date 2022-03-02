@@ -12,13 +12,13 @@ jobs:
     name: Reset test branches
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.9
 
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -91,7 +91,7 @@ jobs:
     name: Testing - protected
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Perform changes
       run: ./ci.sh
@@ -117,7 +117,7 @@ jobs:
     name: Testing - protected (--force)
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Perform non-fast-forwardable changes
       run: |
@@ -159,7 +159,7 @@ jobs:
     name: Testing - Setting `branch` and `ref` fails
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Push setting both `branch` and `ref` (should fail)
       id: push_branch_ref
@@ -183,7 +183,7 @@ jobs:
     name: Testing - Fail for non-existant branch
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Push to non-existant branch (should fail)
       id: push_non_existant
@@ -206,13 +206,13 @@ jobs:
     name: Reset test branches - v1
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.9
 
@@ -248,7 +248,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -287,7 +287,7 @@ jobs:
     name: Testing - protected - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Perform changes
       run: ./ci.sh
@@ -313,7 +313,7 @@ jobs:
     name: Testing - protected (--force) - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Perform non-fast-forwardable changes
       run: |
@@ -355,7 +355,7 @@ jobs:
     name: Testing - Setting `branch` and `ref` fails - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Push setting both `branch` and `ref` (should fail)
       id: push_branch_ref
@@ -379,7 +379,7 @@ jobs:
     name: Testing - Fail for non-existant branch - v1
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Push to non-existant branch (should fail)
       id: push_non_existant
@@ -400,10 +400,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
 
@@ -428,12 +428,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
 
