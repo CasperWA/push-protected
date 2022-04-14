@@ -1,14 +1,31 @@
 # Changelog
 
-## [Unreleased](https://github.com/CasperWA/push-protected/tree/HEAD)
+## [v2.10.0](https://github.com/CasperWA/push-protected/tree/v2.10.0) (2022-04-14)
 
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.9.0...HEAD)
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.9.0...v2.10.0)
+
+**Fixed bugs:**
+
+- GH GraphQL variable update for auto-merge workflow [\#100](https://github.com/CasperWA/push-protected/issues/100)
 
 **Closed issues:**
 
-- Not clear which scope should I use to enable `unprotect_reviews` option [\#60](https://github.com/CasperWA/push-protected/issues/60)
+- Looks like git update for CVE-2022-24765 broke the action [\#114](https://github.com/CasperWA/push-protected/issues/114)
 
-## [v2.9.0](https://github.com/CasperWA/push-protected/tree/v2.9.0) (2022-01-14)
+**Merged pull requests:**
+
+- Add `/github/workspace/ to git safe.directory [\#115](https://github.com/CasperWA/push-protected/pull/115) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#113](https://github.com/CasperWA/push-protected/pull/113) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#112](https://github.com/CasperWA/push-protected/pull/112) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#110](https://github.com/CasperWA/push-protected/pull/110) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#106](https://github.com/CasperWA/push-protected/pull/106) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#104](https://github.com/CasperWA/push-protected/pull/104) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#103](https://github.com/CasperWA/push-protected/pull/103) ([CasperWA](https://github.com/CasperWA))
+- Use `ID!` type instead of `String!` [\#101](https://github.com/CasperWA/push-protected/pull/101) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#98](https://github.com/CasperWA/push-protected/pull/98) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#97](https://github.com/CasperWA/push-protected/pull/97) ([CasperWA](https://github.com/CasperWA))
+
+## [v2.9.0](https://github.com/CasperWA/push-protected/tree/v2.9.0) (2022-01-17)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.8.0...v2.9.0)
 
@@ -16,6 +33,10 @@
 
 - Warn or error upon using token without proper rights [\#94](https://github.com/CasperWA/push-protected/issues/94)
 - Add `debug` option [\#93](https://github.com/CasperWA/push-protected/issues/93)
+
+**Closed issues:**
+
+- Not clear which scope should I use to enable `unprotect_reviews` option [\#60](https://github.com/CasperWA/push-protected/issues/60)
 
 **Merged pull requests:**
 
