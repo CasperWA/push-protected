@@ -88,6 +88,13 @@ elif [ -z "${INPUT_BRANCH}" ]; then
     INPUT_BRANCH=main
 fi
 
+# Due to multi-user vulnerabilities (between Docker user and host user), we need to add a safe directory
+# In a GitHub Action, the Actions workspace from the host is mounted at `/github/workspace` within the container.
+# This path should also be the current working directory, however, to be sure the current working directory is
+# added to the safe.directory configuration as well. If it's the same, it shouldn't matter.
+git config --global --add safe.directory /github/workspace
+git config --global --add safe.directory ${PWD}
+
 # Retrieve target repository
 echo -e "\nFetching the latest information from '${GITHUB_REPOSITORY}' ..."
 git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
