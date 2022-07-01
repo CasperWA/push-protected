@@ -200,201 +200,25 @@ jobs:
         echo "Outcome: ${{ steps.push_non_existant.outcome }} (not 'failure'), Conclusion: ${{ steps.push_non_existant.conclusion }} (not 'success')"
         exit 1
 
-  reset_test_branches_v1:
-    needs: [not_protected, protected, force-pushing, branch_and_ref, non_existant_branch]
+  path:
+    needs: [non_existant_branch]
     runs-on: ubuntu-latest
-    name: Reset test branches - v1
-    steps:
-    - name: Checkout action repo
-      uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
-        fetch-depth: 0
-
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-
-    - name: Reset branches
-      run: |
-        python -m pip install -U pip
-        pip install requests
-
-        python -c "import requests; requests.delete('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
-
-        git remote set-url origin https://CasperWA:${{ secrets.CI_RESET_TEST_BRANCHES }}@github.com/${{ github.repository }}
-
-        git fetch origin
-        git push -d origin ${TEST_TAG} || :
-
-        git branch not_protected origin/not_protected
-        git branch protected origin/protected
-
-        git checkout not_protected
-        git reset --hard ${GITHUB_SHA}
-        git push -f
-
-        git checkout protected
-        git reset --hard ${GITHUB_SHA}
-        git push -f
-
-        python -c "import requests; requests.post('https://api.github.com/repos/CasperWA/push-protected/branches/protected/protection/enforce_admins', headers={'Authorization': 'token ${{ secrets.CI_RESET_TEST_BRANCHES }}', 'Accept': 'application/vnd.github.v3+json'})"
-
-  not_protected_v1:
-    needs: reset_test_branches_v1
-    runs-on: ubuntu-latest
-    name: Testing - non-protected - v1
-
+    name: Testing - Using `path`
     steps:
     - name: Use local action (checkout)
       uses: actions/checkout@v3
-
-    - name: Perform changes
-      run: ./ci.sh ${TEST_TAG}
-      working-directory: .github/utils
-
-    - name: Pushing to a non-protected branch
-      uses: ./
       with:
-        token: '${{ secrets.GITHUB_TOKEN }}'
-        branch: not_protected
-        unprotect_reviews: false
-
-    - name: Check tags (local)
-      run: |
-        git fetch origin -ftp
-        git ls-remote --tags origin | grep "${TEST_TAG}" && exit 1 || echo "Tag ${TEST_TAG} doesn't exist on remote as expected."
-        git tag -l | grep "${TEST_TAG}"
-
-    - name: Pushing to a non-protected branch (including tags)
-      uses: ./
-      with:
-        token: '${{ secrets.GITHUB_TOKEN }}'
-        ref: refs/heads/not_protected
-        unprotect_reviews: false
-        tags: true
-
-    - name: Check tags (local+remote)
-      run: |
-        git fetch origin -ftpP
-        git ls-remote --tags origin | grep "${TEST_TAG}"
-        git tag -l | grep "${TEST_TAG}"
-
-  protected_v1:
-    needs: [reset_test_branches_v1, not_protected_v1]
-    runs-on: ubuntu-latest
-    name: Testing - protected - v1
-    steps:
-    - name: Use local action (checkout)
-      uses: actions/checkout@v3
-
-    - name: Perform changes
-      run: ./ci.sh
-      working-directory: .github/utils
-
-    - name: Pushing to a protected branch
-      uses: ./
-      with:
-        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        branch: protected
-        unprotect_reviews: true
+        path: sub_folder
 
     - name: Pushing to a protected branch without any changes
-      uses: ./
+      uses: ./sub_folder/
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         ref: refs/heads/protected
-        unprotect_review: true
-
-  force-pushing_v1:
-    needs: [protected_v1]
-    runs-on: ubuntu-latest
-    name: Testing - protected (--force) - v1
-    steps:
-    - name: Use local action (checkout)
-      uses: actions/checkout@v3
-
-    - name: Perform non-fast-forwardable changes
-      run: |
-        git config --global user.email "casper+github@welzel.nu"
-        git config --global user.name "Casper Welzel Andersen"
-
-        git fetch origin
-        git reset --hard ${GITHUB_SHA}
-        touch test.txt
-        git add test.txt
-        git commit -m "Diverged from remote branch"
-
-    - name: Push not using `--force` (should fail)
-      id: push_no_force
-      continue-on-error: true
-      uses: ./
-      with:
-        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        branch: protected
         unprotect_reviews: true
-
-    - name: This runs ONLY if the previous step doesn't fail
-      if: steps.push_no_force.outcome != 'failure' || steps.push_no_force.conclusion != 'success'
-      run: |
-        echo "Outcome: ${{ steps.push_no_force.outcome }} (not 'failure'), Conclusion: ${{ steps.push_no_force.conclusion }} (not 'success')"
-        exit 1
-
-    - name: Push using `--force` (should succeed)
-      uses: ./
-      with:
-        token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
-        branch: protected
-        unprotect_reviews: true
+        path: sub_folder
         force: yes
-
-  branch_and_ref_v1:
-    needs: [force-pushing_v1]
-    runs-on: ubuntu-latest
-    name: Testing - Setting `branch` and `ref` fails - v1
-    steps:
-    - name: Use local action (checkout)
-      uses: actions/checkout@v3
-
-    - name: Push setting both `branch` and `ref` (should fail)
-      id: push_branch_ref
-      continue-on-error: true
-      uses: ./
-      with:
-        token: '${{ secrets.GITHUB_TOKEN }}'
-        branch: not_protected
-        ref: refs/heads/not_protected
-        unprotect_reviews: false
-
-    - name: This runs ONLY if the previous step doesn't fail
-      if: steps.push_branch_ref.outcome != 'failure' || steps.push_branch_ref.conclusion != 'success'
-      run: |
-        echo "Outcome: ${{ steps.push_branch_ref.outcome }} (not 'failure'), Conclusion: ${{ steps.push_branch_ref.conclusion }} (not 'success')"
-        exit 1
-
-  non_existant_branch_v1:
-    needs: [branch_and_ref_v1]
-    runs-on: ubuntu-latest
-    name: Testing - Fail for non-existant branch - v1
-    steps:
-    - name: Use local action (checkout)
-      uses: actions/checkout@v3
-
-    - name: Push to non-existant branch (should fail)
-      id: push_non_existant
-      continue-on-error: true
-      uses: ./
-      with:
-        token: '${{ secrets.GITHUB_TOKEN }}'
-        branch: non-existant-branch
-        unprotect_reviews: false
-
-    - name: This runs ONLY if the previous step doesn't fail
-      if: steps.push_non_existant.outcome != 'failure' || steps.push_non_existant.conclusion != 'success'
-      run: |
-        echo "Outcome: ${{ steps.push_non_existant.outcome }} (not 'failure'), Conclusion: ${{ steps.push_non_existant.conclusion }} (not 'success')"
-        exit 1
+        debug: true
 
   pre-commit:
     runs-on: ubuntu-latest

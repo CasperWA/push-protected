@@ -61,7 +61,7 @@ This event trigger is a **MUST** for starting the required status checks on the 
 The PAT should have a scope appropriate to your repository:
 
 - Private: _repo_
-- Public: *public_repo*
+- Public: _public\_repo_
 
 It is recommended to not add unneccessary scopes to a PAT that are not needed for its intended purpose.
 
@@ -115,7 +115,7 @@ jobs:
     name: Push to protected branch
     steps:
     - name: Checkout local repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Update version
       run: ./update_version.sh
@@ -154,6 +154,7 @@ All input names in **bold** are _required_.
 | `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
 | `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
 | `debug` | Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action. | `False` |
+| `path` | A path to the working directory of the action. This should be relative to the `$GITHUB_WORKSPACE`. | `.` |
 
 ## License
 

@@ -44,6 +44,10 @@ inputs:
     description: 'Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action.'
     required: false
     default: 'false'
+  path:
+    description: 'A path to the working directory of the action. This should be relative to the $GITHUB_WORKSPACE.'
+    required: false
+    default: '.'
 runs:
   using: 'docker'
   image: 'Dockerfile'

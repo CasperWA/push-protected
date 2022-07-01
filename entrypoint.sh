@@ -73,6 +73,11 @@ push_to_target() {
     git push ${PUSH_PROTECTED_FORCE_PUSH}
 }
 
+# Enter chosen working directory
+if [ -n "${INPUT_PATH}" ]; then
+    cd ${INPUT_PATH}
+fi
+
 # Determine branch
 if [ -n "${INPUT_REF}" ]; then
     if [ -n "${INPUT_BRANCH}" ]; then
