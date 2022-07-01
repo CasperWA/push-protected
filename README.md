@@ -115,7 +115,7 @@ jobs:
     name: Push to protected branch
     steps:
     - name: Checkout local repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Update version
       run: ./update_version.sh
