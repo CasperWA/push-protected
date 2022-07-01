@@ -217,6 +217,8 @@ jobs:
         ref: refs/heads/protected
         unprotect_reviews: true
         path: sub_folder
+        force: yes
+        debug: true
 
   pre-commit:
     runs-on: ubuntu-latest
