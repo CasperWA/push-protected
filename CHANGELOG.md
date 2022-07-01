@@ -1,5 +1,23 @@
 # Changelog
 
+## [v2.11.0](https://github.com/CasperWA/push-protected/tree/v2.11.0) (2022-07-01)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.10.0...v2.11.0)
+
+**Implemented enhancements:**
+
+- Add `path` input [\#128](https://github.com/CasperWA/push-protected/issues/128)
+
+**Merged pull requests:**
+
+- New `path` input - no more `actions/checkout` v1 testing [\#129](https://github.com/CasperWA/push-protected/pull/129) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#127](https://github.com/CasperWA/push-protected/pull/127) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#126](https://github.com/CasperWA/push-protected/pull/126) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#122](https://github.com/CasperWA/push-protected/pull/122) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#120](https://github.com/CasperWA/push-protected/pull/120) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#118](https://github.com/CasperWA/push-protected/pull/118) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#116](https://github.com/CasperWA/push-protected/pull/116) ([CasperWA](https://github.com/CasperWA))
+
 ## [v2.10.0](https://github.com/CasperWA/push-protected/tree/v2.10.0) (2022-04-14)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.9.0...v2.10.0)
