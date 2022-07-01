@@ -211,7 +211,7 @@ jobs:
         path: sub_folder
 
     - name: Pushing to a protected branch without any changes
-      uses: ./
+      uses: ./sub_folder/
       with:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         ref: refs/heads/protected
