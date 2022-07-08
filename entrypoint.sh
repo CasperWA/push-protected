@@ -171,6 +171,9 @@ esac
 {
     # Possibly wait for status checks to complete
     wait_for_checks &&
+    
+    # Sleep 5 seconds to add addtional time buffer for status checks
+    sleep 5 &&
 
     # Unprotect target branch for pull request reviews (if desired)
     unprotect &&
