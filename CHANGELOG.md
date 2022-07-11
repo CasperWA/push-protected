@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.12.0](https://github.com/CasperWA/push-protected/tree/v2.12.0) (2022-07-11)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.11.0...v2.12.0)
+
+**Merged pull requests:**
+
+- Sleep 5 seconds after status checks are done [\#131](https://github.com/CasperWA/push-protected/pull/131) ([gao-sun](https://github.com/gao-sun))
+
 ## [v2.11.0](https://github.com/CasperWA/push-protected/tree/v2.11.0) (2022-07-01)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.10.0...v2.11.0)
