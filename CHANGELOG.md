@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.13.0](https://github.com/CasperWA/push-protected/tree/v2.13.0) (2022-08-15)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.12.0...v2.13.0)
+
+**Merged pull requests:**
+
+- add git-lfs support [\#139](https://github.com/CasperWA/push-protected/pull/139) ([jbcpollak](https://github.com/jbcpollak))
+- Update dependencies [\#138](https://github.com/CasperWA/push-protected/pull/138) ([CasperWA](https://github.com/CasperWA))
+- Create FUNDING.yml [\#137](https://github.com/CasperWA/push-protected/pull/137) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#135](https://github.com/CasperWA/push-protected/pull/135) ([CasperWA](https://github.com/CasperWA))
+
 ## [v2.12.0](https://github.com/CasperWA/push-protected/tree/v2.12.0) (2022-07-11)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.11.0...v2.12.0)
