@@ -71,7 +71,7 @@ def api_request(
         response = requests_action(
             url,
             headers={
-                "Authorization": f"token {IN_MEMORY_CACHE['args'].token}",
+                "Authorization": f"Bearer {IN_MEMORY_CACHE['args'].token}",
                 "Accept": "application/vnd.github.v3+json",
             },
             timeout=REQUEST_TIMEOUT,
@@ -270,25 +270,3 @@ def get_required_checks(
     TODO: Currently not implemented
     """
     return []
-
-
-def check_user_role(
-    role: "Optional[Union[RepoRole, str]]" = None, new_request: bool = False
-) -> bool:
-    """Check the user's role."""
-    role = RepoRole.ADMIN if role is None else RepoRole(role)
-
-    cache_name = f"check_user_role_{role.value}"
-
-    if cache_name not in IN_MEMORY_CACHE or new_request:
-        url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}"
-        response = api_request(url=url)
-
-        if not isinstance(response, dict):
-            raise TypeError(
-                f"Expected response to be a dict, instead it was of type {type(response)}"
-            )
-
-        IN_MEMORY_CACHE[cache_name] = response["permissions"].get(role.value, False)
-
-    return IN_MEMORY_CACHE[cache_name]
