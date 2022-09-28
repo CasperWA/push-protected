@@ -33,7 +33,6 @@ from typing import TYPE_CHECKING
 from push_action.cache import IN_MEMORY_CACHE
 from push_action.utils import (
     api_request,
-    check_user_role,
     get_branch_statuses,
     get_required_actions,
     get_required_checks,
@@ -188,17 +187,14 @@ def protected_branch(branch: str) -> str:
     """
     url = f"/repos/{os.getenv('GITHUB_REPOSITORY', '')}/branches/{branch}"
     response: "Dict[str, Any]" = api_request(url)  # type: ignore[assignment]
-    if response.get("protected", False):
-        if check_user_role("admin"):
-            return "protected"
 
+    if "protected" not in response:
         raise RuntimeError(
-            "Not enough rights to continue pushing to a protected branch - should "
-            "have 'admin' permissions (Admin role)."
+            f"Information regarding whether the branch {branch} is protected cannot be "
+            "retrieved."
         )
 
-    # Not protected, return an empty string
-    return ""
+    return "protected" if response["protected"] else ""
 
 
 def main() -> None:
