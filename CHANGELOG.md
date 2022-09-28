@@ -1,5 +1,20 @@
 # Changelog
 
+## [v2.14.0](https://github.com/CasperWA/push-protected/tree/v2.14.0) (2022-09-28)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.13.0...v2.14.0)
+
+**Implemented enhancements:**
+
+- Allow using Github App Token [\#144](https://github.com/CasperWA/push-protected/issues/144)
+
+**Merged pull requests:**
+
+- Update dependencies [\#146](https://github.com/CasperWA/push-protected/pull/146) ([CasperWA](https://github.com/CasperWA))
+- Expect the `protected` key to always exist [\#145](https://github.com/CasperWA/push-protected/pull/145) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#143](https://github.com/CasperWA/push-protected/pull/143) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#142](https://github.com/CasperWA/push-protected/pull/142) ([CasperWA](https://github.com/CasperWA))
+
 ## [v2.13.0](https://github.com/CasperWA/push-protected/tree/v2.13.0) (2022-08-15)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.12.0...v2.13.0)
