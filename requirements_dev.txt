@@ -1,3 +1,3 @@
-invoke~=1.7
+invoke~=2.0
 pre-commit~=2.21
 pylint~=2.15
