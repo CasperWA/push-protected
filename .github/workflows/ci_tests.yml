@@ -12,7 +12,7 @@ jobs:
     name: Reset test branches
     steps:
     - name: Checkout action repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         token: ${{ secrets.CI_RESET_TEST_BRANCHES }}
         fetch-depth: 0
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Perform changes
       run: ./ci.sh ${TEST_TAG}
@@ -91,7 +91,7 @@ jobs:
     name: Testing - protected
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Perform changes
       run: ./ci.sh
@@ -117,7 +117,7 @@ jobs:
     name: Testing - protected (--force)
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Perform non-fast-forwardable changes
       run: |
@@ -159,7 +159,7 @@ jobs:
     name: Testing - Setting `branch` and `ref` fails
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Push setting both `branch` and `ref` (should fail)
       id: push_branch_ref
@@ -183,7 +183,7 @@ jobs:
     name: Testing - Fail for non-existant branch
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Push to non-existant branch (should fail)
       id: push_non_existant
@@ -206,7 +206,7 @@ jobs:
     name: Testing - Using `path`
     steps:
     - name: Use local action (checkout)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: sub_folder
 
@@ -224,7 +224,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
@@ -252,7 +252,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 2
 
