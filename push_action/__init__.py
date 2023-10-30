@@ -15,4 +15,4 @@ LOGGER = logging.getLogger("push_action")
 
 if os.getenv("INPUT_DEBUG", "").lower() in ("true", "1"):
     LOGGER.setLevel(logging.DEBUG)
-    LOGGER.addHandler(logging.StreamHandler(sys.stdout))
+    LOGGER.addHandler(logging.StreamHandler(sys.stderr))
