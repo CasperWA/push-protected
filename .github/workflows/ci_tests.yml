@@ -104,6 +104,7 @@ jobs:
         branch: protected
         unprotect_reviews: true
         acceptable_conclusions: success,skipped
+        debug: true
 
     - name: Pushing to a protected branch without any changes
       uses: ./
@@ -112,6 +113,7 @@ jobs:
         ref: refs/heads/protected
         unprotect_reviews: true
         acceptable_conclusions: success,skipped
+        debug: true
 
   force-pushing:
     needs: [protected]
