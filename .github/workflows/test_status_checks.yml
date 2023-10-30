@@ -22,3 +22,11 @@ jobs:
     steps:
     - name: Important status check
       run: echo "Very important status check - SUCCESS!"
+
+  skipped_mock_status_check:
+    runs-on: ubuntu-latest
+    name: Skipped Mock Status Check
+    if: ! always()
+    steps:
+    - name: Skipped status check
+      run: echo "Very important skipped status check - SKIPPED!"
