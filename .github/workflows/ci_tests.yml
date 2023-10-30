@@ -224,6 +224,31 @@ jobs:
         force: yes
         debug: true
 
+  acceptable_conclusions:
+    needs: [path]
+    runs-on: ubuntu-latest
+    name: Testing - Default for `acceptable_conclusions` with skipped checks
+    steps:
+      - name: Use local action (checkout)
+        uses: actions/checkout@v4
+
+      - name: Push to protected branch without 'skipped' in 'acceptable_conclusions'
+        id: push_skipped
+        continue-on-error: true
+        uses: ./
+        with:
+          token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+          branch: protected
+          unprotect_reviews: true
+          # Default value - set here explicitly for clarity
+          acceptable_conclusions: success
+
+      - name: This runs ONLY if the previous step doesn't fail
+        if: steps.push_skipped.outcome != 'failure' || steps.push_skipped.conclusion != 'success'
+        run: |
+          echo "Outcome: ${{ steps.push_skipped.outcome }} (not 'failure'), Conclusion: ${{ steps.push_skipped.conclusion }} (not 'success')"
+          exit 1
+
   pre-commit:
     runs-on: ubuntu-latest
     steps:
