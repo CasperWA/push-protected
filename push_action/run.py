@@ -19,8 +19,9 @@ The steps of progression for the whole of the action are the following:
    Match found required GitHub Actions runs found in 1)
 
 4) Wait and do 3) again until required GitHub Actions jobs have "status": "completed"
-   If "conclusion": "success" YAY
-   If "conclusion" != "success" FAIL this action
+   If "conclusion" in inputs provided through `--acceptable-conclusion`
+   (default: "success") YAY
+   Otherwise, FAIL this action
 
 """
 import argparse
@@ -39,8 +40,9 @@ from push_action.utils import (
     get_workflow_run_jobs,
     remove_branch,
 )
+from push_action.validate import validate_conclusions
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from typing import Any, Dict
 
 
@@ -75,7 +77,10 @@ Configuration:
             # All jobs are completed
             print("All required GitHub Actions jobs complete!", flush=True)
             unsuccessful_jobs = [
-                _ for _ in actions_required if _.get("conclusion", "") != "success"
+                job_run
+                for job_run in actions_required
+                if job_run.get("conclusion", "")
+                not in IN_MEMORY_CACHE["acceptable_conclusions"]
             ]
             break
 
@@ -95,6 +100,7 @@ Configuration:
                     if _["name"] in required_statuses and _["status"] != "completed"
                 ]
             )
+
         if actions_required:
             print(
                 f"{len(actions_required)} required GitHub Actions jobs have not yet "
@@ -238,6 +244,16 @@ def main() -> None:
         default=30,
     )
     parser.add_argument(
+        "--acceptable-conclusion",
+        type=str,
+        help=(
+            "Acceptable conclusion for the wait_for_checks run to be considered "
+            "successful"
+        ),
+        action="append",
+        default=["success"],
+    )
+    parser.add_argument(
         "ACTION",
         type=str,
         help="The action to do",
@@ -254,6 +270,10 @@ def main() -> None:
 
     fail = ""
     try:
+        IN_MEMORY_CACHE["acceptable_conclusions"] = validate_conclusions(
+            IN_MEMORY_CACHE["args"].acceptable_conclusion
+        )
+
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
@@ -266,10 +286,8 @@ def main() -> None:
             print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="", flush=True)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
+
     except Exception as exc:  # pylint: disable=broad-except
         fail = f"{exc.__class__.__name__}: {exc}"
 
-    if fail:
-        sys.exit(fail)
-    else:
-        sys.exit()
+    sys.exit(fail or None)

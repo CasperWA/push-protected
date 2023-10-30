@@ -19,7 +19,7 @@ import requests
 from push_action.cache import IN_MEMORY_CACHE
 
 if TYPE_CHECKING:
-    from typing import Callable, List, Optional, Union
+    from typing import Callable, List, Union
 
 
 REQUEST_TIMEOUT = 10  # in seconds

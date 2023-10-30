@@ -17,7 +17,13 @@ unprotect () {
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
             if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
                 echo -e "\nRemove '${INPUT_BRANCH}' pull request review protection ..."
-                push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" -- unprotect_reviews
+
+                push-action \
+                    --token "${INPUT_TOKEN}" \
+                    --ref "${INPUT_BRANCH}" \
+                    --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
+                    -- unprotect_reviews
+
                 echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
             ;;
@@ -33,7 +39,13 @@ protect () {
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
             if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
                 echo -e "\nRe-add '${INPUT_BRANCH}' pull request review protection ..."
-                push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" -- protect_reviews
+
+                push-action \
+                    --token "${INPUT_TOKEN}" \
+                    --ref "${INPUT_BRANCH}" \
+                    --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
+                    -- protect_reviews
+
                 echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
             ;;
@@ -49,14 +61,38 @@ wait_for_checks() {
         echo -e "\nWaiting for status checks to finish for '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
         # Sleep for 5 seconds to let the workflows start
         sleep ${INPUT_SLEEP}
-        push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" --wait-timeout "${INPUT_TIMEOUT}" --wait-interval "${INPUT_INTERVAL}" -- wait_for_checks
+
+        ACCEPTABLE_CONCLUSIONS=()
+        if [ -n "${INPUT_ACCEPTABLE_CONCLUSIONS}" ]; then
+            while IFS="," read -ra CONCLUSIONS; do
+                for CONCLUSION in "${CONCLUSIONS[@]}"; do
+                    ACCEPTABLE_CONCLUSIONS+=(--acceptable-conclusion="${CONCLUSION}")
+                done
+            done <<< "${INPUT_ACCEPTABLE_CONCLUSIONS}"
+        fi
+
+        push-action \
+            --token "${INPUT_TOKEN}" \
+            --ref "${INPUT_BRANCH}" \
+            --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
+            --wait-timeout "${INPUT_TIMEOUT}" \
+            --wait-interval "${INPUT_INTERVAL}"\
+            "${ACCEPTABLE_CONCLUSIONS[@]}" \
+            -- wait_for_checks
+
         echo "Waiting for status checks to finish for '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ... DONE!"
     fi
 }
 remove_remote_temp_branch() {
     if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
         echo -e "\nRemoving temporary branch '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
-        push-action --token "${INPUT_TOKEN}" --ref "${INPUT_BRANCH}" --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" -- remove_temp_branch
+
+        push-action \
+            --token "${INPUT_TOKEN}" \
+            --ref "${INPUT_BRANCH}" \
+            --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
+            -- remove_temp_branch
+
         echo "Removing temporary branch '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ... DONE!"
     fi
 }
