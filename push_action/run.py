@@ -216,7 +216,7 @@ def compile_origin_url() -> str:
     base_url = os.getenv("GITHUB_SERVER_URL", "")
     split_base_url = urlsplit(base_url)
 
-    if not split_base_url.scheme or split_base_url.netloc:
+    if not (split_base_url.scheme or split_base_url.netloc):
         raise RuntimeError(
             f"Could not determine scheme and netloc from GITHUB_SERVER_URL: {base_url}"
         )
