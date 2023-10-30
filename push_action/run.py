@@ -25,6 +25,7 @@ The steps of progression for the whole of the action are the following:
 """
 import argparse
 import json
+import logging
 import os
 import sys
 from time import sleep, time
@@ -41,8 +42,11 @@ from push_action.utils import (
     remove_branch,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from typing import Any, Dict
+
+
+LOGGER = logging.getLogger("push_action.run")
 
 
 def wait() -> None:
@@ -293,6 +297,8 @@ def main() -> None:
     )
 
     IN_MEMORY_CACHE["args"] = parser.parse_args()
+
+    LOGGER.debug("Parsed args: %s", IN_MEMORY_CACHE["args"])
 
     fail = ""
     try:
