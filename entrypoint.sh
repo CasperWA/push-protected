@@ -12,6 +12,9 @@ esac
 set -e
 
 # Utility functions
+ere_quote() {
+    sed 's/[][\.|$(){}?+*^]/\\&/g' <<< "$*"
+}
 unprotect () {
     case ${INPUT_UNPROTECT_REVIEWS} in
         y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
@@ -102,8 +105,8 @@ git config --global --add safe.directory ${PWD}
 
 # Retrieve target repository
 echo -e "\nFetching the latest information from '${GITHUB_REPOSITORY}' ..."
-git config --local --name-only --get-regexp "http\.${GITHUB_SERVER_URL@Q}\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :
-git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.${GITHUB_SERVER_URL@Q}\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :'
+git config --local --name-only --get-regexp "http\.$(ere_quote "${GITHUB_SERVER_URL}")\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :
+git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.$(ere_quote "${GITHUB_SERVER_URL}")\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :'
 git remote set-url origin $(push-action --token "null" --ref "null" --temp-branch "null" -- create_origin_url)
 git fetch --unshallow -tp origin || :
 echo "Fetching the latest information from '${GITHUB_REPOSITORY}' ... DONE!"
