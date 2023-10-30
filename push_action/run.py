@@ -213,7 +213,7 @@ def compile_origin_url() -> str:
                 f"Required rnvironment variable {required_env_vars} is not set."
             )
 
-    base_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+    base_url = os.getenv("GITHUB_SERVER_URL", "")
     split_base_url = urlsplit(base_url)
 
     if not split_base_url.scheme or split_base_url.netloc:
