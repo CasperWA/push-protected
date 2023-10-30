@@ -17,13 +17,15 @@ except ImportError:
 import requests
 
 from push_action.cache import IN_MEMORY_CACHE
+from push_action.validate import validate_rest_api_base_url
 
 if TYPE_CHECKING:
-    from typing import Callable, List, Optional, Union
+    from typing import Callable, List, Union
 
 
 REQUEST_TIMEOUT = 10  # in seconds
-API_V3_BASE = "https://api.github.com"
+API_V3_BASE = validate_rest_api_base_url(os.getenv("INPUT_GH_REST_API_BASE_URL", ""))
+API_VERSION = "2022-11-28"
 
 
 class RepoRole(Enum):
@@ -73,6 +75,7 @@ def api_request(
             headers={
                 "Authorization": f"Bearer {IN_MEMORY_CACHE['args'].token}",
                 "Accept": "application/vnd.github.v3+json",
+                "X-GitHub-Api-Version": API_VERSION,
             },
             timeout=REQUEST_TIMEOUT,
             **kwargs,

@@ -102,9 +102,9 @@ git config --global --add safe.directory ${PWD}
 
 # Retrieve target repository
 echo -e "\nFetching the latest information from '${GITHUB_REPOSITORY}' ..."
-git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :
-git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.https://github.com/.extraheader" || :'
-git remote set-url origin https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :
+git submodule foreach --recursive 'git config --local --name-only --get-regexp "http\.https\:\/\/github\.com\/\.extraheader" && git config --local --unset-all "http.${GITHUB_SERVER_URL}/.extraheader" || :'
+git remote set-url origin $(push-action create_origin_url)
 git fetch --unshallow -tp origin || :
 echo "Fetching the latest information from '${GITHUB_REPOSITORY}' ... DONE!"
 
