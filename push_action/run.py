@@ -230,8 +230,7 @@ def compile_origin_url() -> str:
 
     # Add username and token
     compiled_url += os.getenv("GITHUB_ACTOR", "")
-    compiled_url += ":"
-    compiled_url += os.getenv("INPUT_TOKEN", "")
+    compiled_url += f":{os.getenv('INPUT_TOKEN', '')}"
 
     # Add netloc
     compiled_url += f"@{split_base_url.netloc}"

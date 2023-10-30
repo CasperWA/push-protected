@@ -103,7 +103,6 @@ jobs:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         branch: protected
         unprotect_reviews: true
-        debug: true
 
     - name: Pushing to a protected branch without any changes
       uses: ./
@@ -111,7 +110,6 @@ jobs:
         token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
         ref: refs/heads/protected
         unprotect_reviews: true
-        debug: true
 
   force-pushing:
     needs: [protected]
