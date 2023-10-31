@@ -104,7 +104,6 @@ jobs:
         branch: protected
         unprotect_reviews: true
         acceptable_conclusions: success,skipped
-        debug: true
 
     - name: Pushing to a protected branch without any changes
       uses: ./
@@ -113,7 +112,6 @@ jobs:
         ref: refs/heads/protected
         unprotect_reviews: true
         acceptable_conclusions: success,skipped
-        debug: true
 
   force-pushing:
     needs: [protected]
@@ -233,6 +231,10 @@ jobs:
     steps:
       - name: Use local action (checkout)
         uses: actions/checkout@v4
+
+      - name: Perform changes
+        run: ./ci.sh
+        working-directory: .github/utils
 
       - name: Push to protected branch without 'skipped' in 'acceptable_conclusions'
         id: push_skipped

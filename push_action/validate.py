@@ -39,6 +39,9 @@ def validate_conclusions(conclusions: list[str]) -> list[str]:
             "No conclusions supplied - at least one is required (default: 'success')."
         )
 
+    # Remove redundant entries and conform to lowercase
+    conclusions = list(set(conclusion.lower() for conclusion in conclusions))
+
     for conclusion in conclusions:
         invalid_conclusions: list[str] = []
         if conclusion not in VALID_CONCLUSIONS:
