@@ -75,47 +75,49 @@ Configuration:
     start_time = time()
     unsuccessful_jobs = []
     while (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
-        for job in actions_required:
-            if job["status"] != "completed":
-                break
-        else:
+        # Iterate over all jobs, removing completed jobs from the list
+        for job in actions_required.copy():
+            if job["status"] == "completed":
+                # Job is completed
+                actions_required.remove(job)
+
+                if (
+                    job.get("conclusion", "")
+                    not in IN_MEMORY_CACHE["acceptable_conclusions"]
+                ):
+                    # Job is completed unsuccessfully
+                    unsuccessful_jobs.append(job)
+
+        if not actions_required:
             # All jobs are completed
             print("All required GitHub Actions jobs complete!", flush=True)
-            unsuccessful_jobs = [
-                job
-                for job in get_required_actions(required_statuses, new_request=True)
-                if job.get("conclusion", "")
-                not in IN_MEMORY_CACHE["acceptable_conclusions"]
-            ]
             break
 
         # Some jobs have not yet completed
         print(
-            f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...", flush=True
+            f"{len(actions_required)} required GitHub Actions jobs have not yet "
+            f"completed!\nWaiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...",
+            flush=True,
         )
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
+        # Update job statuses for all still running jobs
         run_ids = {job["run_id"] for job in actions_required}
         actions_required = []
-        for run in run_ids:
+        for run_id in run_ids:
             actions_required.extend(
                 [
                     job
-                    for job in get_workflow_run_jobs(run, new_request=True)
-                    if job["name"] in required_statuses and job["status"] != "completed"
+                    for job in get_workflow_run_jobs(run_id, new_request=True)
+                    if job["name"] in required_statuses
                 ]
-            )
-
-        if actions_required:
-            print(
-                f"{len(actions_required)} required GitHub Actions jobs have not yet "
-                "completed!",
-                flush=True,
             )
 
     if unsuccessful_jobs:
         raise RuntimeError(
-            f"Required checks completed unsuccessfully:\n{unsuccessful_jobs}"
+            "Required checks completed with a conclusion not part of the acceptable "
+            f"conclusions ({', '.join(IN_MEMORY_CACHE['acceptable_conclusions'])}):\n"
+            f"{unsuccessful_jobs}"
         )
 
 

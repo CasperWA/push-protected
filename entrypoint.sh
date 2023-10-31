@@ -111,6 +111,18 @@ push_to_target() {
     git reset --hard ${PUSH_PROTECTED_TEMPORARY_BRANCH}
     git push ${PUSH_PROTECTED_FORCE_PUSH}
 }
+cleanup() {
+    # Get exit code of latest command
+    EXIT_CODE=$?
+
+    # Cleanup - Remove temporary branch
+    remove_remote_temp_branch
+
+    exit ${EXIT_CODE}
+}
+
+# Trap exit command and cleanup
+trap cleanup EXIT
 
 # Enter chosen working directory
 if [ -n "${INPUT_PATH}" ]; then
@@ -207,28 +219,23 @@ case ${INPUT_TAGS} in
         ;;
 esac
 
-{
-    # Possibly wait for status checks to complete
-    wait_for_checks &&
-    # Sleep 5 seconds to add addtional time buffer for status checks
-    sleep 5 &&
+# Possibly wait for status checks to complete
+wait_for_checks
 
-    # Unprotect target branch for pull request reviews (if desired)
-    unprotect &&
+# Sleep 5 seconds to add addtional time buffer for status checks
+sleep 5
 
-    # Push to target branch
-    echo -e "\nPushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ..." &&
-    push_to_target &&
-    push_tags &&
-    echo "Pushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ... DONE!" &&
+# Unprotect target branch for pull request reviews (if desired)
+unprotect
 
-    # Re-protect target branch for pull request reviews (if desired)
-    protect &&
+# Push to target branch
+echo -e "\nPushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ..."
+push_to_target
+push_tags
+echo "Pushing '${PUSH_PROTECTED_TEMPORARY_BRANCH}' -> 'origin/${INPUT_BRANCH}' ... DONE!"
 
-    # Remove temporary branch
-    remove_remote_temp_branch
-} || {
-    # Remove temporary branch
-    remove_remote_temp_branch &&
-    exit 1
-}
+# Re-protect target branch for pull request reviews (if desired)
+protect
+
+# Exit successfully (will cleanup)
+exit
