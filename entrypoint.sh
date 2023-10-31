@@ -74,7 +74,7 @@ wait_for_checks() {
             done <<< "${INPUT_ACCEPTABLE_CONCLUSIONS}"
         fi
 
-        push-action \
+        push-action ${FAIL_FAST} \
             --token "${INPUT_TOKEN}" \
             --ref "${INPUT_BRANCH}" \
             --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
@@ -216,6 +216,19 @@ case ${INPUT_TAGS} in
         ;;
     *)
         echo -e "\nNon-valid input for 'tags': ${INPUT_TAGS}. Will use default (false)."
+        ;;
+esac
+
+# --fail-fast
+case ${INPUT_FAIL_FAST} in
+    y | Y | yes | Yes | YES | true | True | TRUE | on | On | ON)
+        echo -e "\nWill fail fast (fail as soon as any check fails)!"
+        FAIL_FAST="--fail-fast"
+        ;;
+    n | N | no | No | NO | false | False | FALSE | off | Off | OFF)
+        ;;
+    *)
+        echo -e "\nNon-valid input for 'fail_fast': ${INPUT_FAIL_FAST}. Will use default (false)."
         ;;
 esac
 

@@ -86,6 +86,16 @@ Configuration:
                     not in IN_MEMORY_CACHE["acceptable_conclusions"]
                 ):
                     # Job is completed unsuccessfully
+                    if IN_MEMORY_CACHE["args"].fail_fast:
+                        # Fail fast
+                        raise RuntimeError(
+                            f"Required check {job['name']} completed with conclusion "
+                            f"{job['conclusion']!r} (not part of the acceptable "
+                            "conclusions: "
+                            f"{', '.join(IN_MEMORY_CACHE['acceptable_conclusions'])})."
+                            f"\n{job}"
+                        )
+
                     unsuccessful_jobs.append(job)
 
         if not actions_required:
@@ -297,7 +307,14 @@ def main() -> None:
             "successful"
         ),
         action="append",
-        default=["success"],
+    )
+    parser.add_argument(
+        "--fail-fast",
+        action="store_true",
+        help=(
+            "Whether or not to fail fast (i.e., exit immediately) if one of the "
+            "checks fails. Only valid with the wait_for_checks action."
+        ),
     )
     parser.add_argument(
         "ACTION",

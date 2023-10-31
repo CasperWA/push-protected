@@ -222,7 +222,7 @@ jobs:
         unprotect_reviews: true
         path: sub_folder
         force: yes
-        debug: true
+        acceptable_conclusions: success,skipped
 
   acceptable_conclusions:
     needs: [path]
