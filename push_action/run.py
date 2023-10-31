@@ -336,11 +336,12 @@ def main() -> None:
 
     fail = ""
     try:
-        IN_MEMORY_CACHE["acceptable_conclusions"] = validate_conclusions(
-            IN_MEMORY_CACHE["args"].acceptable_conclusion
-        )
-
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
+            # Ensure that the acceptable conclusions are valid
+            IN_MEMORY_CACHE["acceptable_conclusions"] = validate_conclusions(
+                IN_MEMORY_CACHE["args"].acceptable_conclusion
+            )
+
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
