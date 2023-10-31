@@ -66,13 +66,11 @@ wait_for_checks() {
         sleep ${INPUT_SLEEP}
 
         ACCEPTABLE_CONCLUSIONS=()
-        if [ -n "${INPUT_ACCEPTABLE_CONCLUSIONS}" ]; then
-            while IFS="," read -ra CONCLUSIONS; do
-                for CONCLUSION in "${CONCLUSIONS[@]}"; do
-                    ACCEPTABLE_CONCLUSIONS+=(--acceptable-conclusion="${CONCLUSION}")
-                done
-            done <<< "${INPUT_ACCEPTABLE_CONCLUSIONS}"
-        fi
+        while IFS="," read -ra CONCLUSIONS; do
+            for CONCLUSION in "${CONCLUSIONS[@]}"; do
+                ACCEPTABLE_CONCLUSIONS+=(--acceptable-conclusion="${CONCLUSION}")
+            done
+        done <<< "${INPUT_ACCEPTABLE_CONCLUSIONS}"
 
         push-action ${FAIL_FAST} \
             --token "${INPUT_TOKEN}" \
