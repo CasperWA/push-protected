@@ -82,9 +82,9 @@ Configuration:
             # All jobs are completed
             print("All required GitHub Actions jobs complete!", flush=True)
             unsuccessful_jobs = [
-                job_run
-                for job_run in actions_required
-                if job_run.get("conclusion", "")
+                job
+                for job in actions_required
+                if job.get("conclusion", "")
                 not in IN_MEMORY_CACHE["acceptable_conclusions"]
             ]
             break
@@ -95,14 +95,14 @@ Configuration:
         )
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
-        run_ids = {_["run_id"] for _ in actions_required}
+        run_ids = {job["run_id"] for job in actions_required}
         actions_required = []
         for run in run_ids:
             actions_required.extend(
                 [
-                    _
-                    for _ in get_workflow_run_jobs(run, new_request=True)
-                    if _["name"] in required_statuses and _["status"] != "completed"
+                    job
+                    for job in get_workflow_run_jobs(run, new_request=True)
+                    if job["name"] in required_statuses and job["status"] != "completed"
                 ]
             )
 

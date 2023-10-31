@@ -246,6 +246,7 @@ jobs:
           unprotect_reviews: true
           # Default value - set here explicitly for clarity
           acceptable_conclusions: success
+          debug: true
 
       - name: This runs ONLY if the previous step doesn't fail
         if: steps.push_skipped.outcome != 'failure' || steps.push_skipped.conclusion != 'success'
