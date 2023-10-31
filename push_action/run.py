@@ -83,7 +83,7 @@ Configuration:
             print("All required GitHub Actions jobs complete!", flush=True)
             unsuccessful_jobs = [
                 job
-                for job in actions_required
+                for job in get_required_actions(required_statuses, new_request=True)
                 if job.get("conclusion", "")
                 not in IN_MEMORY_CACHE["acceptable_conclusions"]
             ]
