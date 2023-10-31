@@ -3,6 +3,7 @@
 Utility functions for use in the `push_action.run` module.
 """
 from enum import Enum
+import logging
 import os
 from time import time
 from typing import TYPE_CHECKING
@@ -17,13 +18,18 @@ except ImportError:
 import requests
 
 from push_action.cache import IN_MEMORY_CACHE
+from push_action.validate import validate_rest_api_base_url
 
-if TYPE_CHECKING:
-    from typing import Callable, List, Optional, Union
+if TYPE_CHECKING:  # pragma: no cover
+    from typing import Callable, List, Union
+
+
+LOGGER = logging.getLogger("push_action.utils")
 
 
 REQUEST_TIMEOUT = 10  # in seconds
-API_V3_BASE = "https://api.github.com"
+API_V3_BASE = validate_rest_api_base_url(os.getenv("INPUT_GH_REST_API_BASE_URL", ""))
+API_VERSION = "2022-11-28"
 
 
 class RepoRole(Enum):
@@ -73,6 +79,7 @@ def api_request(
             headers={
                 "Authorization": f"Bearer {IN_MEMORY_CACHE['args'].token}",
                 "Accept": "application/vnd.github.v3+json",
+                "X-GitHub-Api-Version": API_VERSION,
             },
             timeout=REQUEST_TIMEOUT,
             **kwargs,
@@ -114,6 +121,12 @@ def api_request(
             response = response.json()
         except json.JSONDecodeError as exc:
             raise RuntimeError(f"Failed to jsonify response.\n{exc!r}") from exc
+
+    LOGGER.debug(
+        "API Call to: %s\nResponse: %s",
+        url,
+        response.text if isinstance(response, requests.Response) else response,
+    )
 
     return response
 
@@ -186,9 +199,9 @@ def get_workflow_runs(workflow_id: int, new_request: bool = False) -> "List[dict
             )
 
         workflow_runs = [
-            _
-            for _ in response.get("workflow_runs", [])
-            if _.get("head_branch", "") == IN_MEMORY_CACHE["args"].temp_branch
+            run
+            for run in response.get("workflow_runs", [])
+            if run.get("head_branch", "") == IN_MEMORY_CACHE["args"].temp_branch
         ]
 
         if cache_name in IN_MEMORY_CACHE:
@@ -247,16 +260,16 @@ def get_required_actions(
                     f"{type(response)}"
                 )
 
-            runs = []
+            runs: "List[dict]" = []
             for workflow in response["workflows"]:
                 runs.extend(get_workflow_runs(workflow["id"]))
 
-            jobs = []
+            jobs: "List[dict]" = []
             for run in runs:
                 jobs.extend(get_workflow_run_jobs(run["id"]))
 
             IN_MEMORY_CACHE[cache_name] = [
-                _ for _ in jobs if _.get("name", "") in statuses
+                job for job in jobs if job.get("name", "") in statuses
             ]
 
     return IN_MEMORY_CACHE[cache_name]

@@ -6,16 +6,16 @@ The steps of progression for the whole of the action are the following:
 
 1) Get required statuses for branch (GitHub Actions jobs / third party status checks)
    from:
-   https://api.github.com/repos/:owner/:repo/branches/:branch
+   {input_gh_rest_api_base_url}/repos/:owner/:repo/branches/:branch
    protection -> required_status_checks -> contexts
 
 2) Get GitHub Actions runs for specific workflow:
-   https://api.github.com/repos/:owner/:repo/actions/workflows/:workflow_id/runs
+   {input_gh_rest_api_base_url}/repos/:owner/:repo/actions/workflows/:workflow_id/runs
    :workflow_id can also be :workflow_file_name (e.g., 'main.yml')
    Get :run_id from this
 
 3) Get names and statuses of jobs in specific run:
-   https://api.github.com/repos/:owner/:repo/actions/runs/:run_id/jobs
+   {input_gh_rest_api_base_url}/repos/:owner/:repo/actions/runs/:run_id/jobs
    Match found required GitHub Actions runs found in 1)
 
 4) Wait and do 3) again until required GitHub Actions jobs have "status": "completed"
@@ -25,10 +25,12 @@ The steps of progression for the whole of the action are the following:
 """
 import argparse
 import json
+import logging
 import os
 import sys
 from time import sleep, time
 from typing import TYPE_CHECKING
+from urllib.parse import urlsplit
 
 from push_action.cache import IN_MEMORY_CACHE
 from push_action.utils import (
@@ -40,8 +42,11 @@ from push_action.utils import (
     remove_branch,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from typing import Any, Dict
+
+
+LOGGER = logging.getLogger("push_action.run")
 
 
 def wait() -> None:
@@ -197,6 +202,45 @@ def protected_branch(branch: str) -> str:
     return "protected" if response["protected"] else ""
 
 
+def compile_origin_url() -> str:
+    """Compile the git remote 'origin' URL for the repository."""
+    compiled_url = ""
+
+    for required_env_vars in [
+        "GITHUB_SERVER_URL",
+        "GITHUB_REPOSITORY",
+        "GITHUB_ACTOR",
+        "INPUT_TOKEN",
+    ]:
+        if required_env_vars not in os.environ:
+            raise RuntimeError(
+                f"Required rnvironment variable {required_env_vars} is not set."
+            )
+
+    base_url = os.getenv("GITHUB_SERVER_URL", "")
+    split_base_url = urlsplit(base_url)
+
+    if not (split_base_url.scheme or split_base_url.netloc):
+        raise RuntimeError(
+            f"Could not determine scheme and netloc from GITHUB_SERVER_URL: {base_url}"
+        )
+
+    # Add scheme
+    compiled_url += f"{split_base_url.scheme}://"
+
+    # Add username and token
+    compiled_url += os.getenv("GITHUB_ACTOR", "")
+    compiled_url += f":{os.getenv('INPUT_TOKEN', '')}"
+
+    # Add netloc
+    compiled_url += f"@{split_base_url.netloc}"
+
+    # Add path (repository)
+    compiled_url += f"/{os.getenv('GITHUB_REPOSITORY', '')}.git"
+
+    return compiled_url
+
+
 def main() -> None:
     """Main function to run this module"""
     # Handle inputs
@@ -247,10 +291,13 @@ def main() -> None:
             "unprotect_reviews",
             "protect_reviews",
             "protected_branch",
+            "create_origin_url",
         ],
     )
 
     IN_MEMORY_CACHE["args"] = parser.parse_args()
+
+    LOGGER.debug("Parsed args: %s", IN_MEMORY_CACHE["args"])
 
     fail = ""
     try:
@@ -264,6 +311,8 @@ def main() -> None:
             protect_reviews()
         elif IN_MEMORY_CACHE["args"].ACTION == "protected_branch":
             print(protected_branch(IN_MEMORY_CACHE["args"].ref), end="", flush=True)
+        elif IN_MEMORY_CACHE["args"].ACTION == "create_origin_url":
+            print(compile_origin_url(), end="", flush=True)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
     except Exception as exc:  # pylint: disable=broad-except
