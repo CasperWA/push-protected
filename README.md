@@ -155,6 +155,7 @@ All input names in **bold** are _required_.
 | `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
 | `debug` | Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action. | `False` |
 | `path` | A path to the working directory of the action. This should be relative to the `$GITHUB_WORKSPACE`. | `.` |
+| `gh_rest_api_base_url` | The base URL for the GitHub REST API. This is useful for GitHub Enterprise users.</br>Note, `/api/v3` will be appended to this value if it does not already exist. See the note [here](https://docs.github.com/en/enterprise-server@3.10/rest/quickstart?apiVersion=2022-11-28&tool=curl#using-curl-commands-in-github-actions). | `https://api.github.com` |
 | `acceptable_conclusions` | A comma-separated list of acceptable statuses. If any of these statuses are present, the action will not fail.</br></br>See the [GitHub REST API documentation](https://docs.github.com/en/rest/actions/workflow-jobs#get-a-job-for-a-workflow-run), specifically, the Response schema's "conclusion" property's `enum` values, for a complete list of supported values (excluding `null`). | `success` |
 
 ## License
