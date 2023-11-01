@@ -7,47 +7,47 @@ branding:
 inputs:
   token:
     description: 'Token for the repo.'
-    required: true
+    required: false
   branch:
     description: 'Target branch for the push. Mutually exclusive with "ref". Example: "main".'
-    required: false
-    default: ''
+    required: true
+    default: 'false'
   ref:
     description: 'Target ref for the push. Mutually exclusive with "branch". Example: "refs/heads/main".'
-    required: false
-    default: ''
+    required: true
+    default: 'false'
   force:
     description: 'Determines if --force is used.'
-    required: false
+    required: true
     default: 'false'
   tags:
     description: 'Determines if --tags is used.'
-    required: false
+    required: true
     default: 'false'
   interval:
     description: 'Time interval (in seconds) between each new check, when waiting for status checks to complete'
-    required: false
-    default: '30'
+    required: true
+    default: '1'
   timeout:
     description: 'Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete'
-    required: false
-    default: '15'
+    required: true
+    default: '1'
   sleep:
     description: "Time (in seconds) the action should wait until it will start 'waiting' and check the list of running actions/checks. This should be an appropriate number to let the checks start up"
-    required: false
-    default: '5'
+    required: true
+    default: '15'
   unprotect_reviews:
     description: 'Momentarily remove pull request review protection from target branch'
     required: false
-    default: 'false'
+    default: 'true'
   debug:
     description: 'Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action.'
     required: false
     default: 'false'
   path:
     description: 'A path to the working directory of the action. This should be relative to the $GITHUB_WORKSPACE.'
-    required: false
-    default: '.'
+    required: true
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'
