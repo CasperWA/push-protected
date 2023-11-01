@@ -62,8 +62,9 @@ protect () {
 wait_for_checks() {
     if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
         echo -e "\nWaiting for status checks to finish for '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ..."
-        # Sleep for 5 seconds to let the workflows start
-        sleep ${INPUT_SLEEP}
+
+        # Sleep to let the workflows/status checks start up
+        sleep ${INPUT_PRE_SLEEP}
 
         ACCEPTABLE_CONCLUSIONS=()
         while IFS="," read -ra CONCLUSIONS; do
@@ -83,6 +84,9 @@ wait_for_checks() {
 
         echo "Waiting for status checks to finish for '${PUSH_PROTECTED_TEMPORARY_BRANCH}' ... DONE!"
     fi
+
+    # Sleep to add addtional time buffer for status checks
+    sleep ${INPUT_POST_SLEEP}
 }
 remove_remote_temp_branch() {
     if [ -n "${PUSH_PROTECTED_CHANGED_BRANCH}" ] && [ -n "${PUSH_PROTECTED_PROTECTED_BRANCH}" ]; then
@@ -232,9 +236,6 @@ esac
 
 # Possibly wait for status checks to complete
 wait_for_checks
-
-# Sleep 5 seconds to add addtional time buffer for status checks
-sleep 5
 
 # Unprotect target branch for pull request reviews (if desired)
 unprotect
