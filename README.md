@@ -144,15 +144,16 @@ All input names in **bold** are _required_.
 
 | Name | Description | Default |
 |:---:|:---|:---:|
-| **`token`** | Token for the repo.<br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
-| `branch` | Target branch for the push. Mutually exclusive with "ref".<br>Example: `"main"`. | `main` |
-| `ref` | Target ref for the push. Mutually exclusive with "branch".<br>Example: `"refs/heads/main"`. | |
+| **`token`** | Token for the repo.</br>Used for authentication and starting 'push' hooks. See above for notes on this input. | |
+| `branch` | Target branch for the push. Mutually exclusive with "ref".</br>Example: `"main"`. | `main` |
+| `ref` | Target ref for the push. Mutually exclusive with "branch".</br>Example: `"refs/heads/main"`. | |
 | `force` | Determines if `--force` is used. | `False` |
 | `tags` | Determines if `--tags` is used. | `False` |
 | `interval` | Time interval (in seconds) between each new check, when waiting for status checks to complete. | `30` |
 | `timeout` | Time (in minutes) of how long the action should run before timing out, waiting for status checks to complete. | `15` |
-| `sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
-| `unprotect_reviews` | Momentarily remove pull request review protection from target branch.<br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
+| `pre_sleep` | Time (in seconds) the action should wait until it will start "waiting" and check the list of running actions/checks. This should be an appropriate number to let the checks start up. | `5` |
+| `post_sleep` | Time (in seconds) the action should wait after it has finished 'waiting' for all checks to finish. | `5` |
+| `unprotect_reviews` | Momentarily remove pull request review protection from target branch.</br>**Note**: One needs administrative access to the repository to be able to use this feature. This means two things need to match up: The PAT must represent a user with administrative rights, and these rights need to be granted to the usage scope of the PAT. | `False` |
 | `debug` | Set `set -x` in `entrypoint.sh` when running the action. This is for debugging the action. | `False` |
 | `path` | A path to the working directory of the action. This should be relative to the `$GITHUB_WORKSPACE`. | `.` |
 | `gh_rest_api_base_url` | The base URL for the GitHub REST API. This is useful for GitHub Enterprise users.</br>Note, `/api/v3` will be appended to this value if it does not already exist. See the note [here](https://docs.github.com/en/enterprise-server@3.10/rest/quickstart?apiVersion=2022-11-28&tool=curl#using-curl-commands-in-github-actions). | `https://api.github.com` |
