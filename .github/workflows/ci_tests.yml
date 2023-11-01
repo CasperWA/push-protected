@@ -64,7 +64,6 @@ jobs:
         token: '${{ secrets.GITHUB_TOKEN }}'
         branch: not_protected
         unprotect_reviews: false
-        sleep: 5
 
     - name: Check tags (local)
       run: |
