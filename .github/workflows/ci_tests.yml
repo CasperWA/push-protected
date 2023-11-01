@@ -253,6 +253,36 @@ jobs:
           echo "Outcome: ${{ steps.push_skipped.outcome }} (not 'failure'), Conclusion: ${{ steps.push_skipped.conclusion }} (not 'success')"
           exit 1
 
+  fail_fast:
+    needs: [acceptable_conclusions]
+    runs-on: ubuntu-latest
+    name: Testing - Using `fail_fast`
+    steps:
+      - name: Use local action (checkout)
+        uses: actions/checkout@v4
+
+      - name: Perform changes
+        run: ./ci.sh
+        working-directory: .github/utils
+
+      - name: Push to protected branch without 'skipped' in 'acceptable_conclusions' & with 'fail_fast'
+        id: fail_fast
+        continue-on-error: true
+        uses: ./
+        with:
+          token: '${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}'
+          branch: protected
+          unprotect_reviews: true
+          # Default value - set here explicitly for clarity
+          acceptable_conclusions: success
+          fail_fast: true
+
+      - name: This runs ONLY if the previous step doesn't fail
+        if: steps.fail_fast.outcome != 'failure' || steps.fail_fast.conclusion != 'success'
+        run: |
+          echo "Outcome: ${{ steps.fail_fast.outcome }} (not 'failure'), Conclusion: ${{ steps.fail_fast.conclusion }} (not 'success')"
+          exit 1
+
   pre-commit:
     runs-on: ubuntu-latest
     steps:
