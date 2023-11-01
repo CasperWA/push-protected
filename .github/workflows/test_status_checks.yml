@@ -29,4 +29,12 @@ jobs:
     if: ${{ !always() }}
     steps:
     - name: Skipped status check
-      run: echo "Very important skipped status check - SKIPPED!"
+      run: echo "Very important skipped status check - here for --acceptable-conclusion testing - SKIPPED!"
+
+  another_skipped_mock_status_check:
+    runs-on: ubuntu-latest
+    name: Another Skipped Mock Status Check
+    if: ${{ !always() }}
+    steps:
+    - name: Skipped status check
+      run: echo "Very important skipped status check - here for --fail-fast testing - SKIPPED!"
