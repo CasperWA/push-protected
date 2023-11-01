@@ -19,8 +19,9 @@ The steps of progression for the whole of the action are the following:
    Match found required GitHub Actions runs found in 1)
 
 4) Wait and do 3) again until required GitHub Actions jobs have "status": "completed"
-   If "conclusion": "success" YAY
-   If "conclusion" != "success" FAIL this action
+   If "conclusion" in inputs provided through `--acceptable-conclusion`
+   (default: "success") YAY
+   Otherwise, FAIL this action
 
 """
 import argparse
@@ -41,6 +42,7 @@ from push_action.utils import (
     get_workflow_run_jobs,
     remove_branch,
 )
+from push_action.validate import validate_conclusions
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Any, Dict
@@ -73,43 +75,59 @@ Configuration:
     start_time = time()
     unsuccessful_jobs = []
     while (time() - start_time) < (60 * IN_MEMORY_CACHE["args"].wait_timeout):
-        for job in actions_required:
-            if job["status"] != "completed":
-                break
-        else:
+        # Iterate over all jobs, removing completed jobs from the list
+        for job in actions_required.copy():
+            if job["status"] == "completed":
+                # Job is completed
+                actions_required.remove(job)
+
+                if (
+                    job.get("conclusion", "")
+                    not in IN_MEMORY_CACHE["acceptable_conclusions"]
+                ):
+                    # Job is completed unsuccessfully
+                    if IN_MEMORY_CACHE["args"].fail_fast:
+                        # Fail fast
+                        raise RuntimeError(
+                            f"Required check {job['name']} completed with conclusion "
+                            f"{job['conclusion']!r} (not part of the acceptable "
+                            "conclusions: "
+                            f"{', '.join(IN_MEMORY_CACHE['acceptable_conclusions'])})."
+                            f"\n{job}"
+                        )
+
+                    unsuccessful_jobs.append(job)
+
+        if not actions_required:
             # All jobs are completed
             print("All required GitHub Actions jobs complete!", flush=True)
-            unsuccessful_jobs = [
-                _ for _ in actions_required if _.get("conclusion", "") != "success"
-            ]
             break
 
         # Some jobs have not yet completed
         print(
-            f"Waiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...", flush=True
+            f"{len(actions_required)} required GitHub Actions jobs have not yet "
+            f"completed!\nWaiting {IN_MEMORY_CACHE['args'].wait_interval} seconds ...",
+            flush=True,
         )
         sleep(IN_MEMORY_CACHE["args"].wait_interval)
 
-        run_ids = {_["run_id"] for _ in actions_required}
+        # Update job statuses for all still running jobs
+        run_ids = {job["run_id"] for job in actions_required}
         actions_required = []
-        for run in run_ids:
+        for run_id in run_ids:
             actions_required.extend(
                 [
-                    _
-                    for _ in get_workflow_run_jobs(run, new_request=True)
-                    if _["name"] in required_statuses and _["status"] != "completed"
+                    job
+                    for job in get_workflow_run_jobs(run_id, new_request=True)
+                    if job["name"] in required_statuses
                 ]
-            )
-        if actions_required:
-            print(
-                f"{len(actions_required)} required GitHub Actions jobs have not yet "
-                "completed!",
-                flush=True,
             )
 
     if unsuccessful_jobs:
         raise RuntimeError(
-            f"Required checks completed unsuccessfully:\n{unsuccessful_jobs}"
+            "Required checks completed with a conclusion not part of the acceptable "
+            f"conclusions ({', '.join(IN_MEMORY_CACHE['acceptable_conclusions'])}):\n"
+            f"{unsuccessful_jobs}"
         )
 
 
@@ -282,6 +300,23 @@ def main() -> None:
         default=30,
     )
     parser.add_argument(
+        "--acceptable-conclusion",
+        type=str,
+        help=(
+            "Acceptable conclusion for the wait_for_checks run to be considered "
+            "successful"
+        ),
+        action="append",
+    )
+    parser.add_argument(
+        "--fail-fast",
+        action="store_true",
+        help=(
+            "Whether or not to fail fast (i.e., exit immediately) if one of the "
+            "checks fails. Only valid with the wait_for_checks action."
+        ),
+    )
+    parser.add_argument(
         "ACTION",
         type=str,
         help="The action to do",
@@ -302,6 +337,11 @@ def main() -> None:
     fail = ""
     try:
         if IN_MEMORY_CACHE["args"].ACTION == "wait_for_checks":
+            # Ensure that the acceptable conclusions are valid
+            IN_MEMORY_CACHE["acceptable_conclusions"] = validate_conclusions(
+                IN_MEMORY_CACHE["args"].acceptable_conclusion
+            )
+
             wait()
         elif IN_MEMORY_CACHE["args"].ACTION == "remove_temp_branch":
             remove_branch(IN_MEMORY_CACHE["args"].temp_branch)
@@ -315,10 +355,8 @@ def main() -> None:
             print(compile_origin_url(), end="", flush=True)
         else:
             raise RuntimeError(f"Unknown ACTIONS {IN_MEMORY_CACHE['args'].ACTION!r}")
+
     except Exception as exc:  # pylint: disable=broad-except
         fail = f"{exc.__class__.__name__}: {exc}"
 
-    if fail:
-        sys.exit(fail)
-    else:
-        sys.exit()
+    sys.exit(fail or None)

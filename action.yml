@@ -52,6 +52,14 @@ inputs:
     description: 'The base URL for the GitHub REST API. This is useful for GitHub Enterprise users. Note, `/api/v3` will be appended to this value if it does not already exist. See the note here: https://docs.github.com/en/enterprise-server@3.10/rest/quickstart?apiVersion=2022-11-28&tool=curl#using-curl-commands-in-github-actions.'
     required: false
     default: 'https://api.github.com'
+  acceptable_conclusions:
+    description: 'A comma-separated list of acceptable conclusions. If any of these conclusions are present, the action will not fail.'
+    required: false
+    default: 'success'
+  fail_fast:
+    description: 'If set to true, the action will fail as soon as a check fails. If set to false (default), the action will wait for all checks to complete before failing.'
+    required: false
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'
