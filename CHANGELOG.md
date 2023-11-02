@@ -1,5 +1,61 @@
 # Changelog
 
+## [Unreleased](https://github.com/CasperWA/push-protected/tree/HEAD)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.15.0...HEAD)
+
+**Fixed bugs:**
+
+- Reinstate and deprecate the `sleep` input [\#209](https://github.com/CasperWA/push-protected/issues/209)
+
+## [v2.15.0](https://github.com/CasperWA/push-protected/tree/v2.15.0) (2023-11-02)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.14.0...v2.15.0)
+
+**Implemented enhancements:**
+
+- State of checks [\#149](https://github.com/CasperWA/push-protected/issues/149)
+- Make post-sleep a user input [\#136](https://github.com/CasperWA/push-protected/issues/136)
+
+**Closed issues:**
+
+- Support GH enterprise [\#201](https://github.com/CasperWA/push-protected/issues/201)
+- Error logged when check is skipped [\#153](https://github.com/CasperWA/push-protected/issues/153)
+
+**Merged pull requests:**
+
+- Reinstate, but deprecate, the 'sleep' input [\#210](https://github.com/CasperWA/push-protected/pull/210) ([CasperWA](https://github.com/CasperWA))
+- Add 'post\_sleep' input, rename 'sleep'-\>'pre\_sleep' [\#208](https://github.com/CasperWA/push-protected/pull/208) ([CasperWA](https://github.com/CasperWA))
+- Support GH Enterprise [\#205](https://github.com/CasperWA/push-protected/pull/205) ([CasperWA](https://github.com/CasperWA))
+- Add custom acceptable job run conclusions [\#204](https://github.com/CasperWA/push-protected/pull/204) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#203](https://github.com/CasperWA/push-protected/pull/203) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#200](https://github.com/CasperWA/push-protected/pull/200) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#198](https://github.com/CasperWA/push-protected/pull/198) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#195](https://github.com/CasperWA/push-protected/pull/195) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#194](https://github.com/CasperWA/push-protected/pull/194) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#188](https://github.com/CasperWA/push-protected/pull/188) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#187](https://github.com/CasperWA/push-protected/pull/187) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#184](https://github.com/CasperWA/push-protected/pull/184) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#179](https://github.com/CasperWA/push-protected/pull/179) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#176](https://github.com/CasperWA/push-protected/pull/176) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#175](https://github.com/CasperWA/push-protected/pull/175) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#173](https://github.com/CasperWA/push-protected/pull/173) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#172](https://github.com/CasperWA/push-protected/pull/172) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#170](https://github.com/CasperWA/push-protected/pull/170) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#168](https://github.com/CasperWA/push-protected/pull/168) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#167](https://github.com/CasperWA/push-protected/pull/167) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#165](https://github.com/CasperWA/push-protected/pull/165) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#163](https://github.com/CasperWA/push-protected/pull/163) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#161](https://github.com/CasperWA/push-protected/pull/161) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#159](https://github.com/CasperWA/push-protected/pull/159) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#157](https://github.com/CasperWA/push-protected/pull/157) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#155](https://github.com/CasperWA/push-protected/pull/155) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#154](https://github.com/CasperWA/push-protected/pull/154) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#152](https://github.com/CasperWA/push-protected/pull/152) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#151](https://github.com/CasperWA/push-protected/pull/151) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#148](https://github.com/CasperWA/push-protected/pull/148) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#147](https://github.com/CasperWA/push-protected/pull/147) ([CasperWA](https://github.com/CasperWA))
+
 ## [v2.14.0](https://github.com/CasperWA/push-protected/tree/v2.14.0) (2022-09-28)
 
 [Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.13.0...v2.14.0)
