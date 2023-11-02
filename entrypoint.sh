@@ -11,6 +11,14 @@ esac
 
 set -e
 
+if [ -n "${INPUT_SLEEP}" ]; then
+    echo "::warning title=Deprecated input::The 'sleep' input is deprecated. Please use 'pre_sleep' instead."
+    if [ -z "${INPUT_PRE_SLEEP}" ] || [ "${INPUT_PRE_SLEEP}" == "5" ]; then
+        # If `pre_sleep` is not defined, or is the default value, use the deprecated `sleep` input value
+        INPUT_PRE_SLEEP=${INPUT_SLEEP}
+    fi
+fi
+
 # Utility functions
 ere_quote() {
     sed 's/[][\.|$(){}?+*^]/\\&/g' <<< "$*"

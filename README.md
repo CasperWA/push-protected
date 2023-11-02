@@ -160,6 +160,12 @@ All input names in **bold** are _required_.
 | `acceptable_conclusions` | A comma-separated list of acceptable statuses. If any of these statuses are present, the action will not fail.</br></br>See the [GitHub REST API documentation](https://docs.github.com/en/rest/actions/workflow-jobs#get-a-job-for-a-workflow-run), specifically, the Response schema's "conclusion" property's `enum` values, for a complete list of supported values (excluding `null`). | `success` |
 | `fail_fast` | If set to true, the action will fail as soon as a check fails. If set to false (default), the action will wait for all checks to complete before failing. | `False` |
 
+### Deprecated inputs
+
+| Name | Replaced by | Deprecated since |
+|:---:|:---:|:---:|
+| `sleep` | `pre_sleep` | v2.15.0 |
+
 ## License
 
 All files in this repository is licensed under the [MIT License](LICENSE) and copyright &copy; Casper Welzel Andersen.
