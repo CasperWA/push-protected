@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3.11-alpine
 
 COPY README.md setup.py requirements*.txt ./
 COPY push_action ./push_action
