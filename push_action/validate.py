@@ -40,7 +40,7 @@ def validate_conclusions(conclusions: list[str]) -> list[str]:
         )
 
     # Remove redundant entries and conform to lowercase
-    conclusions = list(set(conclusion.lower() for conclusion in conclusions))
+    conclusions = list({conclusion.lower() for conclusion in conclusions})
 
     for conclusion in conclusions:
         invalid_conclusions: list[str] = []

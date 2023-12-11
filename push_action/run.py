@@ -186,7 +186,7 @@ def unprotect_reviews() -> None:
 def protect_reviews() -> None:
     """Re-add pull request review protection for target branch"""
     # Retrieve data
-    with open("tmp_protection_rules.json", "r", encoding="utf8") as handle:
+    with open("tmp_protection_rules.json", encoding="utf8") as handle:
         data = json.load(handle)
 
     # Add protection

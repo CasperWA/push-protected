@@ -21,7 +21,8 @@ from push_action.cache import IN_MEMORY_CACHE
 from push_action.validate import validate_rest_api_base_url
 
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import Callable, List, Union
+    from typing import List, Union
+    from collections.abc import Callable
 
 
 LOGGER = logging.getLogger("push_action.utils")

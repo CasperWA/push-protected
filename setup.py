@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 TOP_DIR = Path(__file__).parent.resolve()
 
-with open(TOP_DIR / "push_action" / "__init__.py", "r", encoding="utf8") as handle:
+with open(TOP_DIR / "push_action" / "__init__.py", encoding="utf8") as handle:
     for line in handle.readlines():
         version = re.findall(r'__version__ = "(.*)"', line)
         if version:
@@ -39,12 +39,10 @@ setup(
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.11",
         "Intended Audience :: Developers",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.11,<3.12",
     install_requires=(TOP_DIR / "requirements.txt").read_text(),
     extras_require={"dev": (TOP_DIR / "requirements_dev.txt").read_text()},
     entry_points={"console_scripts": ["push-action=push_action.run:main"]},
