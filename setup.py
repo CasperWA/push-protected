@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 TOP_DIR = Path(__file__).parent.resolve()
 
-with open(TOP_DIR / "push_action" / "__init__.py", "r", encoding="utf8") as handle:
+with open(TOP_DIR / "push_action" / "__init__.py", encoding="utf8") as handle:
     for line in handle.readlines():
         version = re.findall(r'__version__ = "(.*)"', line)
         if version:
