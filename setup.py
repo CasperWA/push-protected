@@ -7,6 +7,7 @@ Install the action by running:
 ```
 
 """
+
 from pathlib import Path
 import re
 from setuptools import setup, find_packages

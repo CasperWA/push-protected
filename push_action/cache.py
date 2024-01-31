@@ -4,6 +4,7 @@ A simple implementation of an in-memory cache.
 It's a glorified dictionary and is mainly here as a representation of playing around
 with and learning dunder methods.
 """
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
