@@ -1,4 +1,5 @@
 """Validate inputs."""
+
 from __future__ import annotations
 
 from urllib.parse import urlsplit
