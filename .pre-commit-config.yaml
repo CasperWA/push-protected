@@ -23,7 +23,7 @@ repos:
       args: [--py311-plus]
 
   - repo: https://github.com/ambv/black
-    rev: 24.3.0
+    rev: 24.4.0
     hooks:
     - id: black
       name: Blacken
