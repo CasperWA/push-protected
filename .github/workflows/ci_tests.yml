@@ -337,5 +337,9 @@ jobs:
     - name: Run pylint
       run: pylint --rcfile=pyproject.toml *.py push_action
 
+      # ID: 70612
+      #   Package: Jinja2
+      #   Has been disputed by the maintainer and multiple third parties.
+      #   For more information see: https://github.com/advisories/GHSA-f6pv-j8mr-w6rr
     - name: Run safety
-      run: pip freeze | safety check --stdin
+      run: pip freeze | safety check --stdin --ignore=70612
