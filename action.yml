@@ -57,9 +57,9 @@ inputs:
     required: false
     default: 'https://api.github.com'
   acceptable_conclusions:
-    description: 'A comma-separated list of acceptable conclusions. If any of these conclusions are present, the action will not fail.'
+    description: 'A string listing acceptable statuses as comma-separated entries with no spaces (for example `"success,skipped"`). If any of these conclusions are present, the action will not fail.'
     required: false
-    default: 'success'
+    default: 'success,skipped'
   fail_fast:
     description: 'If set to true, the action will fail as soon as a check fails. If set to false (default), the action will wait for all checks to complete before failing.'
     required: false
