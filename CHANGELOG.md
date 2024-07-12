@@ -2,11 +2,49 @@
 
 ## [Unreleased](https://github.com/CasperWA/push-protected/tree/HEAD)
 
-[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.15.0...HEAD)
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.16.0...HEAD)
 
-**Fixed bugs:**
+**Closed issues:**
 
-- Reinstate and deprecate the `sleep` input [\#209](https://github.com/CasperWA/push-protected/issues/209)
+- Mirror GitHub interpretation in default acceptable conclusions [\#249](https://github.com/CasperWA/push-protected/issues/249)
+
+## [v2.16.0](https://github.com/CasperWA/push-protected/tree/v2.16.0) (2024-07-11)
+
+[Full Changelog](https://github.com/CasperWA/push-protected/compare/v2.15.0...v2.16.0)
+
+**Closed issues:**
+
+- Be explicit and match up Python versions [\#217](https://github.com/CasperWA/push-protected/issues/217)
+
+**Merged pull requests:**
+
+- Update default for `acceptable_conclusions` [\#250](https://github.com/CasperWA/push-protected/pull/250) ([CasperWA](https://github.com/CasperWA))
+- Clarify `acceptable_conclusions` format [\#248](https://github.com/CasperWA/push-protected/pull/248) ([MattiSG](https://github.com/MattiSG))
+- Update dependencies [\#247](https://github.com/CasperWA/push-protected/pull/247) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#246](https://github.com/CasperWA/push-protected/pull/246) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#245](https://github.com/CasperWA/push-protected/pull/245) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#244](https://github.com/CasperWA/push-protected/pull/244) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#242](https://github.com/CasperWA/push-protected/pull/242) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#240](https://github.com/CasperWA/push-protected/pull/240) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#239](https://github.com/CasperWA/push-protected/pull/239) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#237](https://github.com/CasperWA/push-protected/pull/237) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#236](https://github.com/CasperWA/push-protected/pull/236) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#235](https://github.com/CasperWA/push-protected/pull/235) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#233](https://github.com/CasperWA/push-protected/pull/233) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#232](https://github.com/CasperWA/push-protected/pull/232) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#231](https://github.com/CasperWA/push-protected/pull/231) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#228](https://github.com/CasperWA/push-protected/pull/228) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#227](https://github.com/CasperWA/push-protected/pull/227) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#225](https://github.com/CasperWA/push-protected/pull/225) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#223](https://github.com/CasperWA/push-protected/pull/223) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#222](https://github.com/CasperWA/push-protected/pull/222) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#221](https://github.com/CasperWA/push-protected/pull/221) ([CasperWA](https://github.com/CasperWA))
+- Add contents: write permission for CI - Tests [\#220](https://github.com/CasperWA/push-protected/pull/220) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#219](https://github.com/CasperWA/push-protected/pull/219) ([CasperWA](https://github.com/CasperWA))
+- Explicitly use Python 3.11 everywhere [\#218](https://github.com/CasperWA/push-protected/pull/218) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#213](https://github.com/CasperWA/push-protected/pull/213) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#212](https://github.com/CasperWA/push-protected/pull/212) ([CasperWA](https://github.com/CasperWA))
+- Update dependencies [\#211](https://github.com/CasperWA/push-protected/pull/211) ([CasperWA](https://github.com/CasperWA))
 
 ## [v2.15.0](https://github.com/CasperWA/push-protected/tree/v2.15.0) (2023-11-02)
 
@@ -16,6 +54,10 @@
 
 - State of checks [\#149](https://github.com/CasperWA/push-protected/issues/149)
 - Make post-sleep a user input [\#136](https://github.com/CasperWA/push-protected/issues/136)
+
+**Fixed bugs:**
+
+- Reinstate and deprecate the `sleep` input [\#209](https://github.com/CasperWA/push-protected/issues/209)
 
 **Closed issues:**
 
