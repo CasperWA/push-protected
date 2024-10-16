@@ -17,7 +17,7 @@ repos:
       files: ^requirements.*\.txt$
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
+    rev: v3.18.0
     hooks:
     - id: pyupgrade
       args: [--py311-plus]
@@ -35,7 +35,7 @@ repos:
       args: [-r]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
+    rev: v1.12.0
     hooks:
     - id: mypy
       additional_dependencies:
