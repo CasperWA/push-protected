@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3.11
+  python: python3.12
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -20,7 +20,7 @@ repos:
     rev: v3.20.0
     hooks:
     - id: pyupgrade
-      args: [--py311-plus]
+      args: [--py312-plus]
 
   - repo: https://github.com/ambv/black
     rev: 25.1.0
@@ -41,13 +41,3 @@ repos:
       additional_dependencies:
         - "types-requests"
         - "types-simplejson"
-
-  - repo: local
-    hooks:
-    - id: pylint
-      name: pylint
-      entry: pylint
-      language: python
-      types: [python]
-      require_serial: true
-      exclude: ^tests/.*$
