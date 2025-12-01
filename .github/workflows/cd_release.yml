@@ -9,6 +9,7 @@ env:
   PUBLISH_UPDATE_BRANCH: main
   GIT_USER_NAME: CasperWA
   GIT_USER_EMAIL: "casper+github@welzel.nu"
+  EXCLUDE_TAGS_REGEX: "^(ci_test|master|v[0-9]+)$"
 
 jobs:
   update-repo-and-release:
@@ -18,12 +19,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
 
@@ -31,14 +32,13 @@ jobs:
       run: |
         python -m pip install -U pip
         pip install -U setuptools wheel
-        pip install -U -e .[dev]
+        pip install .[dev]
+        pip install flit
 
     - name: Update changelog
-      uses: CharMixer/auto-changelog-action@v1
+      uses: docker://githubchangeloggenerator/github-changelog-generator:1.16.2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
-        exclude_tags_regex: "^(ci_test|master|v[0-9]+)$"
+        args: --user "CasperWA" --project push-protected --token "${{ secrets.GITHUB_TOKEN }}" --release-branch "${{ env.PUBLISH_UPDATE_BRANCH }}" --exclude-tags-regex "${{ env.EXCLUDE_TAGS_REGEX }}"
 
     - name: Update version and tags
       run: .github/utils/update_version.sh
@@ -54,16 +54,16 @@ jobs:
         tags: true
 
     - name: Get tagged versions
-      run: echo "PREVIOUS_VERSION=$(git tag -l --sort -version:refname | sed -n 2p)" >> $GITHUB_ENV
+      id: tagged_versions
+      run: |
+        PREVIOUS_VERSION="$(git tag -l --sort -version:refname | grep -v -e "${{ env.EXCLUDE_TAGS_REGEX }}" | sed -n 2p)"
+
+        echo "since_previous_version=--since-tag=${PREVIOUS_VERSION}" >> $GITHUB_OUTPUT
 
     - name: Create release-specific changelog
-      uses: CharMixer/auto-changelog-action@v1
+      uses: docker://githubchangeloggenerator/github-changelog-generator:1.16.2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        release_branch: ${{ env.PUBLISH_UPDATE_BRANCH }}
-        since_tag: "${{ env.PREVIOUS_VERSION }}"
-        output: "release_changelog.md"
-        exclude_tags_regex: "^(ci_test|master|v[0-9]+)$"
+        args: --user "CasperWA" --project push-protected --token "${{ secrets.GITHUB_TOKEN }}" --release-branch "${{ env.PUBLISH_UPDATE_BRANCH }}" ${{ steps.tagged_versions.outputs.since_previous_version }} --output release_changelog.md --usernames-as-github-logins --exclude-tags-regex "${{ env.EXCLUDE_TAGS_REGEX }}"
 
     - name: Append changelog to release body
       run: |
