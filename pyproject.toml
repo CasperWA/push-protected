@@ -1,14 +1,44 @@
+[build-system]
+requires = ["flit-core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name="push-action"
+dynamic = ["version"]
+authors = [{name = "Casper Welzel Andersen", email = "casper+github@welzel.nu"}]
+description = "Push local workflow commit(s) to protected branches with required status checks."
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+]
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "requests ~=2.32",
+]
+
+[project.optional-dependencies]
+dev = [
+    "invoke ~=2.2",
+    "pre-commit ~=4.2",
+    "pylint ~=3.3",
+]
+
+[project.scripts]
+push-action = "push_action.run:main"
+
+[tool.flit.module]
+name = "push_action"
+
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 ignore_missing_imports = true
 scripts_are_modules = true
 warn_unused_configs = true
 show_error_codes = true
 allow_redefinition = true
-
-[tool.pylint.messages_control]
-max-line-length = 90
-disable = [
-    # "duplicate-code",
-    # "no-name-in-module"
-]

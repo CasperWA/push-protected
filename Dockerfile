@@ -1,6 +1,6 @@
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
-COPY README.md setup.py requirements*.txt ./
+COPY LICENSE README.md pyproject.toml ./
 COPY push_action ./push_action
 
 RUN apk update \
