@@ -35,6 +35,10 @@ unprotect () {
                     --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
                     -- unprotect_reviews
 
+                # Track that protections have been removed so cleanup can restore them
+                # if the push fails before protect() is called.
+                PUSH_PROTECTED_REVIEWS_REMOVED=yes
+
                 echo "Remove '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
             ;;
@@ -56,6 +60,9 @@ protect () {
                     --ref "${INPUT_BRANCH}" \
                     --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
                     -- protect_reviews
+
+                # Protections successfully restored; clear the flag.
+                PUSH_PROTECTED_REVIEWS_REMOVED=
 
                 echo "Re-add '${INPUT_BRANCH}' pull request review protection ... DONE!"
             fi
@@ -125,11 +132,28 @@ cleanup() {
     # Get exit code of latest command
     EXIT_CODE=$?
 
+    # Restore pull request review protections if they were removed but not yet
+    # restored (e.g. because the push step failed).
+    if [ -n "${PUSH_PROTECTED_REVIEWS_REMOVED}" ]; then
+        echo -e "\n::warning::Push failed after removing branch protections. Attempting to restore '${INPUT_BRANCH}' pull request review protection ..."
+        push-action \
+            --token "${INPUT_TOKEN}" \
+            --ref "${INPUT_BRANCH}" \
+            --temp-branch "${PUSH_PROTECTED_TEMPORARY_BRANCH}" \
+            -- protect_reviews \
+            && echo "Restored '${INPUT_BRANCH}' pull request review protection after failure." \
+            || echo "::error::Failed to restore pull request review protection for '${INPUT_BRANCH}'. Please restore the branch protection rules manually before merging any pull requests."
+    fi
+
     # Cleanup - Remove temporary branch
     remove_remote_temp_branch
 
     exit ${EXIT_CODE}
 }
+
+# Allow this file to be sourced (e.g. in unit tests) to load function
+# definitions without registering the trap or running the main body.
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && return 0
 
 # Trap exit command and cleanup
 trap cleanup EXIT

@@ -151,6 +151,16 @@ jobs:
         echo "Outcome: ${{ steps.push_no_force.outcome }} (not 'failure'), Conclusion: ${{ steps.push_no_force.conclusion }} (not 'success')"
         exit 1
 
+    - name: Verify branch protections were restored after push failure
+      run: |
+        response=$(curl --silent \
+          --header "Authorization: Bearer ${{ secrets.CI_PUSH_TO_PROTECTED_BRANCH }}" \
+          --header "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${GITHUB_REPOSITORY}/branches/protected/protection/required_pull_request_reviews")
+        echo "Protection response: ${response}"
+        # If required_pull_request_reviews is present, protections were restored
+        echo "${response}" | python3 -c "import sys, json; d = json.load(sys.stdin); sys.exit(0 if 'required_approving_review_count' in d else 1)"
+
     - name: Push using `--force` (should succeed)
       uses: ./
       with:
