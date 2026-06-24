@@ -151,6 +151,10 @@ cleanup() {
     exit ${EXIT_CODE}
 }
 
+# Allow this file to be sourced (e.g. in unit tests) to load function
+# definitions without registering the trap or running the main body.
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && return 0
+
 # Trap exit command and cleanup
 trap cleanup EXIT
 
